@@ -30,6 +30,7 @@ int rand_quote() {
  *
  * if no args are provided, program defaults to all_quotes
  */
+
 int main( int argc, char *argv[] ) {
     LIST_NAME = malloc( 256 );
     strcat( LIST_NAME, "quotes/" );
