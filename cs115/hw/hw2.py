@@ -33,7 +33,7 @@ def letterScore( letter, scoreList ):
     if ( scoreList[0][0] == letter ):
         return scoreList[0][1]
     return letterScore( letter, scoreList[1:] )
-print( "letterScore z:", letterScore( 'z', scrabbleScores ) ) #10
+#print( "letterScore z:", letterScore( 'z', scrabbleScores ) ) #10
 
 def wordScore( S, scoreList ):
     ''' int letterScore( String S, List scoreList )
@@ -45,7 +45,7 @@ def wordScore( S, scoreList ):
     if ( S == "" ):
         return 0
     return letterScore( S[0], scoreList ) + wordScore( S[1:], scoreList )
-print( "wordScore z:", wordScore( 'aaaaaaz', scrabbleScores ) ) #16
+#print( "wordScore z:", wordScore( 'aaaaaaz', scrabbleScores ) ) #16
 
 def scoreList( rack ):
     ''' List scoreList( List rack )
@@ -88,9 +88,11 @@ def constructWord( rack, word ):
     i_char = rack.index( word[0] )
     return constructWord( rack[0:i_char] + rack[i_char + 1:], word[1:] )
 
+'''
 print( "scoreList test1:", scoreList( ["a", "s", "m", "o", "f", "o"] ) )
 print( "scoreList test2:", scoreList( [] ) )
 print( "scoreList test3:", scoreList( ['z','z','y','v','a','b','a','t'] ) )
+'''
 
 def bestWord( rack ):
     ''' List bestWord( List rack )
@@ -115,6 +117,9 @@ def bestWord_h( word_list ):
         return word_list[0]
     return best_word
 
+'''
 print( "bestWord test1:", bestWord( ["a", "s", "m", "o", "f", "o"] ) )
 print( "bestWord test2:", bestWord( [] ) )
 print( "bestWord test3:", bestWord( ['z','z','y','v','a','b','a','t'] ) )
+print( "bestWord test3:", bestWord( ['z','z','y'] ) )
+'''
