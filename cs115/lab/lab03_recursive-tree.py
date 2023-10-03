@@ -5,7 +5,7 @@
 #
 ############################################################
 
-def change( amount, coins ):
+def give_change( amount, coins ):
     ''' int change( int amount, List coins ) {{{
     change calculates the minimum number of coins required to create a value amount
         ex: 0.25$ can be produced with 5 nickels or 1 quarter, so change returns
@@ -16,26 +16,36 @@ def change( amount, coins ):
     @return: the fewest number of coins necessary to produce amount
              inf if there is no way to construct amount with the given coins
     }}} '''
-    #base cases after coins are added to the amount
+    if ( amount == 0 ):
+        return [ 0, [] ]
+    if ( coins == [] ):
+        return [ float( "inf" ), [] ]
+    #we need to add 1 to change[0] and the coin to change[1]
+    if ( amount >= coins[0] ):
+        curr_coin = coins[0]
+        useIt = [ 1 + change( amount - curr_coin, coins ), [curr_coin] + give_change( amount - curr_coin, coins )[1] ]
+        loseIt = give_change( amount, coins[1:] )
+        if ( useIt[0] < loseIt[0] ):
+            return useIt
+        return loseIt
+    return give_change( amount, coins[1:] )
+ 
+def change( amount, coins ): #{{{
     if ( amount == 0 ):
         return 0
     if ( coins == [] ):
         return float( "inf" )
-    #each time we reduce the amount by a coin value,
-    #we can keep cutting the same coin value or try cutting with different coins
     if ( amount >= coins[0] ):
-        return min( change( amount, coins[1:] ), 1 + change( amount - coins[0], coins ) )
-    #if amount is less than coins then we are forced to check the next coin
-    return change( amount, coins[1:] )
- 
+        return min( 1 + change( amount - coins[0], coins ), change( amount, coins[1:] ) )
+    return change( amount, coins[1:] ) #}}}
+
 #custom test cases {{{
-'''
-print( change(48, [1, 5, 10, 25, 50]) )
-print( change(48, [1, 7, 24, 42]) )
-print( change(48, [24] ) )
-print( change(25, [1,5,16] ) )
-print( change(0, [1,5,16] ) )
-print( change(178, [89, 1, 177] ) )
-print( change(2, [3] ) )
-'''
+print( give_change(10, [5]) )
+print( give_change(48, [24] ) )
+print( give_change(48, [1, 5, 10, 25, 50]) )
+print( give_change(48, [1, 7, 24, 42]) )
+print( give_change(25, [1,5,16] ) )
+print( give_change(0, [1,5,16] ) )
+print( give_change(178, [89, 1, 177] ) )
+print( give_change(2, [3] ) )
 #}}}
