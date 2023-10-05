@@ -23,6 +23,8 @@ def give_change( amount, coins ):
     #we need to add 1 to change[0] and the coin to change[1]
     if ( amount >= coins[0] ):
         curr_coin = coins[0]
+        #note: THERE IS A SIMPLER WAY TO DO give_change
+        #      THIS WAS JUST THE SOLUTION THAT FOLLOWED IMMEDIATELY FROM change 
         useIt = [ 1 + change( amount - curr_coin, coins ), [curr_coin] + give_change( amount - curr_coin, coins )[1] ]
         loseIt = give_change( amount, coins[1:] )
         if ( useIt[0] < loseIt[0] ):
