@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Review</title>
+    <style>
+        body {
+            background-color: #b3baff;
+            /* padding: 40px; */
+            font-family:'Courier New', Courier, monospace;
+        }
+        h1 {
+            color: #0e050f;
+            size: 400%;
+            font-weight: bold;
+            text-align: center;
+        }
+        /* note that width is the width of the element
+           not the width of the text 
+           by default, width is based on margins and window size */
+        p {
+            color: #170b3b;
+            border: 3mm ridge #69307a;
+            padding: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 6mm;
+            letter-spacing: 1px;
+        }
+        .info { /* subclass def overrides prev. definitions */
+            border: none;
+            margin-bottom: 0px;
+            font-size: 5mm;
+        }
+        figure { /* default according to w3schools */
+            display: block;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+        figcaption {
+            width: 100rem;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-style: italic;
+            font-weight: lighter;
+            margin-bottom: 100px;
+        }
+        footer {
+            position:fixed;
+            background-color: #a7abccab;
+            width: 600px;
+            height: 50px;
+            left: 0%;
+            bottom: 0%;
+            border: none;
+        }
+        .end {
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            width: 200px;
+            font-size: 85%;
+            margin: 0px;
+            padding: 5px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>The first heading in a while</h1>
+    <p class="_init">I am on my way to learn full stack web development.<br/><br/>
+        Reviewing <strong>html/css</strong> is the first step on that journey.
+    </p>
+    <p class="info">This is an image.</p>
+    <figure>
+    <img src="ssprogress.png" alt="18th birthday LeetCode roadmap progress" />
+    <figcaption>Birthday day: 70 LeetCode problems solved</figcaption>
+    </figure>
+    <footer>
+        <p class="end">Author: kevinthuhstink</p>
+        <p class="end"><a href="https://github.com/kevinthuhstink/kevinthuhstink">
+            Github
+        </a></p>
+        <!-- footer can also contain copyright, contact, sitemap, return-to-top, and related pages -->
+    </footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+_STRUCTS	driver.c	/^char* _STRUCTS[_STRUCTS_CT];$/;"	v
+_STRUCTS_CT	driver.c	2;"	d	file:
+freell	linked_list/linked_list.c	/^void freell( struct linked_node* head ) {$/;"	f
+init_structs	driver.c	/^void init_structs() {$/;"	f
+linked_node	linked_list/linked_list.h	/^struct linked_node {$/;"	s
+llremove	linked_list/linked_list.c	/^struct linked_node* llremove( char* data, struct linked_node* head ) {$/;"	f
+llsearch	linked_list/linked_list.c	/^struct linked_node* llsearch( char* data, struct linked_node* head ) {$/;"	f
+main	driver.c	/^int main( int argc, char* argv[] ) {$/;"	f
+makell	linked_list/linked_list.c	/^struct linked_node* makell( char* data ) {$/;"	f
+newllnode	linked_list/linked_list.c	/^struct linked_node* newllnode( char* val ) {$/;"	f
+next	linked_list/linked_list.h	/^    struct linked_node* next;$/;"	m	struct:linked_node	typeref:struct:linked_node::linked_node
+prev	linked_list/linked_list.h	/^    struct linked_node* prev;$/;"	m	struct:linked_node	typeref:struct:linked_node::linked_node
+strll	linked_list/linked_list.c	/^char* strll( struct linked_node* head ) {$/;"	f
+strllnode	linked_list/linked_list.c	/^char* strllnode( struct linked_node* node ) {$/;"	f
+testLL	driver.c	/^int testLL() {$/;"	f
+val	linked_list/linked_list.h	/^    char* val;$/;"	m	struct:linked_node
