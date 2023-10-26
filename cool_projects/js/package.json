@@ -1,0 +1,12 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "kevin's first package.json",
+  "main": "new.js",
+  "scripts": {
+    "test": "ls"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
