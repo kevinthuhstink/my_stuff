@@ -9,12 +9,14 @@
  * =====================================================================================
  */
 #include "hash_map.h" 
+//TODO: each linked list needs to contain a key-value pair
+//		setHashMap, replaceHashMap
 
 /*  instantiates a new hash map
  *  defaults to 16 keys, doubles in size every time capacity is reached
  *  uses linked lists to bypass collisions 
  *  @return: a pointer to a new hash map */
-struct hash_map* newhashmap() {
+struct hash_map* newHashMap() {
 	struct hash_map* _new = malloc( sizeof( struct hash_map ) );
 	_new->capacity = 16;
 	_new->size = 0;
@@ -37,7 +39,7 @@ struct hash_map* newhashmap() {
 /*  frees the hashmap and all elements contained within it
  *  does nothing if linked list pointer is null
  *  @param hashmap: the hashmap to be freed */
-void freehashmap( struct hash_map* data ) {
+void freeHashMap( struct hash_map* data ) {
 	if ( data == NULL )
 		return;
 	for ( int i = 0; i < data->size; i++ )

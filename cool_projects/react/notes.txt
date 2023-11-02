@@ -1,0 +1,52 @@
+11/1/2023: Completed first static website
+	TODO: Learn to use React to make dynamic websites
+		  Improve CSS: 
+		 		Construct dropdown menus
+				Wrap text around images
+
+	React:
+		import React from 'react';
+		import ReactDOM from 'react-dom/client'
+		import {...} from './Page.js'
+		import './Page.css'
+		React functions return (one) HTML components
+		In the React program it becomes JSX objects
+		Invoke functions and render them with
+			const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
+			root.render (
+				<Function />
+			)
+		Functions have first letter capitalized so they can be distinguished from HTML tags
+
+	CSS:
+		Import fonts with
+		@font-face {
+			font-family: 'Roboto Slab';
+			src: local('Roboto Slab'), url(./roboto_slab/RobotoSlab-Regular.ttf), format('ttf');
+		} (an entire font family I'm still unsure of)
+
+		position: absolute breaks flexbox
+		A div can have a colored background or background image
+		Applying opacity < 1 to a div applies it on everything
+		Setting a background opacity can be done by creating a new div containing the background
+		Then setting its opacity and whatever positioning
+
+		Flexbox:
+			justify-content aligns content along the axis that the flexbox places items
+			align-itmes aligns content along the other axis
+			align-content changes the lines that the flexbox places items
+			For example, flex-direction: row;
+				justify-content: flex-end; right justifies content
+				align-items: flex-end; aligns content with the bottom of the container
+		Within a flexbox, there's no need to use position,
+		just align-self each individual item if you need to
+
+		Units:
+			One px is one pixel of the screen
+			% is either based on original size
+				With fonts, based on original font size
+				With divs, based on screen size
+			vh/vw is one percent of the view height or view width
+			em/rem means "relative to font size"
+				2em is double the font size
+				2rem is double the default ( defined in root ) font size

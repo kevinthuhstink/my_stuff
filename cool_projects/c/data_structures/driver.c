@@ -1,5 +1,9 @@
 #include "headers.h"
 char* _STRUCTS[_STRUCTS_CT];
+/* OPERATIONAL STATUS
+ * linked list: good
+ * hash map: in progress
+ */
 
 void init_structs() {
     for ( int i = 0; i < _STRUCTS_CT; i++ )
@@ -23,33 +27,44 @@ int testLL() {
     free( stralbum_cpy ); */
 
 	//testing llsearch
-	struct linked_node* slvt = llsearch( "her", head );
-	printf( "%s\n%s\n", strll( slvt ), strll( head ) );
+	//struct linked_node* slvt = llsearch( "her", head );
+	//printf( "%s\n%s\n", strll( slvt ), strll( head ) );
 	/*
     printf( "\nSearching for 'her'...\n%s\n", strll( slvt ) );
 	struct linked_node* dne = llsearch( "nhelv", head );
 	printf( "Searching for absent node\n%s\n", strll( dne ) ); */
 
-	//testing llremove
+	//testing llremove FUNCTIONAL
+	/*
 	llremove( "goodbye", slvt );
 	printf( "\nRemoved 'goodbye'...\n%s\n%s\n", strll( slvt ), strll( head ) );
 	slvt = llremove( "her", slvt );
-	printf( "\nRemoved 'her'...\n%s\n%s\n", strll( slvt ), strll( head ) );
+	printf( "\nRemoved 'her'...\n%s\n%s\n", strll( slvt ), strll( head ) ); */
 
-	//testing lladd, lladdat
+	//testing lladd, lladdat FUNCTIONAL
+	/*
 	printf( "\nAdding 'goodbye'...\n" );
 	slvt = lladd( "goodbye", slvt );
 	printf( "%s\n%s\n", strll( slvt ), strll( head ) );
 	printf( "\nAdding 'her'...\n" );
 	lladdat( "her", slvt, 1 );
-	printf( "%s\n%s\n", strll( slvt ), strll( head ) );
+	printf( "%s\n%s\n", strll( slvt ), strll( head ) ); */
+
+	//testing llset, llstrset FUNCTIONAL
+	/*
+	printf( "\nChanging values in the mini-list..\n" );
+	llstrset( "the gray", slvt );
+	llstrset( "war of being", slvt->next );
+	printf( "%s\n%s\n", strll( slvt ), strll( head ) ); */
     freell( head );
 	return 0;
 }
 
 int testHashMap() {
-	struct hash_map* this = newhashmap();
+	struct hash_map* this = newHashMap();
 	printf( "this hashval: %lf\n", this->hashval );
+	freeHashMap( this );
+	//free( this ); //should throw double free
 	return 0;
 }
 
@@ -59,8 +74,8 @@ int main( int argc, char* argv[] ) {
     init_structs();
 	//no args has the equivalent of test all
     if ( argc == 1 ) {
-		testLL();
-		//testHashMap();
+		testLL(); //FULLY FUNCTIONAL
+		testHashMap();
         return 0;
     }
 	if ( strcmp( argv[1], "linked_list" ) == 0 ) {

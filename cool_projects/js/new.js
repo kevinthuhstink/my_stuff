@@ -2,7 +2,7 @@ import { preorder } from "./export.mjs";
 //const exp = require( './export.mjs' );
 "use strict";
 //this (keyword) is undefined in strict mode
-// js vars (no explicit type) {{{
+// js vars (no explicit type) {
 const _undefined = "cannot be undefined"; //const must be initialized with values
 const _null = null; //const can be initialized with null
 const int = 3; //js vars are untyped
@@ -19,9 +19,9 @@ let x = 9007199254740992 === 9007199254740993;
 let strf = `formatting strs using variables instead of %s%d: ${str} ${int}`;
 let rstrf = strf.replace( /s\w+(%|:| of)/, strf.length ); //so they can do regex and this. too
 //console.log( rstrf );
-// vars end }}}
+// vars end }
 
-// js arrays/stacks/queues/(deque?) {{{
+// js arrays/stacks/queues/(deque?) {
 var arr = [ {}, str, int, _undefined, _null ] //python-like dynamic list
 //console.log( arr );
 var stackop = arr.pop(); //arrays as stacks
@@ -45,9 +45,9 @@ Math.pow() = x^y
 Math.floor/ceil
 Math.random()
 also remember switch statements
-end js arrays }}} */
+end js arrays } */
 
-// js structs {{{
+// js structs {
 //queueop contains an object because the og arr[0] was an "object"
 var jsstruct = {
 	carriage : "bloody",
@@ -63,9 +63,9 @@ for ( var thing in jsstruct )
 		console.log( "jstruct has: " + thing + ' ' + jsstruct[thing] );
 //equivalent of a hashmap or python dict (untyped)
 //but we have to verify that the keys actually exist in the jstruct skull emoji
-end js structs }}} */
+end js structs } */
 
-// js function/lambda {{{
+// js function/lambda {
 function _default() {
 	console.log( "running func _default()" );
 	return {
@@ -106,9 +106,9 @@ const _double = n => n * 2; //assign it to "double"
 var numbers = [ 3,4,4,5,6,7 ];
 let newnums = numbers.map( _double ); //like python but with more syntax
 //console.log( newnums );
-//end js function/lambda }}}
+//end js function/lambda }
 
-//js variable scoping (let/var-const) {{{
+//js variable scoping (let/var-const) {
 //var is the default scoping variable instantializer
 //let basically instantiates a new var with the same name for this scope
 /*
@@ -130,9 +130,9 @@ function letScoping() {
 	console.log(x); // will print 2
   }
   console.log(x); // will print 1
-} //end js var scoping }}} */
+} //end js var scoping } */
 
-// js promises (asynch) {{{
+// js promises (asynch) {
 //functions require waiting in js, so js does things asynch
 //
 function _statusfail() {
@@ -181,9 +181,9 @@ function sum_async( x, y ) {
 //whatever is returned first
 sum_async( 2, 3 ).then( result => {
 	//console.log( "2 + 3 =", result );
-}); //end promises }}}
+}); //end promises }
 
-//js promises: .then, .catch {{{
+//js promises: .then, .catch {
 /* ok so apparently promises get way more complicated than that
  * the success and error handlers in Promise.then()
  * can individually return their own successes and errors
@@ -253,7 +253,7 @@ node:internal/process/promises:289
 			triggerUncaughtException(err, true //fromPromise );
 			^
 
-[UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "This is an error on purpose".] {
+[UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "This is an error on purpose".]
   code: 'ERR_UNHANDLED_REJECTION' */
 
 /* so what happened is the data array had an error object contained within it
@@ -262,9 +262,9 @@ node:internal/process/promises:289
  *
  */
 
-//end .then, .catch }}}
+//end .then, .catch }
 
-// js async, await {{{
+// js async, await {
 //coroutines are functions that can pause execution and return to the main loop until something occurs
 //in contrast with callbacks, functions that run within other functions
 //await is used to tell js to stop this coroutine's exec until a promise resolves
@@ -305,9 +305,9 @@ async function asyncsum( x, y ) {
 //below is a gigantic line that adds two integers and says "no negatives" if the sum is negative
 //using promises and catches and async and i want to end it all
 //asyncsum( 2, -3 ).then( result => console.log( "sum =", result ) ).catch( error => console.log( "no negatives" ) );
-//end async, await }}}
+//end async, await }
 
-//js structs part 2 {{{
+//js structs part 2 {
 //actually js struct/objects arent objects, theyre functions too
 function node( value ) {
 	this.val = value;
@@ -353,10 +353,24 @@ setTimeout( _thisnode.str, 100 ); //prints absolutely nothing?
 //because _fcall and _fapply are both undefined
 //since printll has no return value
 //call and apply store the return value of printll( _thisnode.next )
+//call takes the function on one object
+//apply returns an array when the function is applied on an array of objects
 
-//holy shit a linked list }}}
+const add = ( function() {
+  let counter = 0;
+  return () => ++counter; //what the fuck?
+})();
 
-// es6 addons {{{ 
+add();
+add();
+//console.log( add() );
+//when add is instantiated by the website,
+//it also has the variable counter and an anon function that increments it
+//in this way, add is a static object that increments counter whenever it's called
+
+//holy shit a linked list }
+
+// es6 addons { 
 //destructuring:
 function treenode( value ) {
 	this.value = value;
@@ -410,6 +424,6 @@ console.log( keyslist );
 console.log( preorder( root ) );
 //doesnt work but i got something to return so good enough
 
-// end es6 addons }}}
+// end es6 addons }
 
 //ive come quite a far way havent i

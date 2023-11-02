@@ -9,26 +9,31 @@
  * =====================================================================================
  */
 #include "linked_list.h"
-//TODO: add, addat
+//TODO: compatibility with strings and ints for hashmap
+//		print k-v pairs or just v for linked lists
 
 /*  instantiates a new linked list node
- *  @param val: the data to be stored within that node, can store NULL
+ *  @param strval: the data to be stored within that node, can store NULL
  *  @return: a newly instantiated node with next pointing to NULL */
-struct linked_node* newllnode( char* val ) {
+struct linked_node* newllnode( char* strval ) {
 	struct linked_node* new = malloc( sizeof( struct linked_node ) );
-	char* carriage = malloc( strlen( val ) );
-	new->val = strcpy( carriage, val );
+	if ( strval != NULL ) {
+		char* carriage = malloc( strlen( strval ) );
+		new->strval = strcpy( carriage, strval );
+	}
+	else
+		new->strval = NULL;
 	new->next = NULL;
 	new->prev = NULL;
 	return new;
 }
 
 /*  adds a new node to the end of the list
- *  @param val: the value of the node to be added
+ *  @param strval: the strvalue of the node to be added
  *  	  head: the head of the linked list
  *	@return: a pointer to the new head of the list */
-struct linked_node* lladd( char* val, struct linked_node* head ) {
-	struct linked_node* _new = newllnode( val );
+struct linked_node* lladd( char* strval, struct linked_node* head ) {
+	struct linked_node* _new = newllnode( strval );
 	if ( head == NULL )
 		return _new;
 	struct linked_node* cpy = head;
@@ -40,18 +45,55 @@ struct linked_node* lladd( char* val, struct linked_node* head ) {
 	return head;
 }
 
+/*  sets the int value of a linked node
+ *  @param val: the int value of the node to be altered
+ *  	  node: the node whos value should be altered
+ *  @return: 0 if node val was set, 1 if node was NULL */
+int llset( int val, struct linked_node* node ) {
+	if ( node == NULL )
+		return 1; 
+	node->val = val;
+	return 0;
+}
+
+/*  sets a key-value pair for a linked node for hash maps
+ *  @param k: the key 
+ *  	   v: the value
+ *  	node: the node to set values with
+ *  @return: 0 if values were set, 1 if node was NULL */
+int llsetkv( int k, int v, struct linked_node* node ) {
+	if ( node == NULL )
+		return 1; 
+	node->val = v;
+	node->key = k;
+	return 0;
+}
+
+/*  replace the string value of a linked node
+ *  @param val: the int value of the node to be altered
+ *  	  node: the node whos value should be altered
+ *	@return: the new strval of the node */
+char* llstrset( char* strval, struct linked_node* node ) {
+	if ( node == NULL )
+		return NULL;
+	char* strmem = malloc( strlen( strval ) );
+	free( node->strval );
+	node->strval = strcpy( strmem, strval );
+	return strval;
+}
+
 /*  adds a new node to a specified index of the list
- *  @param val: the value of the node to be added
+ *  @param strval: the strvalue of the node to be added
  *  	  head: the head of the linked list
  *  	 index: the resulting index of the added node
  *	@return: a pointer to the added node
  *			 throws error and exits if index is out of bounds */
-struct linked_node* lladdat( char* val, struct linked_node* head, int index ) {
+struct linked_node* lladdat( char* strval, struct linked_node* head, int index ) {
 	if ( index < 0 ) {
 		printf( "Error: List index %d out of bounds\n", index );
 		exit( EXIT_FAILURE );
 	}
-	struct linked_node* _new = newllnode( val );
+	struct linked_node* _new = newllnode( strval );
 	if ( head == NULL )
 		return _new;
 	struct linked_node* cpy = head;
@@ -76,23 +118,23 @@ struct linked_node* lladdat( char* val, struct linked_node* head, int index ) {
 	return head;
 }
 
-/*  locates the first node containing a matching value
- *  @param val: the value of the node being located
+/*  locates the first node containing a matching strvalue
+ *  @param strval: the strvalue of the node being located
  *   	  head: the head of the linked list to search through
  *  @return: a pointer to the node, NULL if no node exists */
 struct linked_node* llsearch( char* data, struct linked_node* head ) {
 	while ( head != NULL ) {
-		if ( head->val != NULL && strcmp( head->val, data ) == 0 )
+		if ( head->strval != NULL && strcmp( head->strval, data ) == 0 )
 			return head;
 		head = head->next;
 	}
 	return NULL;
 }
 
-/*  removes the first occurence of a value from a linked list
+/*  removes the first occurence of a strvalue from a linked list
  *  frees the memory from the node that was removed
  *  note: error-prone when used on singly linked list
- *  @param val: the value to be removed
+ *  @param strval: the strvalue to be removed
  *  	  head: the head of the linked list with the removed node
  *  @return: a pointer to the head of the new linked list */
 struct linked_node* llremove( char* data, struct linked_node* head ) {
@@ -123,10 +165,10 @@ char* strllnode( struct linked_node* node ) {
 		return str;
 	}
 
-	size_t LEN = 5 + strlen( node->val ); // [ str ]\0
+	size_t LEN = 5 + strlen( node->strval ); // [ str ]\0
 	str = malloc( LEN * sizeof( char ) );
 	strcpy( str, "[ " );
-	strcat( str, node->val );
+	strcat( str, node->strval );
 	strcat( str, " ]" );
 	return str;
 }
@@ -139,9 +181,9 @@ char* strll( struct linked_node* head ) {
 	char* str = calloc( MAX_SIZE, sizeof( char ) );
 
 	while ( head != NULL ) {
-		char* val = head->val;
-		//printf( "val: %s\n", val );
-		size_t node_len = strlen( val ) + 2;
+		char* strval = head->strval;
+		//printf( "strval: %s\n", strval );
+		size_t node_len = strlen( strval ) + 2;
 		//required to remake str if the list is too big
 		if ( len += node_len >= MAX_SIZE ) {
 			//printf( "resizing str...\n" );
@@ -152,7 +194,7 @@ char* strll( struct linked_node* head ) {
 			str = new_str;
 		}
 
-		strcat( str, val );
+		strcat( str, strval );
 		strcat( str, "->" );
 		head = head->next;
 	}
@@ -163,24 +205,24 @@ char* strll( struct linked_node* head ) {
 /*  deserializes any linked list represented by a string
  *  LL strings should be in the format v1->v2->v3...->NULL
  *  @param data: string representation of a linked list
- *  @return: the head of a linked list with vals specified by data */
+ *  @return: the head of a linked list with strvals specified by data */
 struct linked_node* makell( char* data ) {
 	//tokenize data using " -> "
 	struct linked_node* node = NULL;
 	struct linked_node* head = node;
 	struct linked_node* prev;
-	char* val_tok = strdup( data );
-	if ( val_tok == NULL ) {
+	char* strval_tok = strdup( data );
+	if ( strval_tok == NULL ) {
 		printf( "data could not be copied for deserialization\n%s\n", strerror( errno ) );
 		exit( EXIT_FAILURE );
 	}
 
-	char* curr_val = strtok( val_tok, "->" ); //initial setup for strtok
-	while ( curr_val != NULL ) {
-		if ( strcmp( curr_val, "(nil)" ) == 0 )
+	char* curr_strval = strtok( strval_tok, "->" ); //initial setup for strtok
+	while ( curr_strval != NULL ) {
+		if ( strcmp( curr_strval, "(nil)" ) == 0 )
 			break;
-		struct linked_node* new_node = newllnode( curr_val );
-		curr_val = strtok( NULL, "->" );
+		struct linked_node* new_node = newllnode( curr_strval );
+		curr_strval = strtok( NULL, "->" );
 		if ( node == NULL ) {
 			node = new_node;
 			head = node;
@@ -193,7 +235,7 @@ struct linked_node* makell( char* data ) {
 			prev = node;
 		}
 	}
-	free( val_tok );
+	free( strval_tok );
 	return head;
 }
 
@@ -208,8 +250,8 @@ void freell( struct linked_node* head ) {
 	struct linked_node* next = head;
 	while ( head != NULL ) {
 		next = next->next;
-		if ( head->val != NULL ) //sometimes, ptr head->val is not obtained through malloc() FIXED
-			free( head->val ); //and will cause munmap_chunk() to tell you "i cant free this stuff"
+		if ( head->strval != NULL ) //sometimes, ptr head->strval is not obtained through malloc() FIXED
+			free( head->strval ); //and will cause munmap_chunk() to tell you "i cant free this stuff"
 		free( head );
 		head = next;
 	}
