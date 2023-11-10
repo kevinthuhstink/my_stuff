@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 //import { Navbar, Footer } from './fixed_divs.js';
 import { Header, Main } from './StaticPage.js';
-import reportWebVitals from './reportWebVitals.js';
 import './StaticPage.css'
 //import one thing at a time ( put em in a list )
 
@@ -42,8 +41,3 @@ root.render(
     <Main />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

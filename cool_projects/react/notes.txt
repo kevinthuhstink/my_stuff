@@ -1,8 +1,165 @@
+  TODO: Learn to use React to make dynamic websites
+  			State-watcher-functions binding data and components together
+			Import data from other websites into local folders? This one might be difficult
+			Video rendering if I'm feeling extra 
+		<form> <button> without submitting the form (or just dont use <form> tag, this one's optional)
+			known is the e.preventDefault() function, though i don't know how to use it
+		Improve CSS: 
+			Construct dropdown menus
+
+11/9/2023:
+	React: State
+		const [ data, setData ] = React.useState( {
+			entry1 : ...
+			entry2 : ...
+			...
+		} );
+		The state [ data, setData ] watches over an object that contains variable mappings
+		Modifying any element looks like
+		function changeData() {
+			setData( function( prev ) = {
+				return {
+					...prev,
+					entry : newData
+				}
+			});
+		}
+
+11/8/2023:
+	React: State
+		Because React is a declarative framework, React will automatically react to changes to data
+		The data that changed will be displayed on the page automatically
+		React "state" hooks to the component and tells the component to change when the data changes
+		Modifying the data directly conflicts with the state machine
+		so instance methods of things like arrays that modify the array directly are unavailable to React state
+
+		onClick={newElement()} having the parentheses bugs the shit out of react
+		i guess the parentheses tell react to do the function ? im really unsure tbh
+		because the errors thrown said React was rendering too much
+		The difference between React props and React state is that props are immutable,
+		once they're passed into the function-object-HTML tag they're there for good (within the scope of the function)
+			outside the function it's possible to change the props passed into the function, but
+			props are passed into reusable HTML to make components reusable, like with the cards
+			props are parameters, state contains parameters managed by the page instead of the user
+		State are values managed by the component themselves, like changing values 
+			The text wall generator should be managed by the component whenever the input button is clicked
+
+		Declaring State:
+			React.useState() is a hook. (usually, {useState} is destructured right out of the import statement -> useState() rather than React.useState() )
+			It returns a 2 length array, the data and a function that acts on the array
+				[ thing, setThing ]
+			When setThing is called, thing is changed to whatever setThing returns
+
+
+		Form: 
+		button reloads the page cause its within a form and react auto-submits forms on button click
+		<form> -> <div className="form"> fixes that, though thats kind of a trashy workaround
+
+11/7/2023:
+	React: Event Listeners
+		Can bind functions to div elements to do stuff when those div elements do something
+		For example the HTML button prop onClick can cause some otherFunction to go off
+			<button onClick={otherFunction()}>WHAT?</button>
+		Or onMouseOver
+			<img src={leliel} onMouseOver={otherFunction()} />
+
+	CSS: Grid
+		Grid is kind of simple I'm not gonna lie
+			display: grid
+			grid-template-row: ...
+			grid-template-columns: ...
+				specifies the width of each row and column in the grid
+				based on the order they were written in
+
+		Gradients: wow purple-blue gradients are so sexy
+			linear-gradient( direction, color1, color2... )
+				the other two gradients, radial and conic gradients, are kind of really ugly
+			the number of colors specified represent the color stops within the gradient
+			direction can have an angle measurement
+				0deg is to top
+				90deg is to right
+				180deg is to bottom 
+				270deg is to left
+			colors can have a unit to specify where the gradient ends
+				color2 50% with no colors afterward will repeat the gradient after 50% of the div
+				color 100px repeats the gradient every 100px
+				color1 70% determines when the gradient start to blend
+
+		overflow: hidden makes sure nothing can show up outside of the div's bounds
+		For example, the images in cards are placed out of bounds so their center doesn't appear
+		Default is visible, forcing stuff outside of the bounds of the div 
+		overflow-y: auto allows scrolling but it doesn't specify a min height
+		If the div is squished and h1's fatass takes up all the room,
+		Lower divs that have overflow-y set to auto will have 0 height because they're auto-set to scroll
+		No idea how to set a min height but its whatever
+		Careful with what divs you set to have overflow
+
+11/6/2023: Props 2
+	React: Rendering
+			{ props._this && <h1>{ props._this }</h1> }
+		checks if props._this is true and <h1>props._this</h1> is true
+		since the h1 tag exists, then that's true and will be rendered
+		if props._this is true ( if props._this was defined in the props object )
+		It's also possible to send in non-string args as prop vars
+			num={20}
+			list={ [ { thing1="" }, 20 ] }
+		also possible is
+			<Card {...data} />
+		because the ...data spreads the variables in data and places them within card
+
+		Array.map():
+			Sample uses of map
+				const capitalize = names.map( name => name[0].toUpperCase() + name.slice(1) )
+			capitalize takes each "name" from names
+			concats name[0] (uppercase) to the rest of name without modifying names
+			capitalize is now a completely different list
+				const surround = names.map( name => `\"${name}\"` )
+			each name is forced into the `` funky string with chars \" surrounding it
+
+11/4/2023: Props
+	CSS: Scrolling
+		overflow-y: auto presents the vertical scroll bar
+		overflow-x: auto presents the horizontal scroll bar
+		setting either to hidden hides their respective scroll bar
+	
+	React: Props
+		function add( a, b ) {
+			return a + b
+		}
+		allows the function add() to be reused for all combinations ( a, b )
+		Props have parallel functions, where a bunch of data is used to construct a JSX element
+		from some base parameters ( thumbnail, title, video length... -> video link on YouTube )
+		Surrounding something with curly braces in React tells the JSX interpreter to "use JS"
+			function Add( a, b ) {
+				let sum = a+b;
+				return( <h1>{ sum }</h1> )
+			}
+			would print the numeric value of a+b into the page instead of "sum" literal
+
+		function( props ) takes in one object (props) and uses things within props to construct the DOM element
+		Destructuring a prop using
+			{ img, title, desc ... }
+		hands us individual names for prop variables to work with instead of forcing us to use prop.var
+		some use props. and some use the destructured variation
+
+11/3/2023: Font working
+	CSS:
+		@font-face font import can take a link to a Google Fonts stylesheet
+		Downloading and sourcing them locally can take static stylesheets or dynamic variable fonts
+			Setting weight using dynamic variable fonts requires using
+				font-variation-settings: 'wght' num
+				or any other 4 char string to describe how the font changes
+
+		Flexbox items can overlap
+		If dimensions aren't specified, the element defaults to max dimensions
+		In the case of the <ol>, the marker gets cut off because the individual <li> took max width
+		And the markers ( 1,2,3... ) got cut off because the flex item border cut it off
+			Alternatively specify more (left) padding for the <ol> so the numbers have space
+
+		Overflow-x/y: auto creates scroll bars for divs that are larger than the view
+			default value for overflow is hidden, which lets the content cut off and disappear
+
 11/1/2023: Completed first static website
-	TODO: Learn to use React to make dynamic websites
-		  Improve CSS: 
-		 		Construct dropdown menus
-				Wrap text around images
 
 	React:
 		import React from 'react';

@@ -13,6 +13,7 @@ COMPRESSED_BLOCK_SIZE = 5
 MAX_RUN_LENGTH = 2 ** COMPRESSED_BLOCK_SIZE - 1
 # TODO convert to binary forms
 #      k is the length of each binary "block" found in the array thing
+#      no overflow
 
 '''
 # for the checkerboard pattern "10"*32,
@@ -20,7 +21,7 @@ MAX_RUN_LENGTH = 2 ** COMPRESSED_BLOCK_SIZE - 1
 # each bit requires one block in its compressed form to fully capture the image
 # plus the initial 0 block to indicate the image starts with a 1
 # it requires 33 * COMPRESSED_BLOCK_SIZE '''
-def compress( S ):
+def compress( S, bit = '0', ct = 0 ):
     ''' str compress( str S )
     compression of an input string S
     @param S: a string containing only '0's and '1's. (s is a binary string)
@@ -31,36 +32,15 @@ def compress( S ):
              for the entire input binary string
              each number in the sequence is a COMPRESSED_BLOCK_SIZE-bit binary number '''
     if S == "":
-        return ""
-    if S[0] == '1':
-        return '0' * COMPRESSED_BLOCK_SIZE + compress_h( S, 0, '1' )
-    return compress_h( S, 0, '0' )
-
-def compress_h( S, curr, prev ):
-    ''' str compress_h( str S, int curr, int prev )
-    @param S: a string containing only '0's and '1's. (s is a binary string)
-        curr: the running count of consecutive '0's or '1's
-        prev: whichever bit (0/1) has the "consecutive value"
-    @return: a run-length encoding of the input string
-             contains chars { x1, x2, x3... xn } such that
-             x1 is the number of consecutive 0s until the first 1 in the original input string
-             x2 is the number of consecutive 1s until the next 0
-             for the entire input binary string
-             each number in the sequence is a COMPRESSED_BLOCK_SIZE-bit binary number '''
-    if S != "" and S[0] == prev: #this block keeps going
-        return compress_h( S[1:], curr + 1, prev );
-    #finish this block up if we hit EOS or something other than prev
-    if S != "":
-        prev = S[0]
-    # calc the base2 num of how many consecutive digits we have
-    currbin = base2( curr )
-    if len( currbin ) < COMPRESSED_BLOCK_SIZE: #padding 0s if we need itj
-        pad0 = COMPRESSED_BLOCK_SIZE - len( currbin ) 
-        currbin = '0' * pad0 + currbin
-    currbin = currbin[-1 * COMPRESSED_BLOCK_SIZE:] #limit to block size
-    if S == "":
-        return currbin
-    return currbin + compress_h( S[1:], 1, prev )
+        return toblock( base2( ct ) )
+    if S[0] != bit:
+        return toblock( base2( ct ) ) + compress( S, S[0], 0 )
+    if ct == COMPRESSED_BLOCK_SIZE ** 2 - 1:
+        fullblock = '1' * COMPRESSED_BLOCK_SIZE
+        if bit == '1':
+            return fullblock + compress( S, '0', 0 )
+        return fullblock + compress( S, '1', 0 )
+    return compress( S[1:], bit, ct + 1 )
 
 def uncompress( C, curr = '0' ):
     ''' str uncompress( list bits, char curr )
@@ -103,21 +83,36 @@ def base10( s ):
         return 1 + 2 * base10( s[:-1] )
     return 2 * base10( s[:-1] )
 
+def toblock( s ):
+    '''Converts binary string s to its COMPRESSED_BLOCK_SIZE equivalent
+    @param s: A binary string of variable length
+    @return: A binary string of length COMPRESSED_BLOCK_SIZE_
+             Any significant digits larger than COMPRESSED_BLOCK_SIZE are removed'''
+    if len( s ) < COMPRESSED_BLOCK_SIZE:
+        padzeroes = '0' * ( COMPRESSED_BLOCK_SIZE - len( s ) )
+        s = padzeroes + s
+    return s[-1 * COMPRESSED_BLOCK_SIZE:]
+
+
 # compression on small strings really really sucks
 s1 = "1001"
 test1 = compress( s1 )
-print( test1, '\n',uncompress( test1 ),'\n', compression( s1 ) )
+print( test1, '\n', uncompress( test1 ), '\n', compression( s1 ) )
 
-# this compression sucks in general
+# this compression sucks in general until we have maybe thousands of bits
 penguin = "00011000"+"00111100"*3+"01111110"+"11111111"+"00111100"+"00100100"
 test2 = compress( penguin )
-print( test2, '\n', uncompress( test2 ),'\n', compression( penguin ) )
+print( test2, '\n', uncompress( test2 ), '\n', compression( penguin ) )
 
-# lets get that cool looking sequence that breaks COMPRESSED_BLOCK_SIZE 
+# lets get that cool looking sequence that cycles COMPRESSED_BLOCK_SIZE 
 brutal = '0' * 33
 test3 = compress( brutal )
-print( test3, '\n',uncompress( test3 ), '\n',compression( brutal ) )
-# 6.6 compression factor but it destroyed 32 bits in the process
+print( test3, '\n', uncompress( test3 ), '\n', compression( brutal ) )
+
+# lets get that cool looking sequence that cycles COMPRESSED_BLOCK_SIZE (again)
+brutal2 = '1' * 33
+test4 = compress( brutal2 )
+print( test4, '\n', uncompress( test4 ), '\n', compression( brutal2 ) )
 
 ''' I. Lai is Lying
 Laiuncompress and Laicompress are inverses of each other:

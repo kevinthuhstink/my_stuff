@@ -1,0 +1,220 @@
+@font-face {
+  font-family: "Roboto Slab";
+  src:
+    local( "Roboto Slab" ),
+    url( "../../fonts/Roboto_Slab/RobotoSlab-VariableFont_wght.ttf" );
+  font-style: normal;
+  /* contains
+   * font-family
+   * src -> url, format
+   * font-weight
+   * font-style
+   * font-size
+   * font-variant as well
+   */
+}
+
+@font-face {
+  font-family: "Red Hat Display";
+  src:
+    local( "Red Hat Display" ),
+    url( "../../fonts/Red_Hat_Display/RedHatDisplay-VariableFont_wght.ttf" );
+  font-style: normal;
+  /* contains
+   * font-family
+   * src -> url, format
+   * font-weight
+   * font-style
+   * font-size
+   * font-variant as well
+   */
+}
+
+body {
+  font-family: "Roboto Slab";
+  margin: 0px;
+}
+
+h1 {
+  font-variation-setting: 'wght' 800;
+}
+
+p {
+  font-variation-setting: 'wght' 400;
+}
+
+/* nav-top bar */
+nav {
+  z-index: 1;
+  position: fixed;
+  background-color: MediumPurple;
+  width: 100vw;
+  height: 16vh;
+  padding-left: 40px;
+  font-family: "Red Hat Display";
+
+  display: flex;
+  align-items: flex-end;
+}
+
+nav > * {
+  color: white;
+}
+
+.nav--title {
+  font-size: 60px;
+  margin-bottom: 0px;
+}
+
+.nav--description {
+  font-variation-setting: 'wght' 600;
+  font-size: 24px;
+  margin-left: 25px;
+  margin-bottom: 12px;
+  height: 32px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* main section */
+.main--background {
+  width: 90vh;
+  height: 90vh;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+main {
+  padding-left: 50px;
+  padding-top: 20vh;
+  margin-right: 40px;
+  height: 100vh;
+  width: calc( 70vw - 50px - 40px );
+  display: flex;
+  flex-direction: column;
+}
+
+main > * {
+  color: black;
+}
+
+.main--title {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.main--description {
+  width: 40vw;
+  font-size: 18px;
+  margin-left: 10px;
+  margin-top: 0px;
+}
+
+/* sidebar section */
+.sidebar {
+  margin: 0px;
+  padding-top: 40px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 30vw;
+  height: 84vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar--title {
+  font-size: 48px;
+  margin-bottom: 0px;
+}
+
+.sidebar--todo {
+  padding-left: 40px;
+  width: 25vw;
+  margin-top: 0px;
+  align-self: flex-end;
+}
+
+.sidebar--todo > li {
+  margin-top: 15px;
+  margin-bottom: 0px;
+  font-size: 24px;
+}
+
+.sidebar--todo > li::marker {
+  font-size: 36px;
+  color: indigo;
+}
+
+/* card bar element */
+.cardbar {
+  height: 240px;
+  width: inherit;
+  display: flex;
+  flex: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+}
+
+/* card element */
+.card {
+  position: relative;
+  width: 180px;
+  margin: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 24px;
+  border-color: gray;
+}
+
+.card > * {
+  margin: 10px 0px; /* top-bottom 10px, left-right 0px */
+}
+
+.card--img {
+  width: 50px;
+  height: auto;
+  margin: 0px;
+}
+
+.card--title {
+  font-size: 24px;
+}
+
+.card--desc {
+  font-size: 14px;
+  margin: 0px;
+  overflow-y: auto;
+}
+
+.card--ep {
+  font-variant: bold;
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-top: auto;
+}
+
+.card--badge {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  padding: 8px;
+  font-size: 14px;
+
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+  border-radius: 6px;
+}

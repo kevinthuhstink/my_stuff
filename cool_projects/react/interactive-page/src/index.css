@@ -1,0 +1,355 @@
+/* fonts and general styling */
+@font-face {
+  font-family: "Roboto Slab";
+  src:
+    local( "Roboto Slab" ),
+    url( "../../fonts/Roboto_Slab/RobotoSlab-VariableFont_wght.ttf" );
+  font-style: normal;
+  /* contains
+   * font-family
+   * src -> url, format
+   * font-weight
+   * font-style
+   * font-size
+   * font-variant as well
+   */
+}
+
+@font-face {
+  font-family: "Red Hat Display";
+  src:
+    local( "Red Hat Display" ),
+    url( "../../fonts/Red_Hat_Display/RedHatDisplay-VariableFont_wght.ttf" );
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src:
+    local( "Ubuntu" ),
+    url( "../../fonts/Ubuntu/Ubuntu-Regular.ttf" );
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src:
+    local( "Ubuntu" ),
+    url( "../../fonts/Ubuntu/Ubuntu-Bold.ttf" ); 
+  font-weight: bold;
+}
+
+body {
+  font-family: "Roboto Slab";
+  margin: 0px;
+}
+
+h1 {
+  font-size: 48px;
+  font-variation-setting: 'wght' 800;
+}
+
+p {
+  font-size: 18px;
+  font-variation-setting: 'wght' 400;
+}
+
+/* header-top bar */
+header {
+  z-index: 1;
+  position: fixed;
+  width: calc( 100vw - 50px );
+  height: max( 14vh, 80px );
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 20px;
+  padding-bottom: 0px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: linear-gradient( 135deg, indigo 40%, navy 100% );
+  font-family: "Red Hat Display";
+
+  display: flex;
+  align-items: flex-end;
+  /* good to know how to use border
+   * but gradient is just too sexy
+  border-width: 10px;
+  border-bottom-style: solid;
+  border-color: MidnightBlue; */
+}
+
+header > * {
+  color: white;
+}
+
+.header--title {
+  font-size: 60px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.header--img {
+  height: inherit;
+  width: same-as-height;
+  margin-bottom: 10px;
+}
+
+.header--desc {
+  font-variation-setting: 'wght' 600;
+  font-size: 24px;
+  margin-left: 25px;
+  margin-bottom: 0px;
+  padding-left: 5px;
+  padding-bottom: 22px;
+  position: relative;
+  bottom: 0;
+  white-space: nowrap; /*prevent that from wrapping to bottom */
+  overflow-x: visible;
+  overflow-y: hidden;
+  height: 32px;
+
+  /*
+  border-left-style: solid;
+  border-width: 8px;
+  border-color: MidnightBlue; */
+}
+
+/* main section */
+.main--background {
+  width: 110vw;
+  height: 110vw;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+main {
+  padding: 40px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  width: calc( 70vw - 80px );
+  height: calc( 100vh - max( 14vh, 80px ) - 20px );
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient( 280deg, Lavender, LavenderBlush );
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+main > * {
+  color: black;
+}
+
+.main--title {
+  font-size: 48px;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+.main--desc {
+  width: 40vw;
+  font-size: 18px;
+  margin-left: 10px;
+  margin-top: 0px;
+}
+
+/* sidebar section */
+.sidebar {
+  margin: 0px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 30vw;
+  height: inherit;
+  background: linear-gradient( 120deg, Plum, SlateBlue );
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar > * {
+  position: relative;
+  left: 50px;
+}
+
+.sidebar--title {
+  font-size: 48px;
+  margin: 0px;
+}
+
+.sidebar--todo {
+  padding-left: 40px;
+  width: 25vw;
+  margin-top: 0px;
+  align-self: flex-end;
+}
+
+.sidebar--todo > li {
+  margin-top: 15px;
+  margin-bottom: 0px;
+  font-size: 24px;
+}
+
+.sidebar--todo > li::marker {
+  font-size: 36px;
+}
+
+.proj {
+  margin: 0px;
+  padding-top: 50px;
+  font-size: 16px;
+  font-variation-settings: 'wght' 900;
+}
+
+/* PROJECT 2:
+ * card bar */
+.cardbar {
+  height: 240px;
+  width: 25vw;
+  display: flex;
+  flex: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+}
+
+.card {
+  position: relative;
+  width: 180px;
+  margin: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  overflow: hidden;
+
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 24px;
+  border-color: black;
+}
+
+.card > * {
+  margin: 10px 0px; /* top-bottom 10px, left-right 0px */
+}
+
+.card--img {
+  width: 180px;
+  height: auto;
+  margin: 0px;
+  opacity: 0.4;
+  position: absolute;
+  right: -50px;
+  bottom: -20px;
+}
+
+.card--title {
+  margin-top: 0px;
+  font-size: 24px;
+}
+
+.card--desc {
+  font-size: 14px;
+  margin: 0px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.card--ep {
+  font-variant: bold;
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-top: auto;
+  z-index: 1;
+}
+
+.card--badge {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  padding: 8px;
+  font-size: 14px;
+  font-variation-settings: 'wght' 700;
+  background: linear-gradient( 280deg, Lavender, LavenderBlush );
+
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+  border-radius: 18px;
+}
+
+/* PROJECT 3:
+ * form */
+.form {
+  height: max( 50vh, 800px );
+  width: inherit;
+  display: grid;
+  gap: 40px;
+  grid-template-columns: auto auto 70px;
+  grid-template-rows: 70px;
+}
+
+.form > * {
+  font-family: "Ubuntu", "Roboto Slab";
+}
+
+.usr--in {
+  text-indent: 20px;
+  border-radius: 20px;
+}
+
+.usr--button {
+  background: linear-gradient( 135deg, indigo 40%, navy 100% );
+  color: white;
+  font-weight: bold;
+  border-radius: 20px;
+}
+
+.usr--clicky {
+  background: linear-gradient( 135deg, indigo 40%, navy 100% );
+  border-radius: 35px;
+  border-style: solid;
+  border-width: 2px;
+  border-top-color: LightGray;
+  border-left-color: LightGray;
+  border-bottom-color: gray;
+  border-right-color: gray;
+}
+
+.display--clicky {
+  color: white;
+  text-align: center;
+  position: relative;
+  margin: 0px;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+  font-size: 24px;
+  user-select: none;
+}
+
+.usr--out {
+  grid-column: 1 / 4;
+  padding-bottom: 40px;
+  position: relative;
+  width: inherit;
+}
+
+.out--text {
+  width: inherit;
+  height: auto;
+}
+
+.out--img {
+  width: inherit;
+  height: auto;
+}
