@@ -1,10 +1,9 @@
 import React from 'react'
 import Cardbar from './Cardbar.js'
 
-export default function Sidebar() {
+function TodoList() {
   return (
-    <div className="sidebar">
-      <small className="proj">Project 1</small>
+    <div>
       <h1 className="sidebar--title">TODO:</h1>
       <ol className="sidebar--todo">
         <li>React JS</li>
@@ -18,6 +17,41 @@ export default function Sidebar() {
         <li>Self-Study Projects</li>
         <li>Freelance Work</li>
       </ol>
+    </div>
+  )
+}
+
+function Colorscheme( props ) {
+  return (
+    <div className="colorscheme">
+      <button className="setcolors" onClick={props.colorsToggle} style={props.colors}></button>
+    </div>
+  )
+}
+
+export default function Sidebar( props ) {
+  const styles = {
+    background: props.taro ? 
+      "linear-gradient( 120deg, #ffccff 24%, #6666ff 100% )" :
+      "linear-gradient( 120deg, Plum, SlateBlue )",
+  }
+  const bgcolorChange = {
+    background: !props.taro ?
+      "linear-gradient( 30deg, #b3baff 40%, #333399 100% )" :
+      "linear-gradient( 120deg, indigo 40%, navy 100% )",
+  }
+  /* inaccurate to have derived states from props
+  const [ bg, setBg ] = React.useState( props.color );
+
+  function bgToggle() {
+    setColor( bg => !bg );
+  } */
+
+  return (
+    <div className="sidebar" style={styles}>
+      <Colorscheme colorsToggle={props.colorsToggle} colors={bgcolorChange} />
+      <small className="proj">Project 1</small>
+      <TodoList />
       <small className="proj">Project 2</small>
       <Cardbar />
     </div>

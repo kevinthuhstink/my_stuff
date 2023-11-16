@@ -7,7 +7,7 @@ import donut from './img/donut.gif'
  * and for textGen to seed random with whatever other input is given
  * and generate a wall of text
  */
-export default function Form() {
+export default function Form( props ) {
   /*
   function textGen() {
     const donut = "./img/donut.gif";
@@ -35,17 +35,36 @@ export default function Form() {
   const thingElements = things.map( i => <li key={i}>{i}</li> ) //oh wow JSX objs can be keys too
   */
 
+  //probably not right to have two different state but whatever its good for practice
+  const [ formIn, setFormIn ] = React.useState( { data: "" } );
   const [ data, setData ] = React.useState( {
-    img: "",
+    img: null,
     text: ""
-  });
+  } );
   //make sure either text or img is displayed at one time, never both
-  function getText() {
-    setData( prev => ( { //dunno why the parens are necessary but sure
-      ...prev,
-      img : donut
-    } ) );
+  function getText( event ) { 
+    event.preventDefault();
+    //console.log( formIn.data )
+    if ( formIn.data === "donut" ) {
+      setData( prev => ( { //dunno why the parens are necessary but sure
+        img : donut,
+        text : ""
+      } ) );
+    }
+    else {
+      setData( prev => ( { //dunno why the parens are necessary but sure
+        img : null,
+        text : formIn.data
+      } ) );
+    }
   }
+
+  function handleChange( event ) {
+    const { name, value } = event.target; //destructure for efficiency 
+      //name may be a list of inputs so make sure to update those
+    setFormIn( { [name] : value } )
+    //setFormIn( { [event.target.name] : event.target.value } )
+  } //also { data : event.target.value } but this is reusable
 
   const [ clicky, setClicky ] = React.useState( "" );
   function onClicky() {
@@ -53,16 +72,29 @@ export default function Form() {
     setClicky( isClicked ? 1 : num => num + 1 );
   }
 
+  //try to create dynamic styling
   return (
-    <div className="form"> 
-      <input type="text" placeholder="Random seed" className="usr--in"/>
-      <button onClick={getText} className="usr--button">Grab random wall of text</button>
-      <div className="usr--clicky" onClick={onClicky}>
-        <p className="display--clicky">{clicky}</p>
-      </div>
+    <div className="form--body"> 
+      <form>
+        <input
+          type="text"
+          placeholder="Random seed"
+          className="usr--in"
+          onChange={handleChange}
+          name="data"
+          value={formIn.data} />
+        <button className="usr--button" onClick={getText} style={props.colors}></button>
+        <div className="usr--clicky" onClick={onClicky} style={props.colors}>
+          <p className="display--clicky" style={props.textColors}>{clicky}</p>
+        </div>
+      </form>
       <div className="usr--out">
-        <p className="out--text">{data.text}</p>
-        <img className="out--img" src={data.img} alt="" />
+        { data.img ? 
+          <div className="donut--out">
+            <img className="donut--gif" src={data.img} alt="" />
+              <p className="donut--text">rotating<br/>donut</p>
+          </div> :
+          <p className="out--text">{data.text}</p> }
       </div>
     </div>
   )
@@ -74,6 +106,5 @@ export default function Form() {
    * <ul className="things--test">
    * {thingElements}
    * </ul>
-   *
    */
 }
