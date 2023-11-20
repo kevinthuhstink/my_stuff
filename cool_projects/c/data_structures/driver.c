@@ -12,7 +12,7 @@ void init_structs() {
     strcpy( _STRUCTS[1], "Hash Map" );
 }
 
-int testLL() {
+int test_ll() {
 //initialize linked list
     //initialize the linked list as 'we had good times together, don't forget that'
 	//testing makell
@@ -60,10 +60,10 @@ int testLL() {
 	return 0;
 }
 
-int testHashMap() {
-	struct hash_map* this = newHashMap();
+int test_hashmap() {
+	struct hash_map* this = hashmap_new();
 	printf( "this hashval: %lf\n", this->hashval );
-	freeHashMap( this );
+	hashmap_free( this );
 	//free( this ); //should throw double free
 	return 0;
 }
@@ -74,12 +74,12 @@ int main( int argc, char* argv[] ) {
     init_structs();
 	//no args has the equivalent of test all
     if ( argc == 1 ) {
-		testLL(); //FULLY FUNCTIONAL
-		testHashMap();
+		test_ll(); //FULLY FUNCTIONAL
+		test_hashmap();
         return 0;
     }
 	if ( strcmp( argv[1], "linked_list" ) == 0 ) {
-		testLL();
+		test_ll();
 		return 0;
 	}
 	else {

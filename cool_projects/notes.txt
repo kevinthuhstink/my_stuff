@@ -1,12 +1,43 @@
-  TODO: Learn to use React to make dynamic websites
+  TODO: React:
   			State-watcher-functions binding data and components together
-			Import data from other websites into local folders? This one might be difficult
-			Video rendering if I'm feeling extra 
-			Dark mode
-		<form> <button> without submitting the form (or just dont use <form> tag, this one's optional)
-			known is the e.preventDefault() function, though i don't know how to use it
-		Improve CSS: 
-			Construct dropdown menus
+			Import data from other websites into the web page? This one might be difficult
+			Make the sidebar resizeable and the main responsive to that resize
+		CSS: 
+			Make the sidebar a dropdown menu of each project
+		C:
+			HashMap data structure,
+				print the key-value pair of an array list for debugging purposes
+				put() and remove() values
+
+11/19/2023:
+	React: Effects
+		Reect's primary task is to interact with the DOM/browser to render UI
+			managing the state of the program through different render cycles ( remember state values )
+			update the page accordingly when the state changes
+		React can't handle: 
+			localStorage,
+			API/database interactions,
+			Subscriptions ( web sockets ),
+			and more
+		Those things are called side effects and they're out of the scope of React's control
+			const [ _data, set_data ] = React.useState( {} );
+			fetch( [link] )
+				.then( call => call.json() )
+				.then( data => set_data( data ) );
+			constantly re-renders the page because React doesn't know how to make API calls on its own within the main body
+			React handles the API call with fetch() and calls set_data, which re-renders the program, which re-calls fetch()
+		useEffect() allows us to use side effects like those nasty API calls and JS Promises
+		useEffect() takes a function and runs an effect after the render is committed to the screen
+			useEffect() takes React from functional to imperative ( imperative means telling computers step-by-step algos )
+		
+		useEffect( function, [ ...fireEffectOn ] )
+			The first parameter is a function that tells React what to do with that effect
+			The second parameter is an dependencies array that tells React when the effect should fire
+			The effect fires whenever something in the dependencies array changes
+				No dependencies array causes React to default to "fire effect on any change" which is kinda bad
+			To clean up whatever effects were created by the useEffect,
+			the first parameter function needs to return a function that cleans up the effect.
+				For a web socket subscription() effect, the function needs to return unsubscribe() to sever that connection
 
 11/14/2023:
 	React: Controlled Components

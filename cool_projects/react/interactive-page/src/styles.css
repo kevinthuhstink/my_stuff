@@ -14,7 +14,6 @@
    * font-variant as well
    */
 }
-
 @font-face {
   font-family: "Red Hat Display";
   src:
@@ -22,7 +21,6 @@
     url( "../../fonts/Red_Hat_Display/RedHatDisplay-VariableFont_wght.ttf" );
   font-style: normal;
 }
-
 @font-face {
   font-family: "Ubuntu";
   src:
@@ -30,7 +28,6 @@
     url( "../../fonts/Ubuntu/Ubuntu-Regular.ttf" );
   font-weight: normal;
 }
-
 @font-face {
   font-family: "Ubuntu";
   src:
@@ -38,17 +35,19 @@
     url( "../../fonts/Ubuntu/Ubuntu-Bold.ttf" ); 
   font-weight: bold;
 }
-
 body {
-  font-family: "Roboto Slab";
   margin: 0px;
 }
-
+.page {
+  font-family: "Roboto Slab";
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+}
 h1 {
   font-size: 48px;
   font-variation-setting: 'wght' 800;
 }
-
 p {
   font-size: 18px;
   font-variation-setting: 'wght' 400;
@@ -67,8 +66,8 @@ header {
   overflow-x: auto;
   overflow-y: hidden;
   background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
   font-family: "Red Hat Display";
-
   display: flex;
   align-items: flex-end;
   /* good to know how to use border
@@ -77,24 +76,21 @@ header {
   border-bottom-style: solid;
   border-color: MidnightBlue; */
 }
-
 header > * {
   color: white;
+  white-space: nowrap; /*prevent that from wrapping to bottom */
 }
-
 .header--title {
   font-size: 60px;
   margin-top: 20px;
   margin-bottom: 10px;
   padding-right: 30px;
 }
-
 .header--img {
   height: inherit;
   width: same-as-height;
   margin-bottom: 10px;
 }
-
 .header--desc {
   font-variation-setting: 'wght' 600;
   font-size: 24px;
@@ -104,11 +100,9 @@ header > * {
   padding-bottom: 22px;
   position: relative;
   bottom: 0;
-  white-space: nowrap; /*prevent that from wrapping to bottom */
   overflow-x: visible;
   overflow-y: hidden;
   height: 32px;
-
   /*
   border-left-style: solid;
   border-width: 8px;
@@ -122,12 +116,10 @@ header > * {
   position: fixed;
   right: 0;
   bottom: 0;
-
   background-repeat: no-repeat;
   opacity: 0.2;
   z-index: -1;
 }
-
 main {
   padding: 40px;
   padding-top: 0px;
@@ -143,17 +135,14 @@ main {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
 main > * {
   color: black;
 }
-
 .main--title {
   font-size: 48px;
   margin-bottom: 20px;
   margin-top: 40px;
 }
-
 .main--desc {
   width: 40vw;
   font-size: 18px;
@@ -175,35 +164,32 @@ main > * {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
+.sidebar * {
+  scrollbar-color: white;
+}
 .sidebar > * {
   position: relative;
   width: calc( 30vw - 80px );
   left: 50px;
 }
-
 .sidebar--title {
   font-size: 48px;
   margin: 0px;
 }
-
 .sidebar--todo {
   padding-left: 40px;
   width: 25vw;
   margin-top: 0px;
   align-self: flex-end;
 }
-
 .sidebar--todo > li {
   margin-top: 15px;
   margin-bottom: 0px;
   font-size: 24px;
 }
-
 .sidebar--todo > li::marker {
   font-size: 36px;
 }
-
 .proj {
   margin: 0px;
   padding-top: 50px;
@@ -222,7 +208,6 @@ main > * {
   overflow-y: hidden;
   flex-wrap: nowrap;
 }
-
 .card {
   position: relative;
   width: 180px;
@@ -232,17 +217,14 @@ main > * {
   flex-direction: column;
   flex: none;
   overflow: hidden;
-
   border-style: solid;
   border-width: 4px;
   border-radius: 24px;
   border-color: black;
 }
-
 .card > * {
   margin: 10px 0px; /* top-bottom 10px, left-right 0px */
 }
-
 .card--img {
   width: 180px;
   height: auto;
@@ -252,19 +234,16 @@ main > * {
   right: -50px;
   bottom: -20px;
 }
-
 .card--title {
   margin-top: 0px;
   font-size: 24px;
 }
-
 .card--desc {
   font-size: 14px;
   margin: 0px;
   overflow-y: auto;
   z-index: 1;
 }
-
 .card--ep {
   font-variant: bold;
   font-size: 16px;
@@ -272,7 +251,6 @@ main > * {
   margin-top: auto;
   z-index: 1;
 }
-
 .card--badge {
   position: absolute;
   right: 10px;
@@ -281,7 +259,6 @@ main > * {
   font-size: 14px;
   font-variation-settings: 'wght' 700;
   background: linear-gradient( 280deg, Lavender, LavenderBlush );
-
   border-style: solid;
   border-color: black;
   border-width: 3px;
@@ -294,30 +271,25 @@ main > * {
   height: max( 50vh, 800px );
   width: inherit;
 }
-
-form {
+.form--body > form {
   display: grid;
   gap: 40px;
   grid-template-columns: 1fr 1fr 70px;
   grid-template-rows: 70px;
 }
-
 .form--body > * {
   font-family: "Ubuntu", "Roboto Slab";
 }
-
 .usr--in {
   text-indent: 20px;
   border-radius: 20px;
 }
-
 .usr--button {
   background: linear-gradient( 120deg, indigo 40%, navy 100% );
   color: white;
   font-weight: bold;
   border-radius: 20px;
 }
-
 .usr--clicky {
   background: linear-gradient( 120deg, indigo 40%, navy 100% );
   border-radius: 35px;
@@ -328,7 +300,6 @@ form {
   border-bottom-color: gray;
   border-right-color: gray;
 }
-
 .display--clicky {
   color: white;
   text-align: center;
@@ -340,28 +311,23 @@ form {
   font-size: 24px;
   user-select: none;
 }
-
 .usr--out {
   padding-bottom: 40px;
   position: relative;
   width: inherit;
 }
-
 .out--text {
   width: inherit;
   height: auto;
 }
-
 .donut--out {
   width: inherit;
 }
-
 .donut--gif {
   position: absolute;
   width: inherit;
   height: auto;
 }
-
 .donut--text {
   overflow-x: hidden;
   overflow-y: hidden;
@@ -379,12 +345,68 @@ form {
   top: 30px;
   z-index: 1;
 }
-
 .setcolors {
   width: inherit;
   height: 50px;
+  font-family: "Red Hat Display";
+  font-size: 28px;
+  font-size: 24px;
   background: linear-gradient( 30deg, #b3baff 40%, #333399 100% );
   border-width: 3px;
   border-color: black;
   border-radius: 25px;
+}
+
+/* PROJECT 3.2:
+ * fake login */
+.fake--form {
+  position: relative;
+  top: 40px;
+  margin: auto;
+  width: 30vw;
+  height: 75vh;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
+  /* x-offset y-offset fade center+range
+   * all 0s is a 0px black border
+   * all 0s with a center+range is a border with center+range visual width but 0 width in program */
+}
+.fake--fields {
+  display: block;
+  margin-bottom: 15px;
+  border-radius: 16px;
+  padding: 20px 30px;
+}
+.fake--fields > legend {
+  padding: 5px;
+  font-size: 16px;
+}
+.fake--fields > input:first-of-type {
+  margin-top: 0px;
+}
+.fake--fields > input {
+  border-radius: 16px;
+  margin-top: 25px;
+}
+.fake--fields > .text--in {
+  height: 48px;
+  text-indent: 15px;
+  width: 100%;
+}
+.fake--form > button {
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  color: white;
+  font-family: "Red Hat Display";
+  font-size: 28px;
+}
+.invalidPassword {
+  color: red;
+  margin-bottom: 40px;
 }

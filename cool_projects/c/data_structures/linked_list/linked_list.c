@@ -10,7 +10,8 @@
  */
 #include "linked_list.h"
 //TODO: compatibility with strings and ints for hashmap
-//		print k-v pairs or just v for linked lists
+	//		print k-v pairs for hashmaps
+//		naming convention: datastruct_func()
 
 /*  instantiates a new linked list node
  *  @param strval: the data to be stored within that node, can store NULL
@@ -26,23 +27,6 @@ struct linked_node* newllnode( char* strval ) {
 	new->next = NULL;
 	new->prev = NULL;
 	return new;
-}
-
-/*  adds a new node to the end of the list
- *  @param strval: the strvalue of the node to be added
- *  	  head: the head of the linked list
- *	@return: a pointer to the new head of the list */
-struct linked_node* lladd( char* strval, struct linked_node* head ) {
-	struct linked_node* _new = newllnode( strval );
-	if ( head == NULL )
-		return _new;
-	struct linked_node* cpy = head;
-	while ( cpy->next != NULL )
-		cpy = cpy->next;
-	//printf( "transport to: %s\n", strllnode( cpy ) );
-	cpy->next = _new;
-	_new->prev = cpy;
-	return head;
 }
 
 /*  sets the int value of a linked node
@@ -76,10 +60,27 @@ int llsetkv( int k, int v, struct linked_node* node ) {
 char* llstrset( char* strval, struct linked_node* node ) {
 	if ( node == NULL )
 		return NULL;
-	char* strmem = malloc( strlen( strval ) );
+	char* str = malloc( strlen( strval ) );
 	free( node->strval );
-	node->strval = strcpy( strmem, strval );
+	node->strval = strcpy( str, strval );
 	return strval;
+}
+
+/*  adds a new node to the end of the list
+ *  @param strval: the strvalue of the node to be added
+ *  	  head: the head of the linked list
+ *	@return: a pointer to the new head of the list */
+struct linked_node* lladd( char* strval, struct linked_node* head ) {
+	struct linked_node* _new = newllnode( strval );
+	if ( head == NULL )
+		return _new;
+	struct linked_node* cpy = head;
+	while ( cpy->next != NULL )
+		cpy = cpy->next;
+	//printf( "transport to: %s\n", strllnode( cpy ) );
+	cpy->next = _new;
+	_new->prev = cpy;
+	return head;
 }
 
 /*  adds a new node to a specified index of the list
@@ -154,6 +155,15 @@ struct linked_node* llremove( char* data, struct linked_node* head ) {
 	return head;
 }
 
+//TODO:
+char* ll_kv( struct linked_node* node ) {
+	if ( node == NULL ) {
+		str = malloc( 6 );
+		strcat( str, "(nil)\0" );
+		return str;
+	}
+}
+
 /*  returns a string representation of a node
  *  @param node: a singular linked list node
  *  @return: a string representation of that node (without its pointer) */
@@ -162,6 +172,11 @@ char* strllnode( struct linked_node* node ) {
 	if ( node == NULL ) {
 		str = malloc( 6 );
 		strcat( str, "(nil)\0" );
+		return str;
+	}
+	if ( node->strval == NULL ) {
+		str = malloc( 10 * sizeof( char ) );
+		strcat( str, "[ (nil) ]" );
 		return str;
 	}
 

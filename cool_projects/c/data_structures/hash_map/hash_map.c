@@ -10,13 +10,14 @@
  */
 #include "hash_map.h" 
 //TODO: each linked list needs to contain a key-value pair
-//		setHashMap, replaceHashMap
+//		hashmap_put, hashmap_replace 
+//		hashmap_tostr()
 
 /*  instantiates a new hash map
  *  defaults to 16 keys, doubles in size every time capacity is reached
  *  uses linked lists to bypass collisions 
  *  @return: a pointer to a new hash map */
-struct hash_map* newHashMap() {
+struct hash_map* hashmap_new() {
 	struct hash_map* _new = malloc( sizeof( struct hash_map ) );
 	_new->capacity = 16;
 	_new->size = 0;
@@ -36,10 +37,21 @@ struct hash_map* newHashMap() {
 	return _new;
 }
 
+/* returns a string containing all the data contained within a hashmap
+ * @param data: the hashmap to be serialized
+ * @return: a string containing:
+ *			the hash value of the hashmap,
+ *			all key-value pairs contained within the hashmap
+ *			(nil) if data is a NULL pointer */
+char* hashmap_tostr( struct hash_map* data ) {
+	if ( data == NULL )
+		return NULL;
+}
+
 /*  frees the hashmap and all elements contained within it
  *  does nothing if linked list pointer is null
- *  @param hashmap: the hashmap to be freed */
-void freeHashMap( struct hash_map* data ) {
+ *  @param data: the hashmap to be freed */
+void hashmap_free( struct hash_map* data ) {
 	if ( data == NULL )
 		return;
 	for ( int i = 0; i < data->size; i++ )

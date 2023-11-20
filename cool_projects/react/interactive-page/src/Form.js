@@ -35,36 +35,75 @@ export default function Form( props ) {
   const thingElements = things.map( i => <li key={i}>{i}</li> ) //oh wow JSX objs can be keys too
   */
 
-  //probably not right to have two different state but whatever its good for practice
-  const [ formIn, setFormIn ] = React.useState( { data: "" } );
-  const [ data, setData ] = React.useState( {
-    img: null,
-    text: ""
-  } );
+  const [ data, setData ] = React.useState( {} );
+  //fulfill case: fetch verse data and put json into data.APIData
+  function fetchBible_fulfill( call ) {
+    call.json().then( function( callData ) {
+      setData( function() {
+        return {
+          usrIn: "",
+          img: null,
+          textOut: "",
+          APIData: callData
+        };
+      } );
+    } );
+  }
+
+  React.useEffect(
+    function() {
+      //fetch( "https://bible-api.com/?random=verse" ).then( 
+      fetch( "https://bible-api.com/john 3:16" ).then( 
+        fetchBible_fulfill,
+        //reject case: instantialize APIData with null (unable to connect)
+        () => setData( {
+          usrIn: "",
+          img: null,
+          textOut: "",
+          APIData: null,
+        } )
+      ) //end fetch.then
+    }, []
+  );
+  function bibleVerse() {
+    if ( data.APIData === null )
+      return "Could not fetch Bible verse";
+    const setText = data.APIData.text;
+    const setReference = data.APIData.reference;
+    var quote = `${setReference}\r\n${setText}`;
+    return quote;
+  }
+
   //make sure either text or img is displayed at one time, never both
-  function getText( event ) { 
+  function out( event ) { 
     event.preventDefault();
     //console.log( formIn.data )
-    if ( formIn.data === "donut" ) {
-      setData( prev => ( { //dunno why the parens are necessary but sure
-        img : donut,
-        text : ""
-      } ) );
+    var setText, setImg;
+    switch ( data.usrIn ) {
+      case ( "donut" ):
+        setText = "";
+        setImg = donut;
+        break;
+      default:
+        setText = bibleVerse();
+        setImg = null;
+        break;
     }
-    else {
-      setData( prev => ( { //dunno why the parens are necessary but sure
-        img : null,
-        text : formIn.data
-      } ) );
-    }
+    setData( prev => ( { //dunno why the parens are necessary but sure
+      ...prev,
+      img: setImg,
+      textOut: setText
+    } ) );
   }
 
   function handleChange( event ) {
     const { name, value } = event.target; //destructure for efficiency 
-      //name may be a list of inputs so make sure to update those
-    setFormIn( { [name] : value } )
-    //setFormIn( { [event.target.name] : event.target.value } )
-  } //also { data : event.target.value } but this is reusable
+    //name may be a list of inputs so make sure to update all of them
+    setData( prev => ( { 
+      ...prev,
+      [name] : value
+    } ) );
+  } 
 
   const [ clicky, setClicky ] = React.useState( "" );
   function onClicky() {
@@ -81,9 +120,9 @@ export default function Form( props ) {
           placeholder="Random seed"
           className="usr--in"
           onChange={handleChange}
-          name="data"
-          value={formIn.data} />
-        <button className="usr--button" onClick={getText} style={props.colors}></button>
+          name="usrIn"
+          value={data.usrIn} />
+        <button className="usr--button" onClick={out} style={props.colors}></button>
         <div className="usr--clicky" onClick={onClicky} style={props.colors}>
           <p className="display--clicky" style={props.textColors}>{clicky}</p>
         </div>
@@ -92,9 +131,9 @@ export default function Form( props ) {
         { data.img ? 
           <div className="donut--out">
             <img className="donut--gif" src={data.img} alt="" />
-              <p className="donut--text">rotating<br/>donut</p>
+            <p className="donut--text">rotating<br/>donut</p>
           </div> :
-          <p className="out--text">{data.text}</p> }
+          <p className="out--text">{data.textOut}</p> }
       </div>
     </div>
   )

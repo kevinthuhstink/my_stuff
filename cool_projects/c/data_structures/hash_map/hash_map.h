@@ -16,5 +16,5 @@ struct hash_map {
 	int capacity;
 };
 
-struct hash_map* newHashMap();
-void freeHashMap( struct hash_map* data );
+struct hash_map* hashmap_new();
+void hashmap_free( struct hash_map* data );

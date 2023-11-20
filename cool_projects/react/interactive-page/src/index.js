@@ -1,13 +1,13 @@
 import React from 'react';
 import Sidebar from './Sidebar.js';
 import Form from './Form.js'
+import FakeLogin from './FakeLogin.js'
 import ReactDOM from 'react-dom/client';
 import './styles.css';
 import _icons from './data.js'
 
 
 function Header( props ) {
-
   const _imgs = _icons.icons;
   //instance of an incrementer "class"
   /*
@@ -18,9 +18,9 @@ function Header( props ) {
   } )(); */
 
   //the incrementer "class" is mad unreliable
-  const [ icon, setIcon ] = React.useState( 0 ); 
+  const [ icon, setIcon ] = React.useState( 0 );
   function cycleIcon() {
-    setIcon( num => num + 1 ); 
+    setIcon( num => num + 1 );
   }
 
   const styles = {
@@ -40,7 +40,11 @@ function Header( props ) {
       <img className="header--img"
            onClick={cycleIcon}
            src={ _imgs[ icon % _imgs.length ]._src } alt='' />
-      <h1 className="header--title" style={colors}>kevinthuhstink</h1>
+        <h1 className="header--title" style={colors}>
+          { props.title ?
+            "kevinthuhstink" :
+            "Kevin Cheng" }
+        </h1>
       <p className="header--desc" style={colors}>React Project 3: My first interactive web site</p>
     </header>
   )
@@ -63,34 +67,94 @@ function Main( props ) {
       "white"
   }
 
-
   return (
     <main style={styles}>
-      <h1 className="main--title">Generate "Wall" Of Text</h1>
+      <h1 className="main--title">Generate Bible Verse</h1>
       <Form colors={colors} textColors={textColors} />
     </main>
   )
 }
 
-function Page( props ) {
+
+/* PROJECT 3.2
+ * want a fake login screen to pop up
+ * grab user input
+ * then send it to the main kevinthuhstink page
+ * display that information in the sidebar
+ */
+function Page() {
   //taro can be toggled on or off
   const [ taro, setTaro ] = React.useState( false );
   function colorsToggle() {
     setTaro( prev => !prev );
   }
-
   //apply that toggle onto the colorschemes
-  var sections = [
-    <Header taro={taro} />,
-    <Main taro={taro} />,
-    <Sidebar taro={taro} colorsToggle={colorsToggle} /> //send toggler to colorscheme button
-  ];
 
+  const [ fakeFormData, setFakeFormData ] = React.useState(
+    {
+      username: "",
+      password: "",
+      passwordConfirm: "",
+      KC: false,
+      submit: false
+    } );
+
+  //const formStyles
+
+  function handleChange( event ) {
+    setFakeFormData( function( prevData ) {
+      const { name, value, type, checked } = event.target;
+      return ( {
+        ...prevData,
+        [name]: type === "checkbox" ? checked : value
+      } );
+    } )
+  } //end handleChange
+
+  function handleSubmit( submit ) {
+    submit.preventDefault();
+    //retake form
+    if ( fakeFormData.submit ) {
+      setFakeFormData( {
+        username: "",
+        password: "",
+        passwordConfirm: "",
+        KC: false,
+        submit: false
+      } );
+    }
+    //submit form IF passwords match
+  
+    else if ( fakeFormData.passwordConfirm === fakeFormData.password ) {
+      console.log( "Successfully signed up" );
+      setFakeFormData( function( prevData ) {
+        return ( {
+          ...prevData,
+          submit: true
+        } );
+      } );
+    } //endif
+    // 3.2.1 ERROR MESSAGE IF PASSWORDS DONT MATCH
+    else {
+      console.log( "Passwords do not match" );
+    }
+  } //end handleSubmit
+
+  var sections = [
+    <Header taro={taro} title={fakeFormData.KC} />,
+    <Main taro={taro} />,
+    <Sidebar taro={taro} formData={fakeFormData} retakeForm={handleSubmit} colorsToggle={colorsToggle} /> //send toggler to colorscheme button
+  ]; //end taro colorscheme
+
+  //on fake form submission, load {sections}
   return (
     <div className="page">
-      {sections}
+      { !fakeFormData.submit ?
+          <FakeLogin data={fakeFormData} handleChange={handleChange} handleSubmit={handleSubmit} /> :
+          sections }
     </div>
   )
+  //{sections}
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
