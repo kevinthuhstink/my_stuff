@@ -1,35 +1,14 @@
 import React from 'react'
 import Cardbar from './Cardbar.js'
-
-function TodoList() {
-  return (
-    <div>
-      <h1 className="sidebar--title">TODO:</h1>
-      <ol className="sidebar--todo">
-        <li>React JS</li>
-        <li>Bootstrap</li>
-        <li>NodeJS</li>
-        <li>MySQL</li>
-        <li>Git</li>
-        <li>Leetcode 75</li>
-        <li>Rest/JSON API</li>
-        <li>AWS/Google Cloud</li>
-        <li>Self-Study Projects</li>
-        <li>Freelance Work</li>
-      </ol>
-    </div>
-  )
-}
+import TodoList from './TodoList.js'
 
 function Colorscheme( props ) {
   return (
-    <div className="colorscheme">
-      <button className="setcolors" onClick={props.colorsToggle} style={props.colors}>
-        { !props.taro ?
-          "Pastel?" :
-          "Purple?" }
-      </button>
-    </div>
+    <button className="setcolors" onClick={props.colorsToggle} style={props.colors}>
+      { !props.colorsTaro ?
+        "Pastel?" :
+        "Purple?" }
+    </button>
   )
 }
 
@@ -44,33 +23,34 @@ function FakeFormOut( props ) {
 }
 
 export default function Sidebar( props ) {
-  const styles = {
-    background: props.taro ?
-      "linear-gradient( 120deg, #ffccff 24%, #6666ff 100% )" :
-      "linear-gradient( 120deg, Plum, SlateBlue )",
+  const sidebarStyle = {
+    background: props.pageStyle.taro ?
+      props.colors.taroSidebarBackground :
+      props.colors.defaultSidebarBackground,
+    width: `${props.pageStyle.sidebarWidth}vw`,
   }
   const colors = {
-    background: !props.taro ?
-      "linear-gradient( 30deg, #b3baff 40%, #333399 100% )" :
-      "linear-gradient( 120deg, indigo 40%, navy 100% )",
-    color: !props.taro ?
+    background: !props.pageStyle.taro ?
+      props.colors.taroHeaderBackground :
+      props.colors.defaultHeaderBackground,
+    color: !props.pageStyle.taro ?
       "black" :
       "white"
   }
   /* inaccurate to have derived states from props
   const [ bg, setBg ] = React.useState( props.color );
-
   function bgToggle() {
     setColor( bg => !bg );
   } */
 
   return (
-    <div className="sidebar" style={styles}>
-      <Colorscheme colorsToggle={props.colorsToggle} colors={colors} taro={props.taro} />
+    <div className="sidebar" style={sidebarStyle}>
       <small className="proj">Project 1</small>
       <TodoList />
       <small className="proj">Project 2</small>
       <Cardbar />
+      <small className="proj">Project 3.1</small>
+      <Colorscheme colorsToggle={props.colorsToggle} colors={colors} colorsTaro={props.pageStyle.taro} />
       <small className="proj">Project 3.2</small>
       <FakeFormOut formData={props.formData} retakeForm={props.retakeForm} />
     </div>

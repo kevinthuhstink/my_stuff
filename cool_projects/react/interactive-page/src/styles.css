@@ -55,49 +55,60 @@ p {
 
 /* header-top bar */
 header {
-  z-index: 1;
+  z-index: 2;
   position: fixed;
-  width: calc( 100vw - 50px );
-  height: max( 14vh, 80px );
-  padding-top: 20px;
-  padding-left: 30px;
-  padding-right: 20px;
-  padding-bottom: 0px;
-  overflow-x: auto;
-  overflow-y: hidden;
+  width: calc( 100vw - 40px );
+  height: 80px;
+  padding: 10px 20px;
+  padding-right: 40px;
   background: linear-gradient( 120deg, indigo 40%, navy 100% );
   box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
   font-family: "Red Hat Display";
   display: flex;
-  align-items: flex-end;
+  justify-content: space-between;
   /* good to know how to use border
    * but gradient is just too sexy
   border-width: 10px;
   border-bottom-style: solid;
   border-color: MidnightBlue; */
 }
-header > * {
+header > div {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+header > div > * {
   color: white;
   white-space: nowrap; /*prevent that from wrapping to bottom */
 }
+.header--left {
+  flex-shrink: 0;
+  height: inherit;
+}
 .header--title {
+  z-index: 2;
   font-size: 60px;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   padding-right: 30px;
 }
 .header--img {
+  z-index: 2;
   height: inherit;
   width: same-as-height;
-  margin-bottom: 10px;
+  cursor: pointer;
+}
+.header--right {
+}
+.header--right {
+  margin-bottom: 20px;
 }
 .header--desc {
-  font-variation-setting: 'wght' 600;
   font-size: 24px;
   margin-left: 25px;
   margin-bottom: 0px;
-  padding-left: 5px;
-  padding-bottom: 22px;
+  padding: 0px 10px;
   position: relative;
   bottom: 0;
   overflow-x: visible;
@@ -121,11 +132,9 @@ header > * {
   z-index: -1;
 }
 main {
-  padding: 40px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  width: calc( 70vw - 80px );
-  height: calc( 100vh - max( 14vh, 80px ) - 20px );
+  padding: 0px;
+  width: 70vw;
+  height: calc( 100vh - 100px );
   position: fixed;
   left: 0;
   bottom: 0;
@@ -136,7 +145,9 @@ main {
   overflow-y: auto;
 }
 main > * {
-  color: black;
+  color: #222222;
+  margin-left: 40px;
+  margin-right: 40px;
 }
 .main--title {
   font-size: 48px;
@@ -153,32 +164,32 @@ main > * {
 /* sidebar section */
 .sidebar {
   margin: 0px;
+  padding: 0px;
   position: fixed;
   right: 0;
   bottom: 0;
   width: 30vw;
-  height: calc( 100vh - max( 14vh, 80px ) - 20px );
+  height: calc( 100vh - 100px );
   background: linear-gradient( 120deg, Plum, SlateBlue );
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
+  box-shadow: -10px 0px 8px 0px gray;
 }
 .sidebar * {
   scrollbar-color: white;
 }
 .sidebar > * {
   position: relative;
-  width: calc( 30vw - 80px );
-  left: 50px;
+  margin-left: 40px;
+  margin-right: 40px;
 }
 .sidebar--title {
   font-size: 48px;
   margin: 0px;
 }
 .sidebar--todo {
-  padding-left: 40px;
-  width: 25vw;
   margin-top: 0px;
   align-self: flex-end;
 }
@@ -191,7 +202,6 @@ main > * {
   font-size: 36px;
 }
 .proj {
-  margin: 0px;
   padding-top: 50px;
   font-size: 16px;
   font-variation-settings: 'wght' 900;
@@ -201,11 +211,9 @@ main > * {
  * card bar */
 .cardbar {
   height: 240px;
-  width: 25vw;
   display: flex;
   flex: none;
   overflow-x: auto;
-  overflow-y: hidden;
   flex-wrap: nowrap;
 }
 .card {
@@ -269,7 +277,6 @@ main > * {
  * form */
 .form--body {
   height: max( 50vh, 800px );
-  width: inherit;
 }
 .form--body > form {
   display: grid;
@@ -289,6 +296,10 @@ main > * {
   color: white;
   font-weight: bold;
   border-radius: 20px;
+  cursor: pointer;
+}
+.usr--button:hover {
+  filter: brightness( 87% );
 }
 .usr--clicky {
   background: linear-gradient( 120deg, indigo 40%, navy 100% );
@@ -299,6 +310,10 @@ main > * {
   border-left-color: LightGray;
   border-bottom-color: gray;
   border-right-color: gray;
+  cursor: pointer;
+}
+.usr--clicky:hover {
+  filter: brightness( 87% );
 }
 .display--clicky {
   color: white;
@@ -340,13 +355,7 @@ main > * {
 
 /* PROJECT 3.1:
  * colorschemes */
-.colorscheme {
-  position: sticky;
-  top: 30px;
-  z-index: 1;
-}
 .setcolors {
-  width: inherit;
   height: 50px;
   font-family: "Red Hat Display";
   font-size: 28px;
@@ -355,6 +364,10 @@ main > * {
   border-width: 3px;
   border-color: black;
   border-radius: 25px;
+  cursor: pointer;
+}
+.setcolors:hover {
+  filter: brightness( 87% );
 }
 
 /* PROJECT 3.2:
@@ -373,7 +386,7 @@ main > * {
   border-radius: 24px;
   box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
   /* x-offset y-offset fade center+range
-   * all 0s is a 0px black border
+   * all 0s is a 0px #222222 border
    * all 0s with a center+range is a border with center+range visual width but 0 width in program */
 }
 .fake--fields {
@@ -405,8 +418,69 @@ main > * {
   color: white;
   font-family: "Red Hat Display";
   font-size: 28px;
+  cursor: pointer;
+}
+.fake--form > button:hover {
+  filter: brightness( 87% );
 }
 .invalidPassword {
   color: red;
   margin-bottom: 40px;
+}
+
+/* PROJECT 3.3:
+ * dropdown & resizing */
+.header--button {
+  font-family: inherit;
+  font-size: 24px;
+  color: #222222;
+  height: 32px;
+  cursor: pointer;
+}
+.dropdown {
+  position: absolute;
+  color: #222222;
+  background-color: white;
+  top: 75px;
+  right: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #222222;
+  border-radius: 8px;
+  transform: scale( 0, 0 );
+  transform-origin: right top;
+}
+.dropdown.active {
+  transform: scale( 1, 1 ); /* transforms in transitions */
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+.dropdown--title {
+  margin: 10px 0px;
+  padding-left: 30px;
+  font-size: 32px;
+  border-bottom-style: solid;
+  border-width: 2px;
+  border-color: #222222;
+}
+.dropdown--options {
+  margin-right: 30px;
+}
+.dropdown--options > li {
+  margin-top: 8px;
+}
+.dropdown--options > li:first-of-type {
+  margin-top: 0px;
+}
+.dropdown--options > li:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+#resizer {
+  z-index: 1;
+  position: absolute;
+  height: inherit;
+  width: 10px;
+  background: black;
+  cursor: col-resize;
 }

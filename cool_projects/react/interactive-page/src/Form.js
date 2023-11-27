@@ -35,19 +35,18 @@ export default function Form( props ) {
   const thingElements = things.map( i => <li key={i}>{i}</li> ) //oh wow JSX objs can be keys too
   */
 
-  const [ data, setData ] = React.useState( {} );
+  const [ data, setData ] = React.useState( {
+    usrIn: "",
+    img: null,
+    textOut: "",
+  } );
   //fulfill case: fetch verse data and put json into data.APIData
   function fetchBible_fulfill( call ) {
-    call.json().then( function( callData ) {
-      setData( function() {
-        return {
-          usrIn: "",
-          img: null,
-          textOut: "",
+    call.json().then( callData => setData( prevData => ( {
+          ...prevData,
           APIData: callData
-        };
-      } );
-    } );
+        } ) )
+      );
   }
 
   React.useEffect(
@@ -56,10 +55,8 @@ export default function Form( props ) {
       fetch( "https://bible-api.com/john 3:16" ).then( 
         fetchBible_fulfill,
         //reject case: instantialize APIData with null (unable to connect)
-        () => setData( {
-          usrIn: "",
-          img: null,
-          textOut: "",
+        prevData => setData( {
+          ...prevData,
           APIData: null,
         } )
       ) //end fetch.then

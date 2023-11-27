@@ -4,10 +4,25 @@
 			Make the sidebar resizeable and the main responsive to that resize
 		CSS: 
 			Make the sidebar a dropdown menu of each project
+			SVG: Scalable Vector Graphics
 		C:
 			HashMap data structure,
 				print the key-value pair of an array list for debugging purposes
 				put() and remove() values
+
+11/27/2023:
+	JS: Events
+		EventTarget.addEventListener( type, function listener )
+		runs the listener function when an event of that type occurs
+		to run the listener function, addEventListener passes the event into the listener
+		which is what it means for that function to be a listener
+			( it takes the event and responds )
+		to make something we want happen, it might be necessary to prevent default
+			function listener( event ) {
+				event.preventDefault();
+				...
+			}
+		so the actions taken are only the actions that we specify
 
 11/19/2023:
 	React: Effects
