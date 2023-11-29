@@ -40,14 +40,6 @@ export default function Form( props ) {
     img: null,
     textOut: "",
   } );
-  //fulfill case: fetch verse data and put json into data.APIData
-  function fetchBible_fulfill( call ) {
-    call.json().then( callData => setData( prevData => ( {
-          ...prevData,
-          APIData: callData
-        } ) )
-      );
-  }
 
   React.useEffect(
     function() {
@@ -60,8 +52,18 @@ export default function Form( props ) {
           APIData: null,
         } )
       ) //end fetch.then
+
+      //fulfill case: fetch verse data and put json into data.APIData
+      function fetchBible_fulfill( call ) {
+        call.json().then( callData => setData( prevData => ( {
+              ...prevData,
+              APIData: callData
+            } ) )
+        );
+      }
     }, []
   );
+
   function bibleVerse() {
     if ( data.APIData === null )
       return "Could not fetch Bible verse";
@@ -74,7 +76,6 @@ export default function Form( props ) {
   //make sure either text or img is displayed at one time, never both
   function out( event ) { 
     event.preventDefault();
-    //console.log( formIn.data )
     var setText, setImg;
     switch ( data.usrIn ) {
       case ( "donut" ):
@@ -86,8 +87,8 @@ export default function Form( props ) {
         setImg = null;
         break;
     }
-    setData( prev => ( { //dunno why the parens are necessary but sure
-      ...prev,
+    setData( prevData => ( { 
+      ...prevData,
       img: setImg,
       textOut: setText
     } ) );
@@ -108,7 +109,6 @@ export default function Form( props ) {
     setClicky( isClicked ? 1 : num => num + 1 );
   }
 
-  //try to create dynamic styling
   return (
     <div className="form--body"> 
       <form>

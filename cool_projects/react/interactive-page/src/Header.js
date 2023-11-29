@@ -2,20 +2,23 @@ import React from 'react';
 import data from './data.js';
 
 /* dropdown TODO:
- *  mouse over w/ underline and load previous versions
- *  hide sidebar
- *  bubble-opening animation
- *  resizable sidebar
- *    no thinner than 18vw
+ * load previous versions
  */
 function Dropdown( props ) {
+  const mainVersionCount = 4;
+  var mainSelectors = [];
+  for ( var mainVer = 0; mainVer < mainVersionCount; mainVer++ ) {
+    var mainSelect = props.selectMainVersion.bind( null, mainVer );
+    mainSelectors.push( mainSelect );
+  }
   return (
     <div className={props.active ? "dropdown active" : "dropdown"} style={props.colors}>
       <h1 className="dropdown--title">Projects:</h1>
-      <ol className="dropdown--options">
-        <li>CSS Review</li>
-        <li>Reusable Components</li>
-        <li>Interactive Components</li>
+      <ol className="dropdown--select">
+        <p onClick={mainSelectors[0]}>Current Working Page</p>
+        <li onClick={mainSelectors[1]}>CSS Review</li>
+        <li onClick={mainSelectors[2]}>Reusable Components</li>
+        <li onClick={mainSelectors[3]}>Interactive Components</li>
       </ol>
     </div>
   )
@@ -39,8 +42,8 @@ export default function Header( props ) {
 
   const headerStyle = {
     background: props.taro ?
-      props.colors.taroHeaderBackground :
-      props.colors.defaultHeaderBackground,
+      data.colors.taroHeaderBackground :
+      data.colors.defaultHeaderBackground,
   }
   const textColors = {
     color: props.taro ?
@@ -49,8 +52,8 @@ export default function Header( props ) {
   }
   const dropdownColors = {
     background: props.taro ?
-      props.colors.taroMainBackground :
-      props.colors.defaultMainBackground,
+      data.colors.taroMainBackground :
+      data.colors.defaultMainBackground,
   }
 
   const [ dropdown, setDropdown ] = React.useState( false );
@@ -73,7 +76,7 @@ export default function Header( props ) {
       <div className="header--right">
         <p className="header--desc" style={textColors}>React Project 3: My first interactive web site</p>
         <button className="header--button" onClick={toggleDropdown}>...</button>
-        <Dropdown active={dropdown} colors={dropdownColors} />
+        <Dropdown active={dropdown} colors={dropdownColors} selectMainVersion={props.selectMainVersion} />
       </div>
     </header>
   )

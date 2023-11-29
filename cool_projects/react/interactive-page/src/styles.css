@@ -122,10 +122,9 @@ header > div > * {
 
 /* main section */
 .main--background {
-  width: 110vw;
-  height: 110vw;
+  width: 60vw;
+  height: 60vw;
   position: fixed;
-  right: 0;
   bottom: 0;
   background-repeat: no-repeat;
   opacity: 0.2;
@@ -185,20 +184,20 @@ main > * {
   margin-left: 40px;
   margin-right: 40px;
 }
-.sidebar--title {
+.todolist--title {
   font-size: 48px;
   margin: 0px;
 }
-.sidebar--todo {
+.todolist {
   margin-top: 0px;
   align-self: flex-end;
 }
-.sidebar--todo > li {
+.todolist > li {
   margin-top: 15px;
   margin-bottom: 0px;
   font-size: 24px;
 }
-.sidebar--todo > li::marker {
+.todolist > li::marker {
   font-size: 36px;
 }
 .proj {
@@ -430,6 +429,14 @@ main > * {
 
 /* PROJECT 3.3:
  * dropdown & resizing */
+#resizer {
+  z-index: 1;
+  position: absolute;
+  height: inherit;
+  width: 10px;
+  background: black;
+  cursor: col-resize;
+}
 .header--button {
   font-family: inherit;
   font-size: 24px;
@@ -451,7 +458,7 @@ main > * {
   transform-origin: right top;
 }
 .dropdown.active {
-  transform: scale( 1, 1 ); /* transforms in transitions */
+  transform: scale( 1, 1 ); /* transforms as transitions */
   transition-duration: 300ms;
   transition-timing-function: ease;
 }
@@ -463,24 +470,24 @@ main > * {
   border-width: 2px;
   border-color: #222222;
 }
-.dropdown--options {
+.dropdown--select {
   margin-right: 30px;
 }
-.dropdown--options > li {
+.dropdown--select > li {
   margin-top: 8px;
+  font-size: 14px;
 }
-.dropdown--options > li:first-of-type {
-  margin-top: 0px;
+.dropdown--select > p {
+  margin: 0px;
+  font-size: 14px;
 }
-.dropdown--options > li:hover {
+.dropdown--select > *:hover {
   text-decoration: underline;
   cursor: pointer;
 }
-#resizer {
-  z-index: 1;
-  position: absolute;
-  height: inherit;
-  width: 10px;
-  background: black;
-  cursor: col-resize;
+.main1 .todolist > li::marker {
+  color: indigo;
+}
+.main3 .donut--gif {
+  position: relative;
 }

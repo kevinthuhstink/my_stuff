@@ -27,7 +27,15 @@ const data = {
       key: 4,
       _src: aperture 
     }
-  ]
+  ],
+  "colors": {
+    taroMainBackground: "linear-gradient( 120deg, #e6eaff 30%, white 100% )",
+    defaultMainBackground: "linear-gradient( 120deg, Lavender, LavenderBlush )",
+    taroHeaderBackground: "linear-gradient( 30deg, #b3baff 40%, #333399 100% )",
+    defaultHeaderBackground: "linear-gradient( 120deg, indigo 40%, navy 100% )",
+    taroSidebarBackground: "linear-gradient( 120deg, #ffccff 24%, #6666ff 100% )",
+    defaultSidebarBackground: "linear-gradient( 120deg, Plum, SlateBlue )",
+  }
 };
 
 export default data;

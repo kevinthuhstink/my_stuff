@@ -1,8 +1,8 @@
 export default function TodoList() {
   return (
     <div>
-      <h1 className="sidebar--title">TODO:</h1>
-      <ol className="sidebar--todo">
+      <h1 className="todolist--title">TODO:</h1>
+      <ol className="todolist">
         <li>React JS</li>
         <li>TailwindCSS</li>
         <li>NodeJS</li>

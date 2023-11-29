@@ -1,11 +1,12 @@
 import React from 'react'
 import Cardbar from './Cardbar.js'
 import TodoList from './TodoList.js'
+import data from './data.js'
 
 function Colorscheme( props ) {
   return (
-    <button className="setcolors" onClick={props.colorsToggle} style={props.colors}>
-      { !props.colorsTaro ?
+    <button className="setcolors" onClick={props.toggleColors} style={props.colors}>
+      { !props.buttonText ?
         "Pastel?" :
         "Purple?" }
     </button>
@@ -25,14 +26,14 @@ function FakeFormOut( props ) {
 export default function Sidebar( props ) {
   const sidebarStyle = {
     background: props.pageStyle.taro ?
-      props.colors.taroSidebarBackground :
-      props.colors.defaultSidebarBackground,
+      data.colors.taroSidebarBackground :
+      data.colors.defaultSidebarBackground,
     width: `${props.pageStyle.sidebarWidth}vw`,
   }
   const colors = {
     background: !props.pageStyle.taro ?
-      props.colors.taroHeaderBackground :
-      props.colors.defaultHeaderBackground,
+      data.colors.taroHeaderBackground :
+      data.colors.defaultHeaderBackground,
     color: !props.pageStyle.taro ?
       "black" :
       "white"
@@ -50,7 +51,7 @@ export default function Sidebar( props ) {
       <small className="proj">Project 2</small>
       <Cardbar />
       <small className="proj">Project 3.1</small>
-      <Colorscheme colorsToggle={props.colorsToggle} colors={colors} colorsTaro={props.pageStyle.taro} />
+      <Colorscheme toggleColors={props.toggleColors} colors={colors} buttonText={props.pageStyle.taro} />
       <small className="proj">Project 3.2</small>
       <FakeFormOut formData={props.formData} retakeForm={props.retakeForm} />
     </div>
