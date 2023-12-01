@@ -73,8 +73,15 @@ augroup END
 augroup filetype_python
 	autocmd!
 	autocmd Filetype python setlocal foldmethod=indent
-	autocmd Filetype python nnoremap <buffer> <leader>c I#<esc>
-	autocmd Filetype python nnoremap <buffer> <leader>c ^x
+	" comment/uncomment
+	autocmd Filetype python nnoremap <buffer> <leader>c I#<esc> 
+	autocmd Filetype python nnoremap <buffer> <leader>d ^x
+	autocmd Filetype python nnoremap <buffer> <leader>f :/\vdef<cr>
+	" multiline comment
+	autocmd Filetype python nnoremap <leader>Co I""" <esc>
+	autocmd Filetype python nnoremap <leader>Cc A""" <esc>
+	autocmd Filetype python nnoremap <leader>D /\v[\"]{3}<cr>hxxxxNxxxx:nohlsearch<cr>
+	autocmd Filetype python vnoremap <leader>C <esc>`<i""" <esc>`>a """<esc>
 augroup END
 
 " augroup filetype_javascript
@@ -82,8 +89,8 @@ augroup END
 	" autocmd Filetype javascript setlocal foldmethod=syntax
 " augroup END
 
-"html files are tabbed 2
-augroup web-dev
+"frontend webdev files are tabbed 2
+augroup frontend
 	autocmd!
 	autocmd Filetype html,css,javascript setlocal tabstop=2 shiftwidth=2 expandtab
 	autocmd Filetype css setlocal foldmarker={,}
@@ -112,7 +119,10 @@ nnoremap <leader>w /\v\s+$<cr>
 nnoremap <leader>W /\v\s+$<cr>diw
 nnoremap / /\v
 " Remapping keys to make macros, folds, marks, and registers more accessible
-nnoremap gm `
+" marks
+nnoremap <Space>m `
+" macros
+nnoremap <Space>q @
 
 " window management {{{
 " You can split the window in Vim by typing :split or :vsplit.
@@ -136,7 +146,12 @@ nnoremap <c-u> bvwU
 " Comment a line in and out
 nnoremap <leader>c I//<esc>
 nnoremap <leader>d ^xx
-" Delete all within ()/{}/<>
+" Multiline comment
+nnoremap <leader>Co I/* <esc>
+nnoremap <leader>Cc A */<esc>
+nnoremap <leader>D /\v\/\*<cr>xxx/\v\*\/<cr>xx:nohlsearch<cr>
+vnoremap <leader>C <esc>`<i/* <esc>`>a */<esc>
+" Label all within brackets
 onoremap p i(
 onoremap P i{
 onoremap <c-p> i<
