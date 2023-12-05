@@ -165,6 +165,7 @@ export default function Page() {
       selectMainVersion={selectMainVersion}
       key={0} />,
     <Main
+      renderEffect={fakeFormData.submit}
       mainStyle={mainStyle}
       pageStyle={pageStyle}
       key={1} />,

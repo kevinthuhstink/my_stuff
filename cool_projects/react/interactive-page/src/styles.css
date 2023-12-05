@@ -491,3 +491,17 @@ main > * {
 .main3 .donut--gif {
   position: relative;
 }
+
+/* PROJECT 4:
+ * conway's game of life */
+#game {
+  margin: 40px 20px;
+}
+.game--grid {
+  display: grid;
+}
+.cell {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid black;
+}
