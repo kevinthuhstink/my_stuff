@@ -26,14 +26,14 @@ public class median_two {
 				return (double) nums2[med];
 			int med2 = med - 1;
 			return (double) ( nums2[med] + nums2[med2] ) / 2;
-		}	
+		}
 		if ( size2 == 0 ) {
 			int med = size1 / 2;
 			if ( tsize % 2 == 1 )
 				return (double) nums1[med];
 			int med2 = med - 1;
 			return (double) ( nums1[med] + nums1[med2] ) / 2;
-		}	
+		}
 		if ( tsize == 2 )
 			return (double) ( nums1[0] + nums2[0] ) / 2;
 		//operate on size1, force it to be the shorter one
@@ -93,7 +93,7 @@ public class median_two {
 			else
 				smin = m1;
 		}
-		
+
 		if ( tsize % 2 == 0 )
 			return (double) ( lo + hi ) / 2;
 		//if tsize is odd then lo side is one smaller than hi side

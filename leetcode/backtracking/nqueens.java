@@ -14,7 +14,7 @@ public class nqueens {
 		//System.out.println( _init.toString() );
 		List<List<String>> ans = new ArrayList<>();
 		solve_h( _init, 0, ans );
-		return ans; 
+		return ans;
 	}
 
 	/* notes
@@ -51,7 +51,7 @@ public class nqueens {
 				//diagonal 7 spans the board,
 				//0 and 14 are top left and bottom right
 				List<String> next = new ArrayList<>();
-				int _r = row, _c = _col, _ld = row - _col, _rd = row + _col; 
+				int _r = row, _c = _col, _ld = row - _col, _rd = row + _col;
 				for ( int i = 0; i < n; i++ ) {
 					StringBuilder ch_r;
 					//row handling
@@ -82,7 +82,7 @@ public class nqueens {
 	}
 
 	public static void main( String[] args ) {
-		nqueens attempt = new nqueens();	
+		nqueens attempt = new nqueens();
 		List<List<String>> boards = attempt.solve( 5 );
 		System.out.println( boards.toString() );
 	}

@@ -1,8 +1,7 @@
 import java.util.*;
 public class letter_combos {
-	
+
 	/* notes
-	 * is this not the freest problem
 	 */
 	public List<String> solve( String digits ) {
 		if ( digits.length() == 0 ) {
@@ -17,7 +16,7 @@ public class letter_combos {
 		for ( int i = 0; i == 0 || i < prev.size(); i++ ) {
 			String s;
 			if ( prev.size() == 0 ) s = "";
-			else s = prev.get( i );	
+			else s = prev.get( i );
 			if ( curr == '2' ) {
 				this_ans.add( s + "a" );
 				this_ans.add( s + "b" );
@@ -64,4 +63,3 @@ public class letter_combos {
 		return this_ans;
 	}
 }
-

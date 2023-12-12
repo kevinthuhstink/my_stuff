@@ -36,9 +36,9 @@ public class valid_sudoku {
 
                 int value = Character.getNumericValue( value_c );
                 int cell_box = box( row, col );
-                if ( !al_row.get( row ).add( value ) || 
+                if ( !al_row.get( row ).add( value ) ||
                      !al_col.get( col ).add( value ) ||
-                     !al_box.get( cell_box ).add( value )  ) 
+                     !al_box.get( cell_box ).add( value )  )
                     return false;
             }
         }

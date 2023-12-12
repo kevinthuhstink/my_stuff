@@ -52,7 +52,7 @@ public class c_sumII {
 			return sol;
 		}
 
-		//now we get to choose what to keep and what to skip 
+		//now we get to choose what to keep and what to skip
 		List<List<Integer>> skp = solve_h( blocks, next, target, curr );
 		//use looks a lot more different now
 		for ( int _case = 1; target > num && _case <= ct; _case++ ) {

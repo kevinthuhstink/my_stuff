@@ -494,11 +494,20 @@ main > * {
 
 /* PROJECT 4:
  * conway's game of life */
-#game {
-  margin: 40px 20px;
+.game {
+  margin: 0px 40px;
 }
-.game--grid {
+#game--grid {
   display: grid;
+  height: 400px;
+  width: 600px;
+  padding: 10px;
+  border-style: dotted;
+  border-width: 6px;
+  border-color: gray;
+  resize: both;
+  overflow: hidden;
+  background: lightgray;
 }
 .cell {
   margin: 0px;

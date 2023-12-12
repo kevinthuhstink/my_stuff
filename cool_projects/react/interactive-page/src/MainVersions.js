@@ -11,45 +11,99 @@ import Form from './Form.js';
 import GameOfLife from './GameOfLife.js'
 
 function Main( props ) {
-  const [ game, setGame ] = React.useState( {
-    cellSize: 40,
-    cells: [], //2d array of cells
-    //gridWidth,
-    //gridHeight
-  } )
+  const [ game, setGame ] = React.useState({})
 
-  //will need to reset grid on resize
-  function initGrid() { 
+  function Cell( props ) {
+    const cellStyle = {
+      background: props.alive ?
+        "gray" :
+        "white",
+      width: `${props.cellSize}px`,
+      height: `${props.cellSize}px`,
+    }
+    return (
+      <div className="cell" style={cellStyle}>
+      </div>
+    )
+  }
+
+  //on main4 render, initialize the grid 
+  React.useEffect( setGrid, [ props.renderEffect ] );
+  function setGrid() {
     const gridObj = document.getElementById( "game--grid" );
-    const gridSpace = gridObj.getBoundingClientRect();
+    if ( gridObj == null )
+      return;
 
-    setGame( function( init ) {
-      var gridWidth = Math.floor( gridSpace.width / init.cellSize );
-      var gridHeight = Math.floor( gridSpace.height / init.cellSize );
+    function initGrid() {
+      const cellSize = 30;
+      var colNum = Math.floor( ( gridObj.offsetWidth - 32 ) / cellSize );
+      var rowNum = Math.floor( ( gridObj.offsetHeight - 32 ) / cellSize );
+
+      // create each cell's data using a 2d array of mappings
       var cellsArray = [];
-      for ( var xpos = 0; xpos < gridWidth; xpos++ ) {
+      for ( var xpos = 0; xpos < colNum; xpos++ ) {
         cellsArray.push( [] );
-        for ( var ypos = 0; ypos < gridHeight; ypos++ ) {
+        for ( var ypos = 0; ypos < rowNum; ypos++ ) {
           cellsArray[xpos].push( {
             alive: false,
-            key: xpos * gridWidth + ypos,
+            key: xpos * colNum + ypos,
           } );
         }
       }
+
+      // initialize an array of cells objects using the cell data
+      function initCells( cellsData ) {
+        var cells = [];
+        for ( var xpos = 0; xpos < cellsData.length; xpos++ )
+          for ( var ypos = 0; ypos < cellsData[xpos].length; ypos++ )
+            cells.push( <Cell {...cellsData[xpos][ypos]} cellSize={cellSize} /> );
+        return cells;
+      } //end initCells()
+
       return {
-        ...init,
-        gridWidth: gridWidth,
-        gridHeight: gridHeight,
-        cells: cellsArray,
+        cellSize: cellSize,
+        colNum: colNum,
+        rowNum: rowNum,
+        cellsData: cellsArray,
+        cells: initCells( cellsArray ),
+      }
+    } //end initGrid()
+
+    setGame( initGrid );
+
+    //once grid has been initialized, recalc when resized
+    function recalcGrid( entry ) {
+      var { cellSize, colNum, rowNum, cellsData, cells } = game;
+      var updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
+      var updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
+      if ( updateColNum === colNum && updateRowNum === rowNum )
+        return;
+
+      //update cellsData and construct new cellsArray
+      if ( updateColNum < colNum )
+        cellsData = cellsData.slice( updateColNum )
+      else {
+      }
+      if ( updateRowNum < rowNum )
+        for ( var col = 0; col < cellsData.length; col++ )
+          cellsData[col] = cellsData[col].slice( updateRowNum );
+      else {
+      }
+    }
+
+    const gridObserver = new ResizeObserver( entries => {
+      for ( const entry of entries ) {
+        recalcGrid( entry );
       }
     } );
-  }
-  React.useEffect( initGrid, [ props.renderEffect ] );
+    gridObserver.observe( gridObj );
+    return () => gridObserver.disconnect();
+  } //end setGrid()
 
-  function toggleCell( cellNumber ) {
+  function toggleCell( cellID ) {
     setGame( function( prevGame ) {
       var newCells = [ ...prevGame.cells ];
-      newCells[cellNumber] = !prevGame.cells[cellNumber]
+      newCells[cellID].alive = !prevGame.cells[cellID].alive
       return {
         ...prevGame,
         cells: newCells,

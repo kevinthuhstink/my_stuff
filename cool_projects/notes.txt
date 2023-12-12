@@ -1,14 +1,18 @@
-  TODO: React:
-  			State-watcher-functions binding data and components together
-			Import data from other websites into the web page? This one might be difficult
-			Make the sidebar resizeable and the main responsive to that resize
+  TODO: 
+        JS:
+            Conway's Game of Life
+            Include the friend group's faces somewhere
 		CSS: 
-			Make the sidebar a dropdown menu of each project
 			SVG: Scalable Vector Graphics
 		C:
 			HashMap data structure,
 				print the key-value pair of an array list for debugging purposes
 				put() and remove() values
+
+12/11/2023:
+    JS: ResizeObserver
+        ResizeObserver takes a function that acts on all the elements it observes
+        The function isn't ran whenever the elements' boxes change dimensions, rather
 
 11/27/2023:
 	JS: Events
