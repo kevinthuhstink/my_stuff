@@ -11,110 +11,89 @@ import Form from './Form.js';
 import GameOfLife from './GameOfLife.js'
 
 function Main( props ) {
-  const [ game, setGame ] = React.useState({})
+  const [ game, setGame ] = React.useState({});
 
-  function Cell( props ) {
-    const cellStyle = {
-      background: props.alive ?
-        "gray" :
-        "white",
-      width: `${props.cellSize}px`,
-      height: `${props.cellSize}px`,
-    }
-    return (
-      <div className="cell" style={cellStyle}>
-      </div>
-    )
-  }
-
-  //on main4 render, initialize the grid 
-  React.useEffect( setGrid, [ props.renderEffect ] );
+  //on main4 render, initialize the grid
+  //whenever the grid changes dimension, check the cells
+  React.useEffect( setGrid, [ props.renderEffects ] );
   function setGrid() {
     const gridObj = document.getElementById( "game--grid" );
     if ( gridObj == null )
       return;
 
-    function initGrid() {
-      const cellSize = 30;
-      var colNum = Math.floor( ( gridObj.offsetWidth - 32 ) / cellSize );
-      var rowNum = Math.floor( ( gridObj.offsetHeight - 32 ) / cellSize );
+    //once grid has been initialized, recalc when resized using ResizeObserverEntry syntax
+    //apparently ResizeObserver activates on initialization as well
+    function calcGrid( entry ) {
+      const cellSize = 32; //+2 to account for border width and height
+      var updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
+      var updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
 
-      // create each cell's data using a 2d array of mappings
-      var cellsArray = [];
-      for ( var xpos = 0; xpos < colNum; xpos++ ) {
-        cellsArray.push( [] );
-        for ( var ypos = 0; ypos < rowNum; ypos++ ) {
-          cellsArray[xpos].push( {
+      //create new cellsData array with width and length
+      var updateCellsData = [];
+      for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
+        for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
+          updateCellsData.push( {
             alive: false,
-            key: xpos * colNum + ypos,
+            key: xpos * updateColNum + ypos,
+            id: xpos * updateColNum + ypos,
           } );
         }
       }
 
-      // initialize an array of cells objects using the cell data
-      function initCells( cellsData ) {
-        var cells = [];
-        for ( var xpos = 0; xpos < cellsData.length; xpos++ )
-          for ( var ypos = 0; ypos < cellsData[xpos].length; ypos++ )
-            cells.push( <Cell {...cellsData[xpos][ypos]} cellSize={cellSize} /> );
-        return cells;
-      } //end initCells()
-
-      return {
+      setGame( prevGame => ( {
+        ...prevGame,
         cellSize: cellSize,
-        colNum: colNum,
-        rowNum: rowNum,
-        cellsData: cellsArray,
-        cells: initCells( cellsArray ),
-      }
-    } //end initGrid()
+        colNum: updateColNum,
+        rowNum: updateRowNum,
+        cellsData: updateCellsData,
+        gameActive: false,
+      } ) );
+    } //end calcGrid()
 
-    setGame( initGrid );
-
-    //once grid has been initialized, recalc when resized
-    function recalcGrid( entry ) {
-      var { cellSize, colNum, rowNum, cellsData, cells } = game;
-      var updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
-      var updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
-      if ( updateColNum === colNum && updateRowNum === rowNum )
-        return;
-
-      //update cellsData and construct new cellsArray
-      if ( updateColNum < colNum )
-        cellsData = cellsData.slice( updateColNum )
-      else {
-      }
-      if ( updateRowNum < rowNum )
-        for ( var col = 0; col < cellsData.length; col++ )
-          cellsData[col] = cellsData[col].slice( updateRowNum );
-      else {
-      }
-    }
-
-    const gridObserver = new ResizeObserver( entries => {
-      for ( const entry of entries ) {
-        recalcGrid( entry );
-      }
+    const gridObserver = new ResizeObserver( gridUpdateEntry => {
+      for ( const entry of gridUpdateEntry )
+        calcGrid( entry );
     } );
     gridObserver.observe( gridObj );
+
     return () => gridObserver.disconnect();
   } //end setGrid()
 
+  //toggle functions
+  const toggleFunctions = [
+    toggleCell,
+    toggleGame
+  ]
+
   function toggleCell( cellID ) {
-    setGame( function( prevGame ) {
-      var newCells = [ ...prevGame.cells ];
-      newCells[cellID].alive = !prevGame.cells[cellID].alive
+    setGame( prevGame => {
+      var newCellsData = prevGame.cellsData.map( function( cell ) {
+        if ( cell.id !== cellID )
+          return cell;
+        return {
+          ...cell,
+          alive: !cell.alive,
+        }; //note that you MUST check by obj id
+      } ); //there is no guarantee that obj id and array index match up
+
       return {
         ...prevGame,
-        cells: newCells,
+        cellsData: newCellsData,
       }
-    } ) 
+    } );
+  } //end toggleCell()
+
+  function toggleGame() {
+    setGame( prevGame => ( {
+      ...prevGame,
+      gameActive: !prevGame.gameActive,
+    } ) );
   }
 
   return (
     <main className="main4" style={props.mainStyle}>
       <h1 className="main--title">Main 4: Game of Life</h1>
-      <GameOfLife game={game} toggleCell={toggleCell} />
+      <GameOfLife game={game} toggleFunctions={toggleFunctions} />
     </main>
   )
 }
