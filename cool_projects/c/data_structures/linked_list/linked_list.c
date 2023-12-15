@@ -1,16 +1,6 @@
-/*
- * =====================================================================================
- *
- *       Filename:  linked_list.c
- *    Description:  linked list data structure implementation
- *
- *         Author:  kevinthuhstink
- *
- * =====================================================================================
- */
 #include "linked_list.h"
 //TODO: compatibility with strings and ints for hashmap
-	//		print k-v pairs for hashmaps
+//		print k-v pairs for hashmaps
 //		naming convention: datastruct_func()
 
 /*  instantiates a new linked list node
@@ -35,7 +25,7 @@ struct linked_node* newllnode( char* strval ) {
  *  @return: 0 if node val was set, 1 if node was NULL */
 int llset( int val, struct linked_node* node ) {
 	if ( node == NULL )
-		return 1; 
+		return 1;
 	node->val = val;
 	return 0;
 }

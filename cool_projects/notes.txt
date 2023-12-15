@@ -1,21 +1,26 @@
   TODO:
         JS:
-            Conway's Game of Life
+            Include border corrections on window resize
+            Include dynamic intervals during active game
             Include the friend group's faces somewhere
-		CSS:
+        CSS:
 			SVG: Scalable Vector Graphics
-		C:
+        C:
 			HashMap data structure,
 				print the key-value pair of an array list for debugging purposes
 				put() and remove() values
 
 12/15/2023:
-    JS: Custom sliders?
+    JS: Conway's Game of Life is complete!
 
 12/11/2023:
     JS: ResizeObserver
         ResizeObserver takes a function that acts on all the elements it observes
         The function isn't ran whenever the elements' boxes change dimensions, rather
+        the function is ran once and the ResizeObserverEntry's borderBoxSize,
+            entry.borderBoxSize[0].inlineSize
+            entry.borderBoxSize[0].blockSize
+        is what gets changed in the function, similar to React state
 
 11/27/2023:
 	JS: Events
@@ -73,7 +78,7 @@
 		In this way, the value of the input is determined by the state instead of by the user,
 		and the user gets to determine the value of the state that determines the component
 
-		Some other <form> components are 
+		Some other <form> components are
 			Textarea:
 				<textarea /> ( almost identical to standard text input )
 

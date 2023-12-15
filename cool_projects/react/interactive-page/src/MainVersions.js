@@ -12,54 +12,70 @@ import GameOfLife from './GameOfLife.js'
 
 function Main( props ) {
   const [ game, setGame ] = React.useState( {
+    //init default values
     showID: false,
     gameActive: 0,
+    intervalTime: 1000,
+    cellSize: 32, //includes border
   } );
 
-  //on main4 render, initialize the grid
-  //whenever the grid changes dimension, check the cells
-  React.useEffect( setGrid, [ props.renderEffects ] );
+  //game render functions
+  function reloadGrid( prevGame, updateGameData ) {
+    //stand-in for the setGame state setter
+    //remakes grid on changes to grid size or cell size
+    if ( prevGame.gameActive )
+      clearInterval( prevGame.gameActive );
+
+    //use updateGameData to determine what's being reloaded
+    var updateRowNum = updateGameData.rowNum ? updateGameData.rowNum : prevGame.rowNum;
+    var updateColNum = updateGameData.colNum ? updateGameData.colNum : prevGame.colNum;
+    var updateCellSize = updateGameData.cellSize ? updateGameData.cellSize : prevGame.cellSize;
+
+    //create new cellsData 2d array with width and length
+    if ( updateGameData.rowNum || updateGameData.colNum ) {
+      var updateCellsData = [];
+      for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
+        updateCellsData.push( [] );
+        for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
+          updateCellsData[ypos].push( {
+            alive: false,
+            key: ypos * updateColNum + xpos,
+            id: ypos * updateColNum + xpos,
+          } );
+        }
+      }
+    }
+
+    return {
+      ...prevGame,
+      cellSize: updateCellSize,
+      colNum: updateColNum,
+      rowNum: updateRowNum,
+      cellsData: updateCellsData ? updateCellsData : prevGame.cellsData,
+      gameActive: 0,
+    }
+  } //end reloadGrid()
+
+  React.useEffect( setGrid, [ props.renderEffects, game.cellSize ] );
   function setGrid() {
     const gridObj = document.getElementById( "game--grid" );
     if ( gridObj == null )
       return;
 
     //once grid has been initialized, recalc when resized using ResizeObserverEntry syntax
-    //apparently ResizeObserver activates on initialization as well
     function calcGrid( entry ) {
-      const cellSize = 32; //+2 to account for border width and height
-      var updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
-      var updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
-
-      setGame( function( prevGame ) {
-        if ( prevGame.gameActive )
-          //doesnt really work outside of setGame because
-          //gameActive needs to be called from prevGame, not game itself
-          clearInterval( prevGame.gameActive ); 
-
-        //create new cellsData 2d array with width and length
-        var updateCellsData = [];
-        for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
-          updateCellsData.push( [] );
-          for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
-            updateCellsData[ypos].push( {
-              alive: false,
-              key: ypos * updateColNum + xpos, 
-              id: ypos * updateColNum + xpos,
-            } );
-          }
-        }
-
-        return {
-          ...prevGame,
-          cellSize: cellSize,
-          colNum: updateColNum,
-          rowNum: updateRowNum,
-          cellsData: updateCellsData,
-          gameActive: 0,
-        }
-      } );
+      //apparently ResizeObserver activates on initialization as well
+      //only entry.borderBoxSizes are altered and the function isn't actually ran
+      const updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / game.cellSize );
+      const updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / game.cellSize );
+      const update = {
+        colNum: updateColNum,
+        rowNum: updateRowNum,
+      }
+      setGame( prevGame => reloadGrid( prevGame, update ) );
     } //end calcGrid()
+
+    //on changes to intervalTime, make sure those changes are reflected in the actual game
 
     const gridObserver = new ResizeObserver( gridUpdateEntry => {
       for ( const entry of gridUpdateEntry ) {
@@ -68,9 +84,12 @@ function Main( props ) {
     } );
     gridObserver.observe( gridObj );
 
+    //cleanup the previous effect before starting a new one
     return () => gridObserver.disconnect();
   } //end setGrid()
 
+
+  //game mutator functions
   function toggleCell( cellID ) {
     setGame( prevGame => ( {
       ...prevGame,
@@ -90,12 +109,36 @@ function Main( props ) {
     } ) );
   }
 
+  function randomGrid() {
+    setGame( prevGame => ( {
+      ...prevGame,
+      cellsData: prevGame.cellsData.map( cellRow => cellRow.map(
+        cell => ( {
+          ...cell,
+          alive: !!Math.floor( Math.random() * 2 ),
+        } )
+      ) ),
+    } ) );
+  }
+
+  function handleSlider( event ) {
+    const { id, value } = event.target;
+    //destructure id and value from the input type=range objects
+    setGame( prevGame => ( {
+      ...prevGame,
+      cellSize: id === "cell--size--slider" ? value : prevGame.cellSize,
+      intervalTime: id === "interval--time--slider" ? value : prevGame.intervalTime,
+    } ) );
+  }
+
+
+  //gameplay functions
   function runGeneration() {
     console.log( "running generation" );
     setGame( function( prevGame ) {
       const grid = prevGame.cellsData;
-    
-      function checkStatus( cellID ) { 
+
+      function checkStatus( cellID ) {
         //checks if a given cell should live or die
         const ypos = Math.floor( cellID / prevGame.colNum );
         const xpos = cellID % prevGame.colNum;
@@ -151,7 +194,7 @@ function Main( props ) {
     else {
       setGame( prevGame => ( {
         ...prevGame,
-        gameActive: setInterval( runGeneration, 1000 ),
+        gameActive: setInterval( runGeneration, prevGame.intervalTime ),
       } ) );
     }
   }
@@ -161,6 +204,8 @@ function Main( props ) {
     runGeneration,
     runGame,
     toggleID,
+    randomGrid,
+    handleSlider,
   ]
 
   return (
@@ -212,6 +257,7 @@ function Main3( props ) {
   return (
     <main style={props.mainStyle}>
       <h1 className="main--title">Main 3: Interactive Components</h1>
+      <p>Type in 'donut' for a donut!</p>
       <Form colors={buttonColors} textColors={textColors} />
     </main>
   )

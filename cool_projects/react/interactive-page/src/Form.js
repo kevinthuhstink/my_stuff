@@ -43,8 +43,8 @@ export default function Form( props ) {
 
   React.useEffect(
     function() {
-      //fetch( "https://bible-api.com/?random=verse" ).then( 
-      fetch( "https://bible-api.com/john 3:16" ).then( 
+      //fetch( "https://bible-api.com/?random=verse" ).then(
+      fetch( "https://bible-api.com/john 3:16" ).then(
         fetchBible_fulfill,
         //reject case: instantialize APIData with null (unable to connect)
         prevData => setData( {
@@ -74,7 +74,7 @@ export default function Form( props ) {
   }
 
   //make sure either text or img is displayed at one time, never both
-  function out( event ) { 
+  function out( event ) {
     event.preventDefault();
     var setText, setImg;
     switch ( data.usrIn ) {
@@ -87,7 +87,7 @@ export default function Form( props ) {
         setImg = null;
         break;
     }
-    setData( prevData => ( { 
+    setData( prevData => ( {
       ...prevData,
       img: setImg,
       textOut: setText
@@ -95,13 +95,13 @@ export default function Form( props ) {
   }
 
   function handleChange( event ) {
-    const { name, value } = event.target; //destructure for efficiency 
+    const { name, value } = event.target; //destructure for efficiency
     //name may be a list of inputs so make sure to update all of them
-    setData( prev => ( { 
+    setData( prev => ( {
       ...prev,
       [name] : value
     } ) );
-  } 
+  }
 
   const [ clicky, setClicky ] = React.useState( "" );
   function onClicky() {
@@ -110,7 +110,7 @@ export default function Form( props ) {
   }
 
   return (
-    <div className="form--body"> 
+    <div className="form--body">
       <form>
         <input
           type="text"
@@ -125,7 +125,7 @@ export default function Form( props ) {
         </div>
       </form>
       <div className="usr--out">
-        { data.img ? 
+        { data.img ?
           <div className="donut--out">
             <img className="donut--gif" src={data.img} alt="" />
             <p className="donut--text">rotating<br/>donut</p>

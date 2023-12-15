@@ -15,10 +15,11 @@ import data from './data.js'
  */
 
 /*
- * control: { showID, gameActive }
+ * control: { showID, gameActive, sliderValues }
+ * sliderValues: { cellSize, intervalTime }
  */
 function ControlPanel( props ) {
-  const [ runGeneration, runGame, toggleID ] = props.controlFunctions;
+  const [ runGeneration, runGame, toggleID, randomGrid, handleSlider ] = props.controlFunctions;
   const buttonColors = { //colors prop can be sent down multiple layers
     background: props.pageStyle.taro ?
       data.colors.taroHeaderBackground :
@@ -28,14 +29,36 @@ function ControlPanel( props ) {
       "white",
   }
 
+  const cellSizeSlider = {
+    min: 8,
+    max: 32,
+    step: 2,
+    value: props.control.cellSize,
+    id: "cell--size--slider",
+    labelText: "Change Cell Size",
+  }
+  const intervalSlider = {
+    min: 30,
+    max: 1000,
+    step: 10,
+    value: props.control.intervalTime,
+    id: "interval--time--slider",
+    labelText: "Change Game Speed",
+  }
+
   function Slider( props ) {
     return (
       <div className="slider--container">
+        <label for={props.id}>
+          {props.labelText}
+        </label>
         <input type="range"
           className="slider"
           min={props.min}
           max={props.max}
+          step={props.step}
           value={props.value}
+          onChange={handleSlider}
           id={props.id} />
       </div>
     )
@@ -52,16 +75,17 @@ function ControlPanel( props ) {
       <button onClick={toggleID} style={buttonColors}>
         {props.control.showID ? "Hide" : "Show"} Cell ID
       </button>
-      <Slider />
-      <Slider />
-      <Slider />
+      <Slider {...cellSizeSlider} />
+      <Slider {...intervalSlider} />
+      <button onClick={randomGrid} style={buttonColors}>
+        Random Grid Start
+      </button>
     </div>
   )
 }
 
 /* create a Cell object for each cell in the grid
  * all it does is toggle true/false when clicked or generations are run
- * TODO: format the grid based on cell size
  *
  * grid: { cellSize, rowNum, colNum, cellsData }
  */
@@ -75,10 +99,11 @@ function GameGrid( props ) {
         "white",
       width: `${props.cellSize - 2}px`,
       height: `${props.cellSize - 2}px`,
+      fontSize: `${props.cellSize / 2 - 1}px`,
     }
     return (
       <div className="cell" style={cellStyle} onClick={props.toggleCell}>
-        <p>{props.showID && `${props.id}`}</p>
+        {props.showID && `${props.id}`}
       </div>
     )
   }
@@ -90,7 +115,11 @@ function GameGrid( props ) {
   if ( props.grid.cellsData ) //ensures we render when cellsData gets instantiated in Main in useEffect
     var cells = props.grid.cellsData.map(
       cellRow => cellRow.map(
-        cell => <Cell {...cell} cellSize={props.grid.cellSize} showID={props.grid.showID} toggleCell={() => toggleCell(cell.id)} />
+        cell => <Cell
+          {...cell}
+          cellSize={props.grid.cellSize}
+          showID={props.grid.showID}
+          toggleCell={() => toggleCell(cell.id)} />
       )
     );
 

@@ -339,7 +339,7 @@ main > * {
 }
 .donut--gif {
   position: absolute;
-  width: inherit;
+  width: 100%;
   height: auto;
 }
 .donut--text {
@@ -488,14 +488,12 @@ main > * {
 .main1 .todolist > li::marker {
   color: indigo;
 }
-.main3 .donut--gif {
-  position: relative;
-}
 
 /* PROJECT 4:
  * conway's game of life */
 .game {
   margin: 0px 40px;
+  margin-bottom: 20vw;
 }
 #game--grid {
   display: grid;
@@ -512,13 +510,11 @@ main > * {
 .cell {
   margin: 0px;
   padding: 0px;
-  border: 1px solid black;
+  border: 1px solid gray;
   text-align: center;
-}
-.cell > p {
-  font-size: 12px;
   color: #222222;
   user-select: none;
+  overflow: hidden;
 }
 #game--control {
   display: grid;
@@ -531,4 +527,7 @@ main > * {
   border-radius: 10px;
   font-family: "Ubuntu";
   font-size: 24px;
+}
+.main4 {
+  overflow-x: auto;
 }
