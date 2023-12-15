@@ -11,7 +11,10 @@ import Form from './Form.js';
 import GameOfLife from './GameOfLife.js'
 
 function Main( props ) {
-  const [ game, setGame ] = React.useState({});
+  const [ game, setGame ] = React.useState( {
+    showID: false,
+    gameActive: 0,
+  } );
 
   //on main4 render, initialize the grid
   //whenever the grid changes dimension, check the cells
@@ -28,72 +31,142 @@ function Main( props ) {
       var updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
       var updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
 
-      //create new cellsData array with width and length
-      var updateCellsData = [];
-      for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
-        for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
-          updateCellsData.push( {
-            alive: false,
-            key: xpos * updateColNum + ypos,
-            id: xpos * updateColNum + ypos,
-          } );
-        }
-      }
+      setGame( function( prevGame ) {
+        if ( prevGame.gameActive )
+          //doesnt really work outside of setGame because
+          //gameActive needs to be called from prevGame, not game itself
+          clearInterval( prevGame.gameActive ); 
 
-      setGame( prevGame => ( {
-        ...prevGame,
-        cellSize: cellSize,
-        colNum: updateColNum,
-        rowNum: updateRowNum,
-        cellsData: updateCellsData,
-        gameActive: false,
-      } ) );
+        //create new cellsData 2d array with width and length
+        var updateCellsData = [];
+        for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
+          updateCellsData.push( [] );
+          for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
+            updateCellsData[ypos].push( {
+              alive: false,
+              key: ypos * updateColNum + xpos, 
+              id: ypos * updateColNum + xpos,
+            } );
+          }
+        }
+
+        return {
+          ...prevGame,
+          cellSize: cellSize,
+          colNum: updateColNum,
+          rowNum: updateRowNum,
+          cellsData: updateCellsData,
+          gameActive: 0,
+        }
+      } );
     } //end calcGrid()
 
     const gridObserver = new ResizeObserver( gridUpdateEntry => {
-      for ( const entry of gridUpdateEntry )
+      for ( const entry of gridUpdateEntry ) {
         calcGrid( entry );
+      }
     } );
     gridObserver.observe( gridObj );
 
     return () => gridObserver.disconnect();
   } //end setGrid()
 
-  //toggle functions
-  const toggleFunctions = [
-    toggleCell,
-    toggleGame
-  ]
-
   function toggleCell( cellID ) {
-    setGame( prevGame => {
-      var newCellsData = prevGame.cellsData.map( function( cell ) {
-        if ( cell.id !== cellID )
-          return cell;
-        return {
+    setGame( prevGame => ( {
+      ...prevGame,
+      cellsData: prevGame.cellsData.map( cellRow => cellRow.map(
+        cell => cell.id === cellID ? {
           ...cell,
-          alive: !cell.alive,
-        }; //note that you MUST check by obj id
-      } ); //there is no guarantee that obj id and array index match up
+          alive: !cell.alive
+        } : cell
+      ) ), //have to remake a deep copy of cellsData
+    } ) );
+  } //end toggleCell()
+
+  function toggleID() {
+    setGame( prevGame => ( {
+      ...prevGame,
+      showID: !prevGame.showID,
+    } ) );
+  }
+
+  function runGeneration() {
+    console.log( "running generation" );
+    setGame( function( prevGame ) {
+      const grid = prevGame.cellsData;
+    
+      function checkStatus( cellID ) { 
+        //checks if a given cell should live or die
+        const ypos = Math.floor( cellID / prevGame.colNum );
+        const xpos = cellID % prevGame.colNum;
+
+        //calc the number of live neighbors the cell has
+        let liveNeighbors = 0;
+        //orthogonal
+        if ( ypos > 0 && grid[ypos - 1][xpos].alive )
+          liveNeighbors++;
+        if ( xpos > 0 && grid[ypos][xpos - 1].alive )
+          liveNeighbors++;
+        if ( ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos].alive )
+          liveNeighbors++;
+        if ( xpos < prevGame.colNum - 1 && grid[ypos][xpos + 1].alive )
+          liveNeighbors++;
+        //diagonal
+        if ( xpos > 0 && ypos > 0 && grid[ypos - 1][xpos - 1].alive )
+          liveNeighbors++;
+        if ( xpos > 0 && ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos - 1].alive )
+          liveNeighbors++;
+        if ( xpos < prevGame.colNum - 1 && ypos > 0 && grid[ypos - 1][xpos + 1].alive )
+          liveNeighbors++;
+        if ( xpos < prevGame.colNum - 1 && ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos + 1].alive )
+          liveNeighbors++;
+
+        //determine if the cell should die or live
+        if ( liveNeighbors === 3 )
+          return true;
+        if ( liveNeighbors === 2 )
+          return grid[ypos][xpos].alive;
+        else
+          return false;
+      }
 
       return {
         ...prevGame,
-        cellsData: newCellsData,
+        cellsData: grid.map( cellRow => cellRow.map( cell => ( {
+          ...cell,
+          alive: checkStatus( cell.id ),
+        } ) ) ),
       }
     } );
-  } //end toggleCell()
-
-  function toggleGame() {
-    setGame( prevGame => ( {
-      ...prevGame,
-      gameActive: !prevGame.gameActive,
-    } ) );
   }
+
+  function runGame() {
+    if ( game.gameActive !== 0 ) {
+      clearInterval( game.gameActive );
+      setGame( prevGame => ( {
+        ...prevGame,
+        gameActive: 0,
+      } ) );
+    }
+    else {
+      setGame( prevGame => ( {
+        ...prevGame,
+        gameActive: setInterval( runGeneration, 1000 ),
+      } ) );
+    }
+  }
+
+  const gameFunctions = [
+    toggleCell,
+    runGeneration,
+    runGame,
+    toggleID,
+  ]
 
   return (
     <main className="main4" style={props.mainStyle}>
       <h1 className="main--title">Main 4: Game of Life</h1>
-      <GameOfLife game={game} toggleFunctions={toggleFunctions} />
+      <GameOfLife game={game} pageStyle={props.pageStyle} gameFunctions={gameFunctions} />
     </main>
   )
 }

@@ -1,13 +1,16 @@
-  TODO: 
+  TODO:
         JS:
             Conway's Game of Life
             Include the friend group's faces somewhere
-		CSS: 
+		CSS:
 			SVG: Scalable Vector Graphics
 		C:
 			HashMap data structure,
 				print the key-value pair of an array list for debugging purposes
 				put() and remove() values
+
+12/15/2023:
+    JS: Custom sliders?
 
 12/11/2023:
     JS: ResizeObserver
@@ -33,7 +36,7 @@
 		Reect's primary task is to interact with the DOM/browser to render UI
 			managing the state of the program through different render cycles ( remember state values )
 			update the page accordingly when the state changes
-		React can't handle: 
+		React can't handle:
 			localStorage,
 			API/database interactions,
 			Subscriptions ( web sockets ),
@@ -48,7 +51,7 @@
 		useEffect() allows us to use side effects like those nasty API calls and JS Promises
 		useEffect() takes a function and runs an effect after the render is committed to the screen
 			useEffect() takes React from functional to imperative ( imperative means telling computers step-by-step algos )
-		
+
 		useEffect( function, [ ...fireEffectOn ] )
 			The first parameter is a function that tells React what to do with that effect
 			The second parameter is an dependencies array that tells React when the effect should fire
@@ -80,7 +83,7 @@
 					type="checkbox"
 					name="checkboxExample"
 					id="checkboxExample" //so we can grab label htmlFor
-					checked={ formIn.checkbox } /> 
+					checked={ formIn.checkbox } />
 				<label htmlFor="checkboxExample">This is a checkbox input<label>
 
 			Radio:
@@ -88,7 +91,7 @@
 				<input
 					type="radio"
 					id="radioExample1"
-					name="radioExample" 
+					name="radioExample"
 					value="1"
 					checked={formIn.radio === "1"} />
 				<label htmlFor="radioExample1">This is a radio input<label>
@@ -115,7 +118,7 @@
 					<fieldset>
 						<legend>List of Radios</legend>
 						{radios}
-					</fieldset> 
+					</fieldset>
 					to maintain a huge list of radios within some section */
 
 			Select Box:
@@ -144,14 +147,14 @@
 	React: Derived State
 		It's best practice to have react state determined from one reference point
 		instead of individual states assigned to objects ( defined from the object themselves )
-		
+
 		const [ data, setData ] = React.useState( {
 			entry1 : ...
 			entry2 : ...
 			...
 		} );
 		in the <Main /> used to create a number of entries on the page
-		
+
 		Derived State is when each <Entry /> object has its own state,
 		const [ color, setColor ] = React.useState( "black" );
 		function toggleColor() {
@@ -225,7 +228,7 @@
 			outside the function it's possible to change the props passed into the function, but
 			props are passed into reusable HTML to make components reusable, like with the cards
 			props are parameters, state contains parameters managed by the page instead of the user
-		State are values managed by the component themselves, like changing values 
+		State are values managed by the component themselves, like changing values
 			The text wall generator should be managed by the component whenever the input button is clicked
 
 		Declaring State:
@@ -235,7 +238,7 @@
 			When setThing is called, thing is changed to whatever setThing returns
 
 
-		Form: 
+		Form:
 		button reloads the page cause its within a form and react auto-submits forms on button click
 		<form> -> <div className="form"> fixes that, though thats kind of a trashy workaround
 
@@ -262,7 +265,7 @@
 			direction can have an angle measurement
 				0deg is to top
 				90deg is to right
-				180deg is to bottom 
+				180deg is to bottom
 				270deg is to left
 			colors can have a unit to specify where the gradient ends
 				color2 50% with no colors afterward will repeat the gradient after 50% of the div
@@ -271,7 +274,7 @@
 
 		overflow: hidden makes sure nothing can show up outside of the div's bounds
 		For example, the images in cards are placed out of bounds so their center doesn't appear
-		Default is visible, forcing stuff outside of the bounds of the div 
+		Default is visible, forcing stuff outside of the bounds of the div
 		overflow-y: auto allows scrolling but it doesn't specify a min height
 		If the div is squished and h1's fatass takes up all the room,
 		Lower divs that have overflow-y set to auto will have 0 height because they're auto-set to scroll
@@ -305,7 +308,7 @@
 		overflow-y: auto presents the vertical scroll bar
 		overflow-x: auto presents the horizontal scroll bar
 		setting either to hidden hides their respective scroll bar
-	
+
 	React: Props
 		function add( a, b ) {
 			return a + b
