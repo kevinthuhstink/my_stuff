@@ -22,16 +22,7 @@ function Dropdown( props ) {
 }
 
 export default function Header( props ) {
-  const _imgs = data.icons;
-  //instance of an incrementer "class"
-  /*
-  const inc = ( function() {
-    let num = 0;
-    //cycle num mod len
-    return () => ++num % _imgs.length;
-  } )(); */
-
-  //the incrementer "class" is mad unreliable
+  const headerIcons = props.title ? data.icons.stinky : data.icons.default;
   const [ icon, setIcon ] = React.useState( 0 );
   function cycleIcon() {
     setIcon( num => num + 1 );
@@ -54,16 +45,14 @@ export default function Header( props ) {
   }
 
   const [ dropdown, setDropdown ] = React.useState( false );
-  function toggleDropdown() {
-    setDropdown( _toggle => !_toggle );
-  }
+  const toggleDropdown = () => setDropdown( prevDropdown => !prevDropdown );
 
   return (
     <header style={headerStyle}>
       <div className="header--left">
         <img className="header--img"
           onClick={cycleIcon}
-          src={ _imgs[ icon % _imgs.length ]._src } alt='' />
+          src={ headerIcons[ icon % headerIcons.length ]._src } alt='' />
         <h1 className="header--title" style={textColors}>
           { props.title ?
             "kevinthuhstink" :

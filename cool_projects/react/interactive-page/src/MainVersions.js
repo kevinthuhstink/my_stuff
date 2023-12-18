@@ -32,51 +32,18 @@ function Main4( props ) {
     value: 1000,
     pos: 100,
     labelText: "Change Game Speed",
+    onChange: resetInterval,
   }
   const initSliderStates = {
     cellSize: cellSizeSlider,
     interval: intervalSlider,
   }
 
-  const [ sliderStates, setSliderStates ] = React.useState( initSliderStates );
-  React.useEffect( () => initSliders( setSliderStates ), [ props.renderEffects, initSliders ] );
 
   //game render functions
-  function reloadGrid( prevGame, updateGameData ) {
-    //stand-in for the setGame state setter
-    //remakes grid on changes to grid size or cell size
-    if ( prevGame.gameActive )
-      clearInterval( prevGame.gameActive );
+  const [ sliderStates, setSliderStates ] = React.useState( initSliderStates );
+  React.useEffect( () => initSliders( setSliderStates ), [ initSliders ] );
 
-    //use updateGameData to determine what's being reloaded
-    var updateRowNum = updateGameData.rowNum ? updateGameData.rowNum : prevGame.rowNum;
-    var updateColNum = updateGameData.colNum ? updateGameData.colNum : prevGame.colNum;
-
-    //create new cellsData 2d array with width and length
-    if ( updateGameData.rowNum || updateGameData.colNum ) {
-      var updateCellsData = [];
-      for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
-        updateCellsData.push( [] );
-        for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
-          updateCellsData[ypos].push( {
-            alive: false,
-            key: ypos * updateColNum + xpos,
-            id: ypos * updateColNum + xpos,
-          } );
-        }
-      }
-    }
-
-    return {
-      ...prevGame,
-      colNum: updateColNum,
-      rowNum: updateRowNum,
-      cellsData: updateCellsData ? updateCellsData : prevGame.cellsData,
-      gameActive: 0,
-    }
-  } //end reloadGrid()
-
-  React.useEffect( setGrid, [ props.renderEffects, sliderStates.cellSize.value ] );
   function setGrid() {
     const gridObj = document.getElementById( "game--grid" );
     if ( gridObj == null )
@@ -89,21 +56,48 @@ function Main4( props ) {
       const cellSize = sliderStates.cellSize.value;
       const updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
       const updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
-      const update = {
-        colNum: updateColNum,
-        rowNum: updateRowNum,
-      }
-      setGame( prevGame => reloadGrid( prevGame, update ) );
+
+      function reloadGrid( prevGame ) {
+        //stand-in for the setGame state setter
+        //remakes grid on changes to grid size or cell size
+        if ( updateRowNum === prevGame.rowNum && updateColNum === prevGame.colNum )
+          return prevGame;
+        if ( prevGame.gameActive )
+          clearInterval( prevGame.gameActive );
+
+        //create new cellsData 2d array with new width and length
+        var updateCellsData = [];
+        for ( var ypos = 0; ypos < updateRowNum; ypos++ ) {
+          updateCellsData.push( [] );
+          for ( var xpos = 0; xpos < updateColNum; xpos++ ) {
+            updateCellsData[ypos].push( {
+              alive: false,
+              key: ypos * updateColNum + xpos,
+              id: ypos * updateColNum + xpos,
+            } );
+          }
+        }
+
+        return {
+          ...prevGame,
+          colNum: updateColNum,
+          rowNum: updateRowNum,
+          cellsData: updateCellsData,
+          gameActive: 0,
+        }
+      } //end reloadGrid()
+
+      setGame( prevGame => reloadGrid( prevGame ) );
     } //end calcGrid()
 
     const gridObserver = new ResizeObserver( gridUpdateEntry => {
-      for ( const entry of gridUpdateEntry ) {
+      for ( const entry of gridUpdateEntry )
         calcGrid( entry );
-      }
     } );
     gridObserver.observe( gridObj );
     return () => gridObserver.disconnect();
   } //end setGrid()
+  React.useEffect( setGrid, [ sliderStates.cellSize.value ] );
 
 
 
@@ -143,12 +137,14 @@ function Main4( props ) {
 
 
   //gameplay functions
+  const runGenerationCallback = React.useCallback( runGeneration, [] );
+  //what this line does is it wraps the runGeneration function
+  //so that the runGenerationCallback itself doesn't change, even if runGeneration will
   function runGeneration() {
-    setGame( function( prevGame ) {
-      const grid = prevGame.cellsData;
-
+    setGame( prevGame => {
       function checkStatus( cell ) {
         //checks if a given cell should live or die according to the rules of the game
+        const grid = prevGame.cellsData;
         const cellID = cell.id;
         const ypos = Math.floor( cellID / prevGame.colNum );
         const xpos = cellID % prevGame.colNum;
@@ -190,15 +186,18 @@ function Main4( props ) {
     } );
   }
 
+  //timers are meant to run async so wrap them in a useEffect
   function runGame() {
     const timingID = game.gameActive ?
       clearInterval( game.gameActive ) :
-      setInterval( runGeneration, sliderStates.interval.value );
+      setInterval( runGenerationCallback, sliderStates.interval.value );
     setGame( prevGame => ( {
       ...prevGame,
       gameActive: timingID,
     } ) );
   }
+
+  //the interval slider callback function
   function resetInterval() {
     setGame( prevGame => {
       if ( !prevGame.gameActive )
@@ -206,17 +205,18 @@ function Main4( props ) {
       clearInterval( prevGame.gameActive );
       return {
         ...prevGame,
-        gameActive: setInterval( runGeneration, sliderStates.interval.value ),
+        gameActive: setInterval( runGenerationCallback, sliderStates.interval.value ),
       }
     } );
   }
-  React.useEffect( resetInterval, [ sliderStates.interval.value ] );
+  React.useEffect( resetInterval, [ sliderStates.interval.value, runGenerationCallback ] );
 
   const gameFunctions = [
     runGeneration,
     runGame,
     toggleID,
     randomGrid,
+    resetInterval,
   ]
 
   return (

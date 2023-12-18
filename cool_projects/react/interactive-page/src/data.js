@@ -5,28 +5,30 @@ import pomni from './img/pomni.jpg';
 import aperture from './img/aperture.png'
 
 const data = {
-  icons: [
-    {
-      key: 0,
-      _src: leliel
-    },
-    {
-      key: 1,
-      _src: kirby
-    },
-    {
-      key: 2,
-      _src: ramiel
-    },
-    {
-      key: 3,
-      _src: pomni
-    },
-    {
-      key: 4,
-      _src: aperture
-    }
-  ],
+  icons: {
+    default: [ 
+      { key: 0,
+        _src: leliel },
+      { key: 1,
+        _src: kirby },
+      { key: 2,
+        _src: ramiel },
+      { key: 3,
+        _src: pomni },
+      { key: 4,
+        _src: aperture } ],
+    stinky: [
+      { key: 0,
+        _src: leliel },
+      { key: 1,
+        _src: kirby },
+      { key: 2,
+        _src: ramiel },
+      { key: 3,
+        _src: pomni },
+      { key: 4,
+        _src: aperture } ],
+  },
   colors: {
     main: {
       taro: "linear-gradient( 120deg, #e6eaff 30%, white 100% )",

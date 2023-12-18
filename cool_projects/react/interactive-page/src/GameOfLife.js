@@ -10,7 +10,7 @@ import React from 'react';
  *
  * Scalable grid, run generations, generations speed slider
  * Click cells on the grid to set them alive/dead
- * White is alive black is dead
+ * Black is alive white is dead
  */
 
 /*
@@ -18,7 +18,7 @@ import React from 'react';
  * sliderValues: { cellSize, intervalTime }
  */
 function ControlPanel( props ) {
-  const [ runGeneration, runGame, toggleID, randomGrid ] = props.gameFunctions;
+  const [ runGeneration, runGame, toggleID, randomGrid, resetInterval ] = props.gameFunctions;
   const { cellSize, interval } = props.sliderStates;
   const buttonColors = props.controlStyle.buttonStyle;
   const sliderStyle = { //read only because this affects multiple sliders
@@ -40,7 +40,7 @@ function ControlPanel( props ) {
         {props.control.showID ? "Hide" : "Show"} Cell ID
       </button>
       <Slider sliderData={cellSize} sliderStyle={sliderStyle} />
-      <Slider sliderData={interval} sliderStyle={sliderStyle} />
+      <Slider sliderData={interval} sliderStyle={sliderStyle} onChange={resetInterval} />
       <button onClick={randomGrid} style={buttonColors}>
         Set Random Grid
       </button>

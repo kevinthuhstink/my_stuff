@@ -80,6 +80,7 @@ function initSliders( setValues ) {
         value: newVal,
       }
     }
+
     setValues( prevValues => ( {
       ...prevValues,
       [slider.id]: updateSliderValues( prevValues[slider.id] ),
