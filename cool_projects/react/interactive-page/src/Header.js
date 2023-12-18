@@ -1,11 +1,8 @@
 import React from 'react';
 import data from './data.js';
 
-/* dropdown TODO:
- * load previous versions
- */
 function Dropdown( props ) {
-  const mainVersionCount = 4;
+  const mainVersionCount = 5;
   var mainSelectors = [];
   for ( var mainVer = 0; mainVer < mainVersionCount; mainVer++ ) {
     var mainSelect = props.selectMainVersion.bind( null, mainVer );
@@ -19,6 +16,7 @@ function Dropdown( props ) {
         <li onClick={mainSelectors[1]}>CSS Review</li>
         <li onClick={mainSelectors[2]}>Reusable Components</li>
         <li onClick={mainSelectors[3]}>Interactive Components</li>
+        <li onClick={mainSelectors[4]}>Game of Life</li>
       </ol>
     </div>
   )
@@ -42,8 +40,8 @@ export default function Header( props ) {
 
   const headerStyle = {
     background: props.taro ?
-      data.colors.taroHeaderBackground :
-      data.colors.defaultHeaderBackground,
+      data.colors.header.taro :
+      data.colors.header.default,
   }
   const textColors = {
     color: props.taro ?
@@ -52,8 +50,8 @@ export default function Header( props ) {
   }
   const dropdownColors = {
     background: props.taro ?
-      data.colors.taroMainBackground :
-      data.colors.defaultMainBackground,
+      data.colors.main.taro :
+      data.colors.main.default,
   }
 
   const [ dropdown, setDropdown ] = React.useState( false );
@@ -74,7 +72,7 @@ export default function Header( props ) {
         </h1>
       </div>
       <div className="header--right">
-        <p className="header--desc" style={textColors}>React Project 3: My first interactive web site</p>
+        <p className="header--desc" style={textColors}>Ongoing Project: React Page</p>
         <button className="header--button" onClick={toggleDropdown}>...</button>
         <Dropdown active={dropdown} colors={dropdownColors} selectMainVersion={props.selectMainVersion} />
       </div>

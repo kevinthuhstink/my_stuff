@@ -93,71 +93,65 @@ export default function Page() {
 
   /* PROJECT 3.3:
    * Sidebar popup menu and drag resizing
-   * Parts include:
-   *   Three dots to represent the popup menu when closed
-   *   The popup menu has to stay there unless clicked off
-   *   Display old variants of the page onclick
-   * The sidebar determines which main gets rendered on screen
-   * want the div to be able to move left and right, not up and down using the dragger
+   * Want the div to be able to move left and right, not up and down using the dragger
    * have the resizer follow the mouse, set state based on its xcoord,
    * then have the Main and Sidebar divs follow it */
-  React.useEffect(
-    function() {
-      if ( !fakeFormData.submit )
-        return; //do nothing if we're on the fake form screen
+  React.useEffect( handleResizer, [ fakeFormData.submit ] );
+  function handleResizer() {
+    if ( !fakeFormData.submit )
+      return; //do nothing if we're on the fake form screen
 
-      //call movement functions on mouse down
-      const resizerObj = document.getElementById( "resizer" );
-      resizerObj.addEventListener( "mousedown", dragResizer );
-      window.addEventListener( "resize", null );
+    const resizerObj = document.getElementById( "resizer" );
+    resizerObj.addEventListener( "mousedown", dragResizer );
+    return () => resizerObj.removeEventListener( "mousedown", dragResizer );
 
-      //kill event listeners when we exit page
-      return ( function() {
-        resizerObj.removeEventListener( "mousedown", dragResizer );
-      } );
+    //drag and move sidebar on mousedown
+    function dragResizer( event ) {
+      //have it on document so the resizer div follows the mouse anywhere in the document
+      event.preventDefault(); //just good to have i guess
+      document.addEventListener( "mousemove", moveOnDrag );
+      document.addEventListener( "mouseup", stopDrag );
 
-      //drag and move sidebar on mousedown
-      function dragResizer( event ) {
-        //have it on document so the resizer div follows the mouse anywhere in the document
-        event.preventDefault(); //just good to have i guess
-        document.addEventListener( "mousemove", moveOnDrag );
-        document.addEventListener( "mouseup", stopDrag );
-
-        function moveOnDrag( event ) {
-          //have the div follow the mouse while updating state
-          const viewWidth = window.innerWidth;
-          var newPos = window.event.screenX;
-          //stop movement if mouse pos is outside 60% and 80% of the screen
-          if ( newPos < viewWidth * .6 || newPos > viewWidth * .8 )
-            return;
-          //convert from px to vw
-          var vwPos = newPos * 100 / viewWidth;
-          setPageStyle( prevpageStyle => ( {
-              ...prevpageStyle,
-              mainWidth: vwPos,
-              sidebarWidth: 100 - vwPos,
-            } )
-          );
-        }
-        function stopDrag( event ) {
-          //kill moving div effects
-          document.removeEventListener( "mousemove", moveOnDrag );
-          document.removeEventListener( "mouseup", stopDrag );
-        }
+      function moveOnDrag( event ) {
+        const viewWidth = window.innerWidth;
+        var mousePos = window.event.screenX;
+        //stop movement if mouse pos is outside 60% and 80% of the screen
+        if ( mousePos < viewWidth * .6 || mousePos > viewWidth * .8 )
+          return;
+        var newWidth = mousePos * 100 / viewWidth; //px -> vw
+        setPageStyle( prevpageStyle => ( {
+          ...prevpageStyle,
+          mainWidth: newWidth,
+          sidebarWidth: 100 - newWidth,
+        } ) );
       }
 
-      //maintain proportions on window resize
-    }, [ fakeFormData.submit ]
-  );
+      function stopDrag( event ) {
+        //kill moving div effects
+        document.removeEventListener( "mousemove", moveOnDrag );
+        document.removeEventListener( "mouseup", stopDrag );
+      }
+    }
+  }
+
 
   //styletools for all Mains
   var Main = MainVersions[pageStyle.mainVersion];
   const mainStyle = {
     background: pageStyle.taro ?
-      data.colors.taroMainBackground :
-      data.colors.defaultMainBackground,
-    width: `${pageStyle.mainWidth}vw`
+      data.colors.main.taro :
+      data.colors.main.default,
+    width: `${pageStyle.mainWidth}vw`,
+    buttonStyle: { //doesn't have to be only css styletools
+      background: pageStyle.taro ?
+        data.colors.header.taro :
+        data.colors.header.default,
+      color: pageStyle.taro ?
+        "black" :
+        "white",
+    },
   }
+
   var sections = [
     <Header
       taro={pageStyle.taro}

@@ -1,6 +1,5 @@
 import React from 'react'
 import Cardbar from './Cardbar.js'
-import TodoList from './TodoList.js'
 import data from './data.js'
 
 function Colorscheme( props ) {
@@ -26,14 +25,14 @@ function FakeFormOut( props ) {
 export default function Sidebar( props ) {
   const sidebarStyle = {
     background: props.pageStyle.taro ?
-      data.colors.taroSidebarBackground :
-      data.colors.defaultSidebarBackground,
+      data.colors.sidebar.taro :
+      data.colors.sidebar.default,
     width: `${props.pageStyle.sidebarWidth}vw`,
   }
   const colors = {
     background: !props.pageStyle.taro ?
-      data.colors.taroHeaderBackground :
-      data.colors.defaultHeaderBackground,
+      data.colors.header.taro :
+      data.colors.header.default,
     color: !props.pageStyle.taro ?
       "black" :
       "white"
@@ -47,7 +46,7 @@ export default function Sidebar( props ) {
   return (
     <div className="sidebar" style={sidebarStyle}>
       <small className="proj">Project 1</small>
-      <TodoList />
+      {data.todoList}
       <small className="proj">Project 2</small>
       <Cardbar />
       <small className="proj">Project 3.1</small>

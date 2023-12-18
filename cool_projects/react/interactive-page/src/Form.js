@@ -35,7 +35,7 @@ export default function Form( props ) {
   const thingElements = things.map( i => <li key={i}>{i}</li> ) //oh wow JSX objs can be keys too
   */
 
-  const [ data, setData ] = React.useState( {
+  const [ APIData, setAPIData ] = React.useState( {
     usrIn: "",
     img: null,
     textOut: "",
@@ -47,17 +47,17 @@ export default function Form( props ) {
       fetch( "https://bible-api.com/john 3:16" ).then(
         fetchBible_fulfill,
         //reject case: instantialize APIData with null (unable to connect)
-        prevData => setData( {
+        prevData => setAPIData( {
           ...prevData,
-          APIData: null,
+          verse: null,
         } )
       ) //end fetch.then
 
-      //fulfill case: fetch verse data and put json into data.APIData
+      //fulfill case: fetch verse APIData and put json into APIData.verse
       function fetchBible_fulfill( call ) {
-        call.json().then( callData => setData( prevData => ( {
+        call.json().then( callData => setAPIData( prevData => ( {
               ...prevData,
-              APIData: callData
+              verse: callData
             } ) )
         );
       }
@@ -65,10 +65,10 @@ export default function Form( props ) {
   );
 
   function bibleVerse() {
-    if ( data.APIData === null )
+    if ( APIData.verse === null )
       return "Could not fetch Bible verse";
-    const setText = data.APIData.text;
-    const setReference = data.APIData.reference;
+    const setText = APIData.verse.text;
+    const setReference = APIData.verse.reference;
     var quote = `${setReference}\r\n${setText}`;
     return quote;
   }
@@ -77,7 +77,7 @@ export default function Form( props ) {
   function out( event ) {
     event.preventDefault();
     var setText, setImg;
-    switch ( data.usrIn ) {
+    switch ( APIData.usrIn ) {
       case ( "donut" ):
         setText = "";
         setImg = donut;
@@ -87,7 +87,7 @@ export default function Form( props ) {
         setImg = null;
         break;
     }
-    setData( prevData => ( {
+    setAPIData( prevData => ( {
       ...prevData,
       img: setImg,
       textOut: setText
@@ -97,7 +97,7 @@ export default function Form( props ) {
   function handleChange( event ) {
     const { name, value } = event.target; //destructure for efficiency
     //name may be a list of inputs so make sure to update all of them
-    setData( prev => ( {
+    setAPIData( prev => ( {
       ...prev,
       [name] : value
     } ) );
@@ -118,22 +118,23 @@ export default function Form( props ) {
           className="usr--in"
           onChange={handleChange}
           name="usrIn"
-          value={data.usrIn} />
-        <button className="usr--button" onClick={out} style={props.colors}></button>
-        <div className="usr--clicky" onClick={onClicky} style={props.colors}>
+          value={APIData.usrIn} />
+        <button className="usr--button" onClick={out} style={props.buttonStyle}></button>
+        <div className="usr--clicky" onClick={onClicky} style={props.buttonStyle}>
           <p className="display--clicky" style={props.textColors}>{clicky}</p>
         </div>
       </form>
       <div className="usr--out">
-        { data.img ?
+        { APIData.img ?
           <div className="donut--out">
-            <img className="donut--gif" src={data.img} alt="" />
+            <img className="donut--gif" src={APIData.img} alt="" />
             <p className="donut--text">rotating<br/>donut</p>
           </div> :
-          <p className="out--text">{data.textOut}</p> }
+          <p className="out--text">{APIData.textOut}</p> }
       </div>
     </div>
   )
+
   /* notes:
    * onClick={newElement()} having the parentheses bugs the shit out of react
    * i guess the parentheses tell react to do the function ? im really unsure tbh

@@ -32,7 +32,7 @@
   font-family: "Ubuntu";
   src:
     local( "Ubuntu" ),
-    url( "../../fonts/Ubuntu/Ubuntu-Bold.ttf" ); 
+    url( "../../fonts/Ubuntu/Ubuntu-Bold.ttf" );
   font-weight: bold;
 }
 body {
@@ -131,7 +131,7 @@ header > div > * {
   z-index: -1;
 }
 main {
-  padding: 0px;
+  padding: 0;
   width: 70vw;
   height: calc( 100vh - 100px );
   position: fixed;
@@ -145,8 +145,7 @@ main {
 }
 main > * {
   color: #222222;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin: 0px 40px;
 }
 .main--title {
   font-size: 48px;
@@ -485,14 +484,13 @@ main > * {
   text-decoration: underline;
   cursor: pointer;
 }
-.main1 .todolist > li::marker {
+main .todolist li::marker {
   color: indigo;
 }
 
 /* PROJECT 4:
  * conway's game of life */
 .game {
-  margin: 0px 40px;
   margin-bottom: 20vw;
 }
 #game--grid {
@@ -528,6 +526,59 @@ main > * {
   font-family: "Ubuntu";
   font-size: 24px;
 }
-.main4 {
+#game--control .slider {
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #333333;
+  opacity: .7;
+  transition: opacity .2s;
+  margin-bottom: 0;
+}
+#game--control .slider:hover {
+  opacity: 1;
+}
+#game--control .slider::-moz-range-thumb {
+  appearance: none;
+  width: 8px;
+  height: 16px;
+}
+.slider--container datalist {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 10px;
+}
+#main4 {
   overflow-x: auto;
+}
+
+/* PROJECT 5:
+ * 3d graphing calculator */
+#calculator {
+  height: 80vh;
+  position: relative;
+}
+
+/* PROJECT 5.1:
+ * custom slider */
+.slider--container {
+  display: flex;
+  width: 100%;
+}
+.slider--body {
+  height: 4px;
+  width: 100%;
+  opacity: .7;
+  transition: opacity .2s;
+}
+.slider--body:hover {
+  opacity: 1;
+}
+.slider--thumb {
+  width: 12px;
+  height: 20px;
+  position: relative;
+  border-radius: 4px;
+  opacity: 1;
 }

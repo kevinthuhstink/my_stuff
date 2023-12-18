@@ -1,5 +1,5 @@
 import React from 'react';
-import data from './data.js'
+import Slider from './Slider.js'
 
 /* PROJECT 4
  * Conway's Game of Life
@@ -19,22 +19,15 @@ import data from './data.js'
  * sliderValues: { cellSize, intervalTime }
  */
 function ControlPanel( props ) {
-  const [ runGeneration, runGame, toggleID, randomGrid, handleSlider ] = props.controlFunctions;
-  const buttonColors = { //colors prop can be sent down multiple layers
-    background: props.pageStyle.taro ?
-      data.colors.taroHeaderBackground :
-      data.colors.defaultHeaderBackground,
-    color: props.pageStyle.taro ?
-      "black" :
-      "white",
-  }
+  const [ runGeneration, runGame, toggleID, randomGrid, handleSlider ] = props.gameFunctions;
+  const buttonColors = props.controlStyle.buttonStyle;
 
   const cellSizeSlider = {
     min: 8,
     max: 32,
     step: 2,
     value: props.control.cellSize,
-    id: "cell--size--slider",
+    id: "cellSize",
     labelText: "Change Cell Size",
   }
   const intervalSlider = {
@@ -42,26 +35,8 @@ function ControlPanel( props ) {
     max: 1000,
     step: 10,
     value: props.control.intervalTime,
-    id: "interval--time--slider",
+    id: "intervalTime",
     labelText: "Change Game Speed",
-  }
-
-  function Slider( props ) {
-    return (
-      <div className="slider--container">
-        <label for={props.id}>
-          {props.labelText}
-        </label>
-        <input type="range"
-          className="slider"
-          min={props.min}
-          max={props.max}
-          step={props.step}
-          value={props.value}
-          onChange={handleSlider}
-          id={props.id} />
-      </div>
-    )
   }
 
   return (
@@ -75,10 +50,10 @@ function ControlPanel( props ) {
       <button onClick={toggleID} style={buttonColors}>
         {props.control.showID ? "Hide" : "Show"} Cell ID
       </button>
-      <Slider {...cellSizeSlider} />
-      <Slider {...intervalSlider} />
+      <Slider {...cellSizeSlider} handleSlider={handleSlider} />
+      <Slider {...intervalSlider} handleSlider={handleSlider} />
       <button onClick={randomGrid} style={buttonColors}>
-        Random Grid Start
+        Set Random Grid
       </button>
     </div>
   )
@@ -90,8 +65,6 @@ function ControlPanel( props ) {
  * grid: { cellSize, rowNum, colNum, cellsData }
  */
 function GameGrid( props ) {
-  const [ toggleCell ] = props.gridFunctions;
-
   function Cell( props ) {
     const cellStyle = {
       background: props.alive ?
@@ -119,7 +92,7 @@ function GameGrid( props ) {
           {...cell}
           cellSize={props.grid.cellSize}
           showID={props.grid.showID}
-          toggleCell={() => toggleCell(cell.id)} />
+          toggleCell={() => props.toggleCell(cell.id)} />
       )
     );
 
@@ -131,13 +104,10 @@ function GameGrid( props ) {
 }
 
 export default function GameOfLife( props ) {
-  const slicePos = 1;
-  const controlFunctions = props.gameFunctions.slice( slicePos );
-  const gridFunctions = props.gameFunctions.slice( 0, props.gameFunctions.length - slicePos - 1 );
   return (
     <div className="game">
-      <ControlPanel control={props.game} pageStyle={props.pageStyle} controlFunctions={controlFunctions} />
-      <GameGrid grid={props.game} gridFunctions={gridFunctions} />
+      <ControlPanel control={props.game} controlStyle={props.gameStyle} gameFunctions={props.gameFunctions} />
+      <GameGrid grid={props.game} toggleCell={props.toggleCell} />
     </div>
   )
 }
