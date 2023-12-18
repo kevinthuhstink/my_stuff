@@ -38,46 +38,76 @@ function Main5( props ) {
     const sliders = document.getElementsByClassName( "slider--container" );
     for ( var slider of sliders ) {
       const sliderThumb = slider.getElementsByClassName( "slider--thumb" )[0];
-      sliderThumb.addEventListener( "mousedown", () => handleSlider( slider.id ) );
+      const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
+      sliderThumb.addEventListener( "mousedown", handleSlider );
+      sliderBody.addEventListener( "click", handleSliderClick );
     }
 
-    function handleSlider( sliderID ) {
-      slider = document.getElementById( sliderID );
+    function handleSlider( event ) {
+      event.preventDefault();
+      const sliderThumb = event.target;
+      const slider = sliderThumb.parentElement.parentElement;
+      const dragSlider = event => moveSlider( event, slider ); 
+      //anon funcs are unremovable because react doesn't know how else to "reference" the function when removing event listeners
+      document.addEventListener( "mousemove", dragSlider );
+      document.addEventListener( "mouseup", stopDrag );
+      //document is required because it means sliderThumb follows the mouse anywhere in the document
+      //rather than when the mouse is only in the sliderThumb div
+
+      function stopDrag( event ) {
+        document.removeEventListener( "mousemove", dragSlider );
+        document.removeEventListener( "mouseup", stopDrag );
+      }
+    }
+
+    function handleSliderClick( event ) {
+      event.preventDefault();
+      var slider = event.target.parentElement;
+      if ( slider.className === "slider--body" )
+        slider = slider.parentElement;
+      moveSlider( event, slider );
+    }
+
+    function moveSlider( event, slider ) {
+      event.preventDefault();
+      //physically move the slider and update its value
+      //works for both drag and click
+      console.log( slider );
       const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
-      const sliderThumb = slider.getElementsByClassName( "slider--thumb" )[0];
-      sliderThumb.addEventListener( "mousemove", moveSlider );
-      sliderThumb.addEventListener( "mouseup", stopDrag );
+      console.log( sliderBody );
+      const { left, right, width } = sliderBody.getBoundingClientRect();
+      const mousePos = event.screenX;
+      if ( mousePos < left || mousePos > right )
+        return; //set bounds
 
-      function moveSlider( event ) {
-        //physically move the slider and update its value
-        const { left, right, width } = sliderBody.getBoundingClientRect();
-        const mousePos = event.screenX;
-        if ( mousePos < left || mousePos > right )
-          return; //set bounds
-        console.log( slider.id );
-
-        function updatePosition( thisSlider ) {
-          const newPos = ( mousePos - left ) / width;
-          const newVal = ( newPos - left ) * ( thisSlider.max - thisSlider.min );
-          return {
-            ...thisSlider,
-            value: newVal,
-            thumbStyle: {
-              ...thisSlider.thumbStyle,
-              left: newPos,
-            }
+      function updatePosition( thisSlider ) {
+        const newPos = ( mousePos - left - 6 ) * 100 / width; //in %
+        const newVal = newPos * ( thisSlider.max - thisSlider.min );
+        return {
+          ...thisSlider,
+          value: newVal,
+          thumbStyle: {
+            ...thisSlider.thumbStyle,
+            left: `${newPos}%`,
           }
         }
-
-        setValues( prevValues => ( {
-          ...prevValues,
-          [slider.id]: updatePosition( prevValues[slider.id] ),
-        } ) );
       }
 
-      function stopDrag() {
-        sliderThumb.removeEventListener( "mousemove", moveSlider );
-        sliderThumb.removeEventListener( "mouseup", stopDrag );
+      setValues( prevValues => {
+        return {
+          ...prevValues,
+          [slider.id]: updatePosition( prevValues[slider.id] ),
+        };
+      } );
+    }
+
+    return cleanupEffects;
+    function cleanupEffects() {
+      for ( var slider of sliders ) {
+        const sliderThumb = slider.getElementsByClassName( "slider--thumb" )[0];
+        const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
+        sliderThumb.removeEventListener( "mousedown", handleSlider );
+        sliderBody.removeEventListener( "click", handleSliderClick );
       }
     }
   }
@@ -86,7 +116,7 @@ function Main5( props ) {
     <main id="main5" style={props.mainStyle}>
       <h1 className="main--title">Main 5: 3D Graphing Calculator</h1>
       <div id="calculator">
-        <Slider sliderStyle={testSlider} />
+        <Slider sliderStyle={values.testSlider} />
       </div>
     </main>
   );

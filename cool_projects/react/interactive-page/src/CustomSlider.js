@@ -4,10 +4,10 @@ import React from 'react'
  * Reinventing input type="range"
  */
 export default function Slider( props ) {
-  const { containerStyle, bodyStyle, thumbStyle } = props.sliderStyle;
+  const { id, max, min, value, containerStyle, bodyStyle, thumbStyle } = props.sliderStyle;
 
   return (
-    <div className="slider--container" id={props.id} style={containerStyle}>
+    <div className="slider--container" id={id} style={containerStyle}>
       <label>
         {props.labelText}
       </label>
