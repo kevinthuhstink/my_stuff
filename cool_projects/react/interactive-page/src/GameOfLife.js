@@ -1,5 +1,4 @@
 import React from 'react';
-import Slider from './Slider.js'
 
 /* PROJECT 4
  * Conway's Game of Life
@@ -19,25 +18,15 @@ import Slider from './Slider.js'
  * sliderValues: { cellSize, intervalTime }
  */
 function ControlPanel( props ) {
-  const [ runGeneration, runGame, toggleID, randomGrid, handleSlider ] = props.gameFunctions;
+  const [ runGeneration, runGame, toggleID, randomGrid ] = props.gameFunctions;
+  const { cellSize, interval } = props.sliderStates;
   const buttonColors = props.controlStyle.buttonStyle;
-
-  const cellSizeSlider = {
-    min: 8,
-    max: 32,
-    step: 2,
-    value: props.control.cellSize,
-    id: "cellSize",
-    labelText: "Change Cell Size",
-  }
-  const intervalSlider = {
-    min: 30,
-    max: 1000,
-    step: 10,
-    value: props.control.intervalTime,
-    id: "intervalTime",
-    labelText: "Change Game Speed",
-  }
+  const sliderStyle = { //read only because this affects multiple sliders
+    thumbStyle: {
+      ...buttonColors,
+    }
+  };
+  const Slider = props.Slider;
 
   return (
     <div id="game--control">
@@ -50,8 +39,8 @@ function ControlPanel( props ) {
       <button onClick={toggleID} style={buttonColors}>
         {props.control.showID ? "Hide" : "Show"} Cell ID
       </button>
-      <Slider {...cellSizeSlider} handleSlider={handleSlider} />
-      <Slider {...intervalSlider} handleSlider={handleSlider} />
+      <Slider sliderData={cellSize} sliderStyle={sliderStyle} />
+      <Slider sliderData={interval} sliderStyle={sliderStyle} />
       <button onClick={randomGrid} style={buttonColors}>
         Set Random Grid
       </button>
@@ -65,14 +54,16 @@ function ControlPanel( props ) {
  * grid: { cellSize, rowNum, colNum, cellsData }
  */
 function GameGrid( props ) {
+  const cellSize = props.sliderStates.cellSize.value;
+
   function Cell( props ) {
     const cellStyle = {
       background: props.alive ?
         "gray" :
         "white",
-      width: `${props.cellSize - 2}px`,
-      height: `${props.cellSize - 2}px`,
-      fontSize: `${props.cellSize / 2 - 1}px`,
+      width: `${cellSize - 2}px`,
+      height: `${cellSize - 2}px`,
+      fontSize: `${cellSize / 2 - 1}px`,
     }
     return (
       <div className="cell" style={cellStyle} onClick={props.toggleCell}>
@@ -82,15 +73,14 @@ function GameGrid( props ) {
   }
 
   const gridStyle = {
-    gridTemplateColumns: `${props.grid.cellSize}px `.repeat( props.grid.colNum ),
-    gridTemplateRows: `${props.grid.cellSize}px `.repeat( props.grid.rowNum ),
+    gridTemplateColumns: `${cellSize}px `.repeat( props.grid.colNum ),
+    gridTemplateRows: `${cellSize}px `.repeat( props.grid.rowNum ),
   }
   if ( props.grid.cellsData ) //ensures we render when cellsData gets instantiated in Main in useEffect
     var cells = props.grid.cellsData.map(
       cellRow => cellRow.map(
         cell => <Cell
           {...cell}
-          cellSize={props.grid.cellSize}
           showID={props.grid.showID}
           toggleCell={() => props.toggleCell(cell.id)} />
       )
@@ -106,8 +96,16 @@ function GameGrid( props ) {
 export default function GameOfLife( props ) {
   return (
     <div className="game">
-      <ControlPanel control={props.game} controlStyle={props.gameStyle} gameFunctions={props.gameFunctions} />
-      <GameGrid grid={props.game} toggleCell={props.toggleCell} />
+      <ControlPanel
+        control={props.game}
+        controlStyle={props.gameStyle}
+        gameFunctions={props.gameFunctions}
+        Slider={props.Slider}
+        sliderStates={props.sliderStates} />
+      <GameGrid
+        grid={props.game}
+        toggleCell={props.toggleCell}
+        sliderStates={props.sliderStates} />
     </div>
   )
 }

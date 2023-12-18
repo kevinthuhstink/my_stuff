@@ -8,128 +8,38 @@ import Cardbar from './Cardbar.js';
 import Form from './Form.js';
 //main4
 import GameOfLife from './GameOfLife.js'
-import Slider from './CustomSlider.js'
-
-function Main5( props ) {
-  const testSlider = {
-    id: "testSlider",
-    max: 0,
-    min: 100,
-    value: 50,
-    containerStyle: {
-      flexDirection: "row",
-    },
-    bodyStyle: {
-      background: "#333333",
-    },
-    thumbStyle: {
-      background: props.mainStyle.buttonStyle.background,
-      left: "50%",
-    },
-  };
-
-  const sliderData = {
-    testSlider: testSlider,
-  }
-
-  const [ values, setValues ] = React.useState( sliderData );
-  React.useEffect( initSliders, [ props.renderEffects ] );
-  function initSliders() {
-    const sliders = document.getElementsByClassName( "slider--container" );
-    for ( var slider of sliders ) {
-      const sliderThumb = slider.getElementsByClassName( "slider--thumb" )[0];
-      const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
-      sliderThumb.addEventListener( "mousedown", handleSlider );
-      sliderBody.addEventListener( "click", handleSliderClick );
-    }
-
-    function handleSlider( event ) {
-      event.preventDefault();
-      const sliderThumb = event.target;
-      const slider = sliderThumb.parentElement.parentElement;
-      const dragSlider = event => moveSlider( event, slider ); 
-      //anon funcs are unremovable because react doesn't know how else to "reference" the function when removing event listeners
-      document.addEventListener( "mousemove", dragSlider );
-      document.addEventListener( "mouseup", stopDrag );
-      //document is required because it means sliderThumb follows the mouse anywhere in the document
-      //rather than when the mouse is only in the sliderThumb div
-
-      function stopDrag( event ) {
-        document.removeEventListener( "mousemove", dragSlider );
-        document.removeEventListener( "mouseup", stopDrag );
-      }
-    }
-
-    function handleSliderClick( event ) {
-      event.preventDefault();
-      var slider = event.target.parentElement;
-      if ( slider.className === "slider--body" )
-        slider = slider.parentElement;
-      moveSlider( event, slider );
-    }
-
-    function moveSlider( event, slider ) {
-      event.preventDefault();
-      //physically move the slider and update its value
-      //works for both drag and click
-      console.log( slider );
-      const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
-      console.log( sliderBody );
-      const { left, right, width } = sliderBody.getBoundingClientRect();
-      const mousePos = event.screenX;
-      if ( mousePos < left || mousePos > right )
-        return; //set bounds
-
-      function updatePosition( thisSlider ) {
-        const newPos = ( mousePos - left - 6 ) * 100 / width; //in %
-        const newVal = newPos * ( thisSlider.max - thisSlider.min );
-        return {
-          ...thisSlider,
-          value: newVal,
-          thumbStyle: {
-            ...thisSlider.thumbStyle,
-            left: `${newPos}%`,
-          }
-        }
-      }
-
-      setValues( prevValues => {
-        return {
-          ...prevValues,
-          [slider.id]: updatePosition( prevValues[slider.id] ),
-        };
-      } );
-    }
-
-    return cleanupEffects;
-    function cleanupEffects() {
-      for ( var slider of sliders ) {
-        const sliderThumb = slider.getElementsByClassName( "slider--thumb" )[0];
-        const sliderBody = slider.getElementsByClassName( "slider--body" )[0];
-        sliderThumb.removeEventListener( "mousedown", handleSlider );
-        sliderBody.removeEventListener( "click", handleSliderClick );
-      }
-    }
-  }
-
-  return (
-    <main id="main5" style={props.mainStyle}>
-      <h1 className="main--title">Main 5: 3D Graphing Calculator</h1>
-      <div id="calculator">
-        <Slider sliderStyle={values.testSlider} />
-      </div>
-    </main>
-  );
-}
+import sliderMechanics from './Slider.js'
 
 function Main4( props ) {
   const [ game, setGame ] = React.useState( {
     //init default values
     showID: false,
-    gameActive: 0,
-    intervalTime: 1000,
-    cellSize: 32, //includes border
+    gameActive: null,
   } );
+  const [ Slider, initSliders ] = sliderMechanics;
+  const cellSizeSlider = {
+    id: "cellSize",
+    min: 8,
+    max: 32,
+    value: 32, //includes border
+    pos: 100,
+    labelText: "Change Cell Size",
+  }
+  const intervalSlider = {
+    id: "interval",
+    min: 30,
+    max: 1000,
+    value: 1000,
+    pos: 100,
+    labelText: "Change Game Speed",
+  }
+  const initSliderStates = {
+    cellSize: cellSizeSlider,
+    interval: intervalSlider,
+  }
+
+  const [ sliderStates, setSliderStates ] = React.useState( initSliderStates );
+  React.useEffect( () => initSliders( setSliderStates ), [ props.renderEffects, initSliders ] );
 
   //game render functions
   function reloadGrid( prevGame, updateGameData ) {
@@ -141,7 +51,6 @@ function Main4( props ) {
     //use updateGameData to determine what's being reloaded
     var updateRowNum = updateGameData.rowNum ? updateGameData.rowNum : prevGame.rowNum;
     var updateColNum = updateGameData.colNum ? updateGameData.colNum : prevGame.colNum;
-    var updateCellSize = updateGameData.cellSize ? updateGameData.cellSize : prevGame.cellSize;
 
     //create new cellsData 2d array with width and length
     if ( updateGameData.rowNum || updateGameData.colNum ) {
@@ -160,7 +69,6 @@ function Main4( props ) {
 
     return {
       ...prevGame,
-      cellSize: updateCellSize,
       colNum: updateColNum,
       rowNum: updateRowNum,
       cellsData: updateCellsData ? updateCellsData : prevGame.cellsData,
@@ -168,7 +76,7 @@ function Main4( props ) {
     }
   } //end reloadGrid()
 
-  React.useEffect( setGrid, [ props.renderEffects, game.cellSize ] );
+  React.useEffect( setGrid, [ props.renderEffects, sliderStates.cellSize.value ] );
   function setGrid() {
     const gridObj = document.getElementById( "game--grid" );
     if ( gridObj == null )
@@ -178,8 +86,9 @@ function Main4( props ) {
     function calcGrid( entry ) {
       //apparently ResizeObserver activates on initialization as well
       //only entry.borderBoxSizes are altered and the function isn't actually ran
-      const updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / game.cellSize );
-      const updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / game.cellSize );
+      const cellSize = sliderStates.cellSize.value;
+      const updateColNum = Math.floor( ( entry.borderBoxSize[0].inlineSize - 32 ) / cellSize );
+      const updateRowNum = Math.floor( ( entry.borderBoxSize[0].blockSize - 32 ) / cellSize );
       const update = {
         colNum: updateColNum,
         rowNum: updateRowNum,
@@ -193,10 +102,9 @@ function Main4( props ) {
       }
     } );
     gridObserver.observe( gridObj );
-
-    //cleanup the previous effect before starting a new one
     return () => gridObserver.disconnect();
   } //end setGrid()
+
 
 
   //game mutator functions
@@ -233,31 +141,9 @@ function Main4( props ) {
     } ) );
   }
 
-  function handleSlider( event ) {
-    const { id, value } = event.target;
-    //destructure id and value from the input type=range objects
-
-    if ( id === "intervalTime" ) {
-      //stops previous and sets new intervals accordingly when slider changes
-      if ( game.gameActive ) {
-        clearInterval( game.gameActive );
-        setGame( prevGame => ( {
-          ...prevGame,
-          gameActive: setInterval( runGeneration, value ),
-        } ) );
-      }
-    }
-
-    setGame( prevGame => ( {
-      ...prevGame,
-      [id]: value,
-    } ) );
-  }
-
 
   //gameplay functions
   function runGeneration() {
-    console.log( "running generation" );
     setGame( function( prevGame ) {
       const grid = prevGame.cellsData;
 
@@ -305,29 +191,44 @@ function Main4( props ) {
   }
 
   function runGame() {
+    const timingID = game.gameActive ?
+      clearInterval( game.gameActive ) :
+      setInterval( runGeneration, sliderStates.interval.value );
+    setGame( prevGame => ( {
+      ...prevGame,
+      gameActive: timingID,
+    } ) );
+  }
+  function resetInterval() {
     setGame( prevGame => {
-      const timingID = prevGame.gameActive ?
-        clearInterval( prevGame.gameActive ) :
-        setInterval( runGeneration, prevGame.intervalTime );
+      if ( !prevGame.gameActive )
+        return prevGame;
+      clearInterval( prevGame.gameActive );
       return {
         ...prevGame,
-        gameActive: timingID,
-      };
+        gameActive: setInterval( runGeneration, sliderStates.interval.value ),
+      }
     } );
   }
+  React.useEffect( resetInterval, [ sliderStates.interval.value ] );
 
   const gameFunctions = [
     runGeneration,
     runGame,
     toggleID,
     randomGrid,
-    handleSlider,
   ]
 
   return (
     <main id="main4" style={props.mainStyle}>
       <h1 className="main--title">Main 4: Game of Life</h1>
-      <GameOfLife game={game} gameStyle={props.mainStyle} toggleCell={toggleCell} gameFunctions={gameFunctions} />
+      <GameOfLife
+        game={game}
+        gameStyle={props.mainStyle}
+        toggleCell={toggleCell}
+        gameFunctions={gameFunctions}
+        Slider={Slider}
+        sliderStates={sliderStates} />
     </main>
   )
 }
@@ -368,11 +269,10 @@ function Main3( props ) {
 //load the main version corresponding to props.mainVersion
 //0 (default) means most recent
 const MainVersions = [
-  Main5,
+  Main4,
   Main1,
   Main2,
   Main3,
-  Main4,
 ]
 
 export default MainVersions;

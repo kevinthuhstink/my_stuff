@@ -543,7 +543,7 @@ main .todolist li::marker {
   width: 8px;
   height: 16px;
 }
-.slider--container datalist {
+.slider--builtin datalist {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -553,32 +553,31 @@ main .todolist li::marker {
   overflow-x: auto;
 }
 
-/* PROJECT 5:
- * 3d graphing calculator */
-#calculator {
-  height: 80vh;
-  position: relative;
-}
-
-/* PROJECT 5.1:
+/* PROJECT 4.1:
  * custom slider */
 .slider--container {
   display: flex;
   width: 100%;
+  flex-direction: column;
 }
 .slider--body {
+  display: flex;
   height: 4px;
   width: 100%;
   opacity: .7;
   transition: opacity .2s;
+  background: #333333;
+  align-self: center;
 }
 .slider--body:hover {
   opacity: 1;
 }
 .slider--thumb {
-  width: 12px;
-  height: 20px;
+  width: 8px;
+  height: 16px;
   position: relative;
+  border: solid gray 1px;
   border-radius: 4px;
   opacity: 1;
+  align-self: center;
 }
