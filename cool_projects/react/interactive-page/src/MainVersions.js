@@ -23,7 +23,7 @@ function Main4( props ) {
     max: 32,
     value: 32, //includes border
     pos: 100,
-    labelText: "Change Cell Size",
+    sliderTitle: "Change Cell Size",
   }
   const intervalSlider = {
     id: "interval",
@@ -31,8 +31,7 @@ function Main4( props ) {
     max: 1000,
     value: 1000,
     pos: 100,
-    labelText: "Change Game Speed",
-    onChange: resetInterval,
+    sliderTitle: "Change Game Speed",
   }
   const initSliderStates = {
     cellSize: cellSizeSlider,
@@ -98,7 +97,6 @@ function Main4( props ) {
     return () => gridObserver.disconnect();
   } //end setGrid()
   React.useEffect( setGrid, [ sliderStates.cellSize.value ] );
-
 
 
   //game mutator functions

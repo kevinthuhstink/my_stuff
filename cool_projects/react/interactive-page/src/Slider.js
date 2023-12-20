@@ -4,7 +4,7 @@ import React from 'react'
  * Reinventing input type="range"
  */
 function Slider( props ) {
-  const { id, min, max, value, pos, labelText } = props.sliderData;
+  const { id, min, max, value, pos, sliderTitle, labels } = props.sliderData;
   const { thumbStyle } = props.sliderStyle;
   const sliderProps = {
     id: id,
@@ -13,14 +13,24 @@ function Slider( props ) {
     value: value,
   };
 
+  var labelObjs = [ <option key={0}>{min}</option> ];
+  if ( labels ) {
+    const extraLabels = labels.map( label => <option key={label.key}>{label.value}</option> );
+    labelObjs.push( ...extraLabels );
+  }
+  labelObjs.push( <option key={labelObjs.length}>{max}</option> );
+
   return (
     <div className="slider--container" {...sliderProps}>
       <label>
-        {labelText}
+        {sliderTitle}
       </label>
       <div className="slider--body">
         <div className="slider--thumb" style={{...thumbStyle, left: `${pos}%` }} draggable='true' />
       </div>
+      <dataset>
+        {labelObjs}
+      </dataset>
     </div>
   );
 }

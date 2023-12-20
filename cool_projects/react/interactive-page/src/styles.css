@@ -581,3 +581,11 @@ main .todolist li::marker {
   opacity: 1;
   align-self: center;
 }
+.slider--container dataset {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.slider--container dataset > option {
+  font-size: 12px;
+}

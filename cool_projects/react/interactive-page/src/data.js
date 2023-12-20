@@ -3,10 +3,16 @@ import kirby from './img/kirby.png';
 import ramiel from './img/ramiel.webp';
 import pomni from './img/pomni.jpg';
 import aperture from './img/aperture.png'
+import kevinthuhstink from './img/kevinthuhstink.jpg'
+import jin from './img/jin.jpg'
+import joon from './img/joon.jpg'
+import tyler from './img/tyler.jpg'
+import josh from './img/josh.jpg'
+import miles from './img/miles.jpg'
 
 const data = {
   icons: {
-    default: [ 
+    default: [
       { key: 0,
         _src: leliel },
       { key: 1,
@@ -19,15 +25,17 @@ const data = {
         _src: aperture } ],
     stinky: [
       { key: 0,
-        _src: leliel },
+        _src: kevinthuhstink },
       { key: 1,
-        _src: kirby },
+        _src: josh },
       { key: 2,
-        _src: ramiel },
+        _src: tyler },
       { key: 3,
-        _src: pomni },
+        _src: joon },
       { key: 4,
-        _src: aperture } ],
+        _src: miles },
+      { key: 5,
+        _src: jin } ],
   },
   colors: {
     main: {
