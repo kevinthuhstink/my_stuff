@@ -1,401 +1,390 @@
-  TODO:
-        JS:
-            Include border corrections on window resize
-            Include dynamic intervals during active game
-            Include the friend group's faces somewhere
-        CSS:
-			SVG: Scalable Vector Graphics
-        C:
-			HashMap data structure,
-				print the key-value pair of an array list for debugging purposes
-				put() and remove() values
+TODO:
+    CSS:
+        SVG: Scalable Vector Graphics
+    C:
+        C can wait for a while
+        HashMap data structure,
+                print the key-value pair of an array list for debugging purposes
+                put() and remove() values
+
 
 12/15/2023:
     JS: Conway's Game of Life is complete!
+        Time to move on to Node.js
 
 12/11/2023:
     JS: ResizeObserver
         ResizeObserver takes a function that acts on all the elements it observes
         The function isn't ran whenever the elements' boxes change dimensions, rather
         the function is ran once and the ResizeObserverEntry's borderBoxSize,
-            entry.borderBoxSize[0].inlineSize
-            entry.borderBoxSize[0].blockSize
+        entry.borderBoxSize[0].inlineSize
+        entry.borderBoxSize[0].blockSize
         is what gets changed in the function, similar to React state
 
 11/27/2023:
-	JS: Events
-		EventTarget.addEventListener( type, function listener )
-		runs the listener function when an event of that type occurs
-		to run the listener function, addEventListener passes the event into the listener
-		which is what it means for that function to be a listener
-			( it takes the event and responds )
-		to make something we want happen, it might be necessary to prevent default
-			function listener( event ) {
-				event.preventDefault();
-				...
-			}
-		so the actions taken are only the actions that we specify
+    JS: Events
+        EventTarget.addEventListener( type, function listener )
+        runs the listener function when an event of that type occurs
+        to run the listener function, addEventListener passes the event into the listener
+        which is what it means for that function to be a listener ( it takes the event and responds )
+        to make something we want happen, it might be necessary to prevent default
+            function listener( event ) {
+                event.preventDefault();
+                ...
+            }
+        so the actions taken are only the actions that we specify
 
 11/19/2023:
-	React: Effects
-		Reect's primary task is to interact with the DOM/browser to render UI
-			managing the state of the program through different render cycles ( remember state values )
-			update the page accordingly when the state changes
-		React can't handle:
-			localStorage,
-			API/database interactions,
-			Subscriptions ( web sockets ),
-			and more
-		Those things are called side effects and they're out of the scope of React's control
-			const [ _data, set_data ] = React.useState( {} );
-			fetch( [link] )
-				.then( call => call.json() )
-				.then( data => set_data( data ) );
-			constantly re-renders the page because React doesn't know how to make API calls on its own within the main body
-			React handles the API call with fetch() and calls set_data, which re-renders the program, which re-calls fetch()
-		useEffect() allows us to use side effects like those nasty API calls and JS Promises
-		useEffect() takes a function and runs an effect after the render is committed to the screen
-			useEffect() takes React from functional to imperative ( imperative means telling computers step-by-step algos )
+    React: Effects
+        React's primary task is to interact with the DOM/browser to render UI
+        managing the state of the program through different render cycles ( remember state values )
+        update the page accordingly when the state changes
+        React can't handle:
+            localStorage,
+            API/database interactions,
+            Subscriptions ( web sockets ),
+            and more
+        Those things are called side effects and they're out of the scope of React's control
+            const [ _data, set_data ] = React.useState( {} );
+            fetch( [link] )
+                .then( call => call.json() )
+                .then( data => set_data( data ) );
+        constantly re-renders the page because React doesn't know how to make API calls on its own within the main body
+        React handles the API call with fetch() and calls set_data, which re-renders the program, which re-calls fetch()
+        useEffect() allows us to use side effects like those nasty API calls and JS Promises
+        useEffect() takes a function and runs an effect after the render is committed to the screen
+        useEffect() takes React from functional to imperative ( imperative means telling computers step-by-step algos )
 
-		useEffect( function, [ ...fireEffectOn ] )
-			The first parameter is a function that tells React what to do with that effect
-			The second parameter is an dependencies array that tells React when the effect should fire
-			The effect fires whenever something in the dependencies array changes
-				No dependencies array causes React to default to "fire effect on any change" which is kinda bad
-			To clean up whatever effects were created by the useEffect,
-			the first parameter function needs to return a function that cleans up the effect.
-				For a web socket subscription() effect, the function needs to return unsubscribe() to sever that connection
+        useEffect( function, [ ...fireEffectOn ] )
+        The first parameter is a function that tells React what to do with that effect
+        The second parameter is an dependencies array that tells React when the effect should fire
+        The effect fires whenever something in the dependencies array changes
+        No dependencies array causes React to default to "fire effect on any change" which is kinda bad
+        To clean up whatever effects were created by the useEffect,
+        the first parameter function needs to return a function that cleans up the effect.
+        For a web socket subscription() effect, the function needs to return unsubscribe() to sever that connection
 
 11/14/2023:
-	React: Controlled Components
-		Back in derived state, it's not best to have each object maintain its own state as well as the state "derived" from the Main
-		So that each object can have one reference of "truth" instead of taking multiple truths from different states
-		Controlled Components follow similar reasoning, where each input component has its value tied to the state
-			<input
-				type="text"
-				onChange={handleChange}
-				value={formIn.data} />
-		In this way, the value of the input is determined by the state instead of by the user,
-		and the user gets to determine the value of the state that determines the component
+    React: Controlled Components
+        Back in derived state, it's not best to have each object maintain its own state as well as the state "derived" from the Main
+        So that each object can have one reference of "truth" instead of taking multiple truths from different states
+        Controlled Components follow similar reasoning, where each input component has its value tied to the state
+            <input
+                type="text"
+                onChange={handleChange}
+                value={formIn.data} />
+        In this way, the value of the input is determined by the state instead of by the user,
+        and the user gets to determine the value of the state that determines the component
 
-		Some other <form> components are
-			Textarea:
-				<textarea /> ( almost identical to standard text input )
+        Some other <form> components are
+            Textarea:
+            <textarea /> ( almost identical to standard text input )
 
-			Checkbox:
-				//inits to either true or false based on the state it was initialized by
-				<input
-					type="checkbox"
-					name="checkboxExample"
-					id="checkboxExample" //so we can grab label htmlFor
-					checked={ formIn.checkbox } />
-				<label htmlFor="checkboxExample">This is a checkbox input<label>
+            Checkbox:
+                //inits to either true or false based on the state it was initialized by
+                <input
+                type="checkbox"
+                name="checkboxExample"
+                id="checkboxExample" //so we can grab label htmlFor
+                checked={ formIn.checkbox } />
+                <label htmlFor="checkboxExample">This is a checkbox input<label>
 
-			Radio:
-				//the result of having multiple radios under the same name is that only one can be selected at a time
-				<input
-					type="radio"
-					id="radioExample1"
-					name="radioExample"
-					value="1"
-					checked={formIn.radio === "1"} />
-				<label htmlFor="radioExample1">This is a radio input<label>
-				<input
-					type="radio"
-					id="radioExample2"
-					name="radioExample"
-					value="2"
-					checked={formIn.radio === "2"} />
-				<label htmlFor="radioExample2">This is a radio input<label>
-				<input
-					type="radio"
-					id="radioExample3"
-					name="radioExample"
-					value="3"
-					checked={formIn.radio === "3"} />
-				<label htmlFor="radioExample3">This is a radio input<label>
-					//note that the result of having one selectable option out of multiple
-					//requires us to set checked to be a boolean equal the one we selected
-					//since the state polls all radios at the same time ( since all their names are the same )
-					//initally, we change the radio using handleChange
-					//then the state updates the value of the radio
-				/* additional optional tags include
-					<fieldset>
-						<legend>List of Radios</legend>
-						{radios}
-					</fieldset>
-					to maintain a huge list of radios within some section */
+            Radio:
+                //the result of having multiple radios under the same name is that only one can be selected at a time
+                <input
+                    type="radio"
+                    id="radioExample1"
+                    name="radioExample"
+                    value="1"
+                    checked={formIn.radio === "1"} />
+                <label htmlFor="radioExample1">This is a radio input<label>
+                <input
+                    type="radio"
+                    id="radioExample2"
+                    name="radioExample"
+                    value="2"
+                    checked={formIn.radio === "2"} />
+                <label htmlFor="radioExample2">This is a radio input<label>
+                <input
+                    type="radio"
+                    id="radioExample3"
+                    name="radioExample"
+                    value="3"
+                    checked={formIn.radio === "3"} />
+                <label htmlFor="radioExample3">This is a radio input<label>
+                //note that the result of having one selectable option out of multiple
+                //requires us to set checked to be a boolean equal the one we selected
+                //since the state polls all radios at the same time ( since all their names are the same )
+                //initally, we change the radio using handleChange
+                //then the state updates the value of the radio
+                /* additional optional tags include
+                <fieldset>
+                <legend>List of Radios</legend>
+                {radios}
+                </fieldset>
+                to maintain a huge list of radios within some section */
 
-			Select Box:
-				<select id="selectExample" name="selectExample" value={ formIn.select }>
-					<option value='1'>1</option>
-					<option value='2'>2</option>
-					<option value='3'>3</option>
-				</select>
+            Select Box:
+                <select id="selectExample" name="selectExample" value={ formIn.select }>
+                <option value='1'>1</option>
+                <option value='2'>2</option>
+                <option value='3'>3</option>
+                </select>
 
-		Form Submission:
-			<button> elements within a form are automatically set as the submission method for the form
-				to bypass this default, <button type="button"> rather than <button>, since button by default has type="submit"
-			<form onSubmit={handleSubmit}>
-			function handleSubmit( event ) { //event is form submission
-				event.preventDefault //because the default is to reload the page and send the form to whatever php is back there
-				... //do stuff with the submitted form
-			}
-			Also works from within the <button onClick={handleClick}>
-			function handleClick( event ) {
-				event.preventDefault
-				...
-			}
-			to submit the form
+            Form Submission:
+                <button> elements within a form are automatically set as the submission method for the form
+                to bypass this default, <button type="button"> rather than <button>, since button by default has type="submit"
+                    <form onSubmit={handleSubmit}>
+                    function handleSubmit( event ) { //event is form submission
+                        event.preventDefault //because the default is to reload the page and send the form to whatever php is back there
+                            ... //do stuff with the submitted form
+                    }
+                Also works from within the <button onClick={handleClick}>
+                    function handleClick( event ) {
+                        event.preventDefault
+                        ...
+                    }
+                to submit the form
 
 11/13/2023:
-	React: Derived State
-		It's best practice to have react state determined from one reference point
-		instead of individual states assigned to objects ( defined from the object themselves )
+    React: Derived State
+        It's best practice to have react state determined from one reference point
+        instead of individual states assigned to objects ( defined from the object themselves )
 
-		const [ data, setData ] = React.useState( {
-			entry1 : ...
-			entry2 : ...
-			...
-		} );
-		in the <Main /> used to create a number of entries on the page
+        const [ data, setData ] = React.useState( {
+            entry1 : ...
+            entry2 : ...
+            ...
+        } );
+        in the <Main /> used to create a number of entries on the page
 
-		Derived State is when each <Entry /> object has its own state,
-		const [ color, setColor ] = React.useState( "black" );
-		function toggleColor() {
-			...
-			setColor( ... )
-		}
-		and it causes the Entry objects to have two different "truths",
-		one from the <Main /> state and one from the <Entry /> object state
-		To avoid this, the state in the <Main /> can provide functionality for both
+        Derived State is when each <Entry /> object has its own state,
+            const [ color, setColor ] = React.useState( "black" );
+            function toggleColor() {
+                ...
+                setColor( ... )
+            }
+        and it causes the Entry objects to have two different "truths",
+        one from the <Main /> state and one from the <Entry /> object state
+        To avoid this, the state in the <Main /> can provide functionality for both
 
-		_data = {
-			entry1 : ...
-			entry2 : ...
-			...
-		};
-		const [ data, setData ] = React.useState( _data );
-		function toggle( id ) { //id of the entry to change
-			setSquares( function( prevData ) {
-				return prevData.map( i => i.id === id ? { ...i, color : otherColor } : i )
-			}
-		}
+        _data = {
+            entry1 : ...
+            entry2 : ...
+             ...
+        };
+        const [ data, setData ] = React.useState( _data );
+        const toggle( id ) = setSquares( prevData =>  prevData.map( i => i.id === id ? { ...i, color : otherColor } : i )
 
-		The crazy line,
-			return prevData.map( i => i.id === id ? { ...i, color : otherColor } : i )
-		takes prevData and returns a new list
-		for each element in prevData, if its id is equal to the toggle( id ) ( the id of the entry to be changed )
-		stick { ...i, color : otherColor } into the new list ( change the color of the id we want )
-		otherwise put in i ( don't change it at all ),
-		and it only changes the object with the id we wanted to change in the first place but from one singular state
-		instead of a bunch of objects with their own derived states
+        The crazy line,
+            return prevData.map( i => i.id === id ? { ...i, color : otherColor } : i )
+        takes prevData and returns a new list
+        for each element in prevData, if its id is equal to the toggle( id ) ( the id of the entry to be changed )
+        stick { ...i, color : otherColor } into the new list ( change the color of the id we want )
+        otherwise put in i ( don't change it at all ),
+        and it only changes the object with the id we wanted to change in the first place but from one singular state
+        instead of a bunch of objects with their own derived states
 
-		Each <Entry /> object can be instantiated with
-			<Entry
-				key={entry.id}
-				color={entry.color}
-				toggle={ () => toggle( entry.id ) }
-			/>
-		which sort of binds that entry's unique id to that entry
+        Each <Entry /> object can be instantiated with
+            <Entry
+                key={entry.id}
+                color={entry.color}
+                toggle={ () => toggle( entry.id ) }
+            />
+        which sort of binds that entry's unique id to that entry
 
 11/9/2023:
-	React: State
-		const [ data, setData ] = React.useState( {
-			entry1 : ...
-			entry2 : ...
-			...
-		} );
-		The state [ data, setData ] watches over an object that contains variable mappings
-		Modifying any element looks like
-		function changeData() {
-			setData( function( prev ) = {
-				return {
-					...prev,
-					entry : newData
-				}
-			});
-		}
+    React: State
+        const [ data, setData ] = React.useState( {
+            entry1 : ...
+            entry2 : ...
+            ...
+        } );
+        The state [ data, setData ] watches over an object that contains variable mappings
+        Modifying any element looks like
+        function changeData() {
+            setData( prev => ( {
+                ...prev,
+                entry : newData
+            } ) );
+        }
 
 11/8/2023:
-	React: State
-		Because React is a declarative framework, React will automatically react to changes to data
-		The data that changed will be displayed on the page automatically
-		React "state" hooks to the component and tells the component to change when the data changes
-		Modifying the data directly conflicts with the state machine
-		so instance methods of things like arrays that modify the array directly are unavailable to React state
+    React: State
+        Because React is a declarative framework, React will automatically react to changes to data
+        The data that changed will be displayed on the page automatically
+        React "state" hooks to the component and tells the component to change when the data changes
+        Modifying the data directly conflicts with the state machine
+        so instance methods of things like arrays that modify the array directly are unavailable to React state
 
-		onClick={newElement()} having the parentheses bugs the shit out of react
-		i guess the parentheses tell react to do the function ? im really unsure tbh
-		because the errors thrown said React was rendering too much
-		The difference between React props and React state is that props are immutable,
-		once they're passed into the function-object-HTML tag they're there for good (within the scope of the function)
-			outside the function it's possible to change the props passed into the function, but
-			props are passed into reusable HTML to make components reusable, like with the cards
-			props are parameters, state contains parameters managed by the page instead of the user
-		State are values managed by the component themselves, like changing values
-			The text wall generator should be managed by the component whenever the input button is clicked
+        onClick={newElement()} having the parentheses bugs the shit out of react
+        i guess the parentheses tell react to do the function ? im really unsure tbh
+        because the errors thrown said React was rendering too much
+        The difference between React props and React state is that props are immutable,
+        once they're passed into the function-object-HTML tag they're there for good (within the scope of the function)
+        outside the function it's possible to change the props passed into the function, but
+        props are passed into reusable HTML to make components reusable, like with the cards
+        props are parameters, state contains parameters managed by the page instead of the user
+        State are values managed by the component themselves, like changing values
+        The text wall generator should be managed by the component whenever the input button is clicked
 
-		Declaring State:
-			React.useState() is a hook. (usually, {useState} is destructured right out of the import statement -> useState() rather than React.useState() )
-			It returns a 2 length array, the data and a function that acts on the array
-				[ thing, setThing ]
-			When setThing is called, thing is changed to whatever setThing returns
+        Declaring State:
+        React.useState() is a hook. (usually, {useState} is destructured right out of the import statement -> useState() rather than React.useState() )
+        It returns a 2 length array, the data and a function that acts on the array
+        [ thing, setThing ]
+        When setThing is called, thing is changed to whatever setThing returns
 
 
-		Form:
-		button reloads the page cause its within a form and react auto-submits forms on button click
-		<form> -> <div className="form"> fixes that, though thats kind of a trashy workaround
+        Form:
+        button reloads the page cause its within a form and react auto-submits forms on button click
+        <form> -> <div className="form"> fixes that, though thats kind of a trashy workaround
 
 11/7/2023:
-	React: Event Listeners
-		Can bind functions to div elements to do stuff when those div elements do something
-		For example the HTML button prop onClick can cause some otherFunction to go off
-			<button onClick={otherFunction()}>WHAT?</button>
-		Or onMouseOver
-			<img src={leliel} onMouseOver={otherFunction()} />
+    React: Event Listeners
+        Can bind functions to div elements to do stuff when those div elements do something
+        For example the HTML button prop onClick can cause some otherFunction to go off
+        <button onClick={otherFunction()}>WHAT?</button>
+        Or onMouseOver
+        <img src={leliel} onMouseOver={otherFunction()} />
 
-	CSS: Grid
-		Grid is kind of simple I'm not gonna lie
-			display: grid
-			grid-template-row: ...
-			grid-template-columns: ...
-				specifies the width of each row and column in the grid
-				based on the order they were written in
+    CSS: Grid
+        Grid is kind of simple I'm not gonna lie
+        display: grid
+        grid-template-row: ...
+        grid-template-columns: ...
+        specifies the width of each row and column in the grid
+        based on the order they were written in
 
-		Gradients: wow purple-blue gradients are so sexy
-			linear-gradient( direction, color1, color2... )
-				the other two gradients, radial and conic gradients, are kind of really ugly
-			the number of colors specified represent the color stops within the gradient
-			direction can have an angle measurement
-				0deg is to top
-				90deg is to right
-				180deg is to bottom
-				270deg is to left
-			colors can have a unit to specify where the gradient ends
-				color2 50% with no colors afterward will repeat the gradient after 50% of the div
-				color 100px repeats the gradient every 100px
-				color1 70% determines when the gradient start to blend ( at 70% of the div )
+    Gradients: wow purple-blue gradients are so sexy
+        linear-gradient( direction, color1, color2... )
+        the other two gradients, radial and conic gradients, are kind of really ugly
+        the number of colors specified represent the color stops within the gradient
+        direction can have an angle measurement
+        0deg is to top
+        90deg is to right
+        180deg is to bottom
+        270deg is to left
+        colors can have a unit to specify where the gradient ends
+        color2 50% with no colors afterward will repeat the gradient after 50% of the div
+        color 100px repeats the gradient every 100px
+        color1 70% determines when the gradient start to blend ( at 70% of the div )
 
-		overflow: hidden makes sure nothing can show up outside of the div's bounds
-		For example, the images in cards are placed out of bounds so their center doesn't appear
-		Default is visible, forcing stuff outside of the bounds of the div
-		overflow-y: auto allows scrolling but it doesn't specify a min height
-		If the div is squished and h1's fatass takes up all the room,
-		Lower divs that have overflow-y set to auto will have 0 height because they're auto-set to scroll
-		No idea how to set a min height but its whatever
-		Careful with what divs you set to have overflow
+        overflow: hidden makes sure nothing can show up outside of the div's bounds
+        For example, the images in cards are placed out of bounds so their center doesn't appear
+        Default is visible, forcing stuff outside of the bounds of the div
+        overflow-y: auto allows scrolling but it doesn't specify a min height
+        If the div is squished and h1's fatass takes up all the room,
+        Lower divs that have overflow-y set to auto will have 0 height because they're auto-set to scroll
+        No idea how to set a min height but its whatever
+        Careful with what divs you set to have overflow
 
 11/6/2023: Props 2
-	React: Rendering
-			{ props._this && <h1>{ props._this }</h1> }
-		checks if props._this is true and <h1>props._this</h1> is true
-		since the h1 tag exists, then that's true and will be rendered
-		if props._this is true ( if props._this was defined in the props object )
-		It's also possible to send in non-string args as prop vars
-			num={20}
-			list={ [ { thing1="" }, 20 ] }
-		also possible is
-			<Card {...data} />
-		because the ...data spreads the variables in data and places them within card
+    React: Rendering
+        { props._this && <h1>{ props._this }</h1> }
+        checks if props._this is true and <h1>props._this</h1> is true
+        since the h1 tag exists, then that's true and will be rendered
+        if props._this is true ( if props._this was defined in the props object )
+        It's also possible to send in non-string args as prop vars
+            num={20}
+            list={ [ { thing1="" }, 20 ] }
+        also possible is
+            <Card {...data} />
+        because the ...data spreads the variables in data and places them within card
 
-		Array.map():
-			Sample uses of map
-				const capitalize = names.map( name => name[0].toUpperCase() + name.slice(1) )
-			capitalize takes each "name" from names
-			concats name[0] (uppercase) to the rest of name without modifying names
-			capitalize is now a completely different list
-				const surround = names.map( name => `\"${name}\"` )
-			each name is forced into the `` funky string with chars \" surrounding it
+        Array.map():
+        Sample uses of map
+        const capitalize = names.map( name => name[0].toUpperCase() + name.slice(1) )
+        capitalize takes each "name" from names
+        concats name[0] (uppercase) to the rest of name without modifying names
+        capitalize is now a completely different list
+        const surround = names.map( name => `\"${name}\"` )
+        each name is forced into the `` funky string with chars \" surrounding it
 
 11/4/2023: Props
-	CSS: Scrolling
-		overflow-y: auto presents the vertical scroll bar
-		overflow-x: auto presents the horizontal scroll bar
-		setting either to hidden hides their respective scroll bar
+    CSS: Scrolling
+        overflow-y: auto presents the vertical scroll bar
+        overflow-x: auto presents the horizontal scroll bar
+        setting either to hidden hides their respective scroll bar
 
-	React: Props
-		function add( a, b ) {
-			return a + b
-		}
-		allows the function add() to be reused for all combinations ( a, b )
-		Props have parallel functions, where a bunch of data is used to construct a JSX element
-		from some base parameters ( thumbnail, title, video length... -> video link on YouTube )
-		Surrounding something with curly braces in React tells the JSX interpreter to "use JS"
-			function Add( a, b ) {
-				let sum = a+b;
-				return( <h1>{ sum }</h1> )
-			}
-			would print the numeric value of a+b into the page instead of "sum" literal
+    React: Props
+        const add = ( a, b ) => a + b;
+        allows the function add() to be reused for all combinations ( a, b )
+        Props have parallel functions, where a bunch of data is used to construct a JSX element
+        from some base parameters ( thumbnail, title, video length... -> video link on YouTube )
+        Surrounding something with curly braces in React tells the JSX interpreter to "use JS"
+            function Add( a, b ) {
+                let sum = a+b;
+                return( <h1>{ sum }</h1> )
+            }
+        would print the numeric value of a+b into the page instead of "sum" literal
 
-		function( props ) takes in one object (props) and uses things within props to construct the DOM element
-		Destructuring a prop using
-			{ img, title, desc ... }
-		hands us individual names for prop variables to work with instead of forcing us to use prop.var
-		some use props. and some use the destructured variation
+        function( props ) takes in one object (props) and uses things within props to construct the DOM element
+        Destructuring a prop using
+            { img, title, desc ... }
+        hands us individual names for prop variables to work with instead of forcing us to use prop.var
+        some use props. and some use the destructured variation
 
 11/3/2023: Font working
-	CSS:
-		@font-face font import can take a link to a Google Fonts stylesheet
-		Downloading and sourcing them locally can take static stylesheets or dynamic variable fonts
-			Setting weight using dynamic variable fonts requires using
-				font-variation-settings: 'wght' num
-				or any other 4 char string to describe how the font changes
+    CSS:
+        @font-face font import can take a link to a Google Fonts stylesheet
+        Downloading and sourcing them locally can take static stylesheets or dynamic variable fonts
+        Setting weight using dynamic variable fonts requires using
+        font-variation-settings: 'wght' num
+        or any other 4 char string to describe how the font changes
 
-		Flexbox items can overlap
-		If dimensions aren't specified, the element defaults to max dimensions
-		In the case of the <ol>, the marker gets cut off because the individual <li> took max width
-		And the markers ( 1,2,3... ) got cut off because the flex item border cut it off
-			Alternatively specify more (left) padding for the <ol> so the numbers have space
+        Flexbox items can overlap
+        If dimensions aren't specified, the element defaults to max dimensions
+        In the case of the <ol>, the marker gets cut off because the individual <li> took max width
+        And the markers ( 1,2,3... ) got cut off because the flex item border cut it off
+        Alternatively specify more (left) padding for the <ol> so the numbers have space
 
-		Overflow-x/y: auto creates scroll bars for divs that are larger than the view
-			default value for overflow is hidden, which lets the content cut off and disappear
+        Overflow-x/y: auto creates scroll bars for divs that are larger than the view
+        default value for overflow is hidden, which lets the content cut off and disappear
 
-11/1/2023: Completed first static website
+11/1/2023:
+    React:
+        import React from 'react';
+        import ReactDOM from 'react-dom/client'
+        import {...} from './Page.js'
+        import './Page.css'
+        React functions return (one) HTML components
+        In the React program it becomes JSX objects
+        Invoke functions and render them with
+            const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
+                root.render (
+                    <Function />
+                )
+            Functions have first letter capitalized so they can be distinguished from HTML tags
 
-	React:
-		import React from 'react';
-		import ReactDOM from 'react-dom/client'
-		import {...} from './Page.js'
-		import './Page.css'
-		React functions return (one) HTML components
-		In the React program it becomes JSX objects
-		Invoke functions and render them with
-			const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
-			root.render (
-				<Function />
-			)
-		Functions have first letter capitalized so they can be distinguished from HTML tags
+    CSS:
+        Import fonts with
+        @font-face {
+            font-family: 'Roboto Slab';
+            src: local('Roboto Slab'), url(./roboto_slab/RobotoSlab-Regular.ttf), format('ttf');
+        } (an entire font family I'm still unsure of)
 
-	CSS:
-		Import fonts with
-		@font-face {
-			font-family: 'Roboto Slab';
-			src: local('Roboto Slab'), url(./roboto_slab/RobotoSlab-Regular.ttf), format('ttf');
-		} (an entire font family I'm still unsure of)
+        position: absolute breaks flexbox
+            A div can have a colored background or background image
+            Applying opacity < 1 to a div applies it on everything
+            Setting a background opacity can be done by creating a new div containing the background
+            Then setting its opacity and whatever positioning
 
-		position: absolute breaks flexbox
-		A div can have a colored background or background image
-		Applying opacity < 1 to a div applies it on everything
-		Setting a background opacity can be done by creating a new div containing the background
-		Then setting its opacity and whatever positioning
+        Flexbox:
+            justify-content aligns content along the axis that the flexbox places items
+            align-itmes aligns content along the other axis
+            align-content changes the lines that the flexbox places items
+            For example, flex-direction: row;
+            justify-content: flex-end; right justifies content
+            align-items: flex-end; aligns content with the bottom of the container
+            Within a flexbox, there's no need to use position,
+            just align-self each individual item if you need to
 
-		Flexbox:
-			justify-content aligns content along the axis that the flexbox places items
-			align-itmes aligns content along the other axis
-			align-content changes the lines that the flexbox places items
-			For example, flex-direction: row;
-				justify-content: flex-end; right justifies content
-				align-items: flex-end; aligns content with the bottom of the container
-		Within a flexbox, there's no need to use position,
-		just align-self each individual item if you need to
-
-		Units:
-			One px is one pixel of the screen
-			% is either based on original size
-				With fonts, based on original font size
-				With divs, based on screen size
-			vh/vw is one percent of the view height or view width
-			em/rem means "relative to font size"
-				2em is double the font size
-				2rem is double the default ( defined in root ) font size
+        Units:
+            One px is one pixel of the screen
+            % is either based on original size
+            With fonts, based on original font size
+            With divs, based on screen size
+            vh/vw is one percent of the view height or view width
+            em/rem means "relative to font size"
+            2em is double the font size
+            2rem is double the default ( defined in root ) font size

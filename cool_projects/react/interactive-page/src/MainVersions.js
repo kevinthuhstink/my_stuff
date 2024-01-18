@@ -9,6 +9,28 @@ import Form from './Form.js';
 //main4
 import GameOfLife from './GameOfLife.js'
 import sliderMechanics from './Slider.js'
+//main5
+import Notes from './Notes.js'
+
+function Main5( props ) {
+  const [ notesData, setNotesData ] = React.useState( {
+    displayText: "",
+    resizerPos: null,
+    inputStyle: {
+      fontSize: "12px",
+      fontFamily: "monospace",
+    },
+  } );
+  const textRef = React.useRef( null );
+  const control = [ notesData, setNotesData, textRef ];
+
+  return (
+    <main id="main5" style={props.mainStyle}>
+      <h1 className="main--title">Main 5: Notes App</h1>
+      <Notes control={control} />
+    </main>
+  )
+}
 
 function Main4( props ) {
   const [ game, setGame ] = React.useState( {
@@ -267,10 +289,11 @@ function Main3( props ) {
 //load the main version corresponding to props.mainVersion
 //0 (default) means most recent
 const MainVersions = [
-  Main4,
+  Main5,
   Main1,
   Main2,
   Main3,
+  Main4,
 ]
 
 export default MainVersions;

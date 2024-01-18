@@ -589,3 +589,64 @@ main .todolist li::marker {
 .slider--container dataset > option {
   font-size: 12px;
 }
+
+/* PROJECT 5:
+ * notes app */
+#notes {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
+  border: #222222 4px solid;
+  border-radius: 6px;
+  margin-bottom: 100px;
+}
+#notes > * {
+  position: relative;
+  height: 100%;
+}
+#notes--menu {
+  width: 10vw;
+  background: lightgray;
+}
+#notes--resizer {
+  width: 4px;
+  background: #222222;
+  cursor: col-resize;
+}
+#notes--main {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  border-radius: 12px;
+}
+#notes--panel {
+  padding: 3px;
+  background: lightgray;
+  display: grid;
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+}
+#notes--panel > div {
+  margin: auto;
+}
+#notes--textoptions * {
+  width: 22.5px;
+}
+#notes--input {
+  height: 100%;
+  resize: none;
+  background: white;
+}
+#notes--tabbar {
+  display: flex;
+  height: 29px;
+  padding: 4px;
+  background: lightgray;
+}
+#notes--tab {
+  border-top-left-radius: 6px;
+  color: white;
+  background: gray;
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import data from './data.js';
 
 function Dropdown( props ) {
-  const mainVersionCount = 4;
+  const mainVersionCount = 5;
   var mainSelectors = [];
   for ( var mainVer = 0; mainVer < mainVersionCount; mainVer++ ) {
     var mainSelect = props.selectMainVersion.bind( null, mainVer );
@@ -16,6 +16,7 @@ function Dropdown( props ) {
         <li onClick={mainSelectors[1]}>CSS Review</li>
         <li onClick={mainSelectors[2]}>Reusable Components</li>
         <li onClick={mainSelectors[3]}>Interactive Components</li>
+        <li onClick={mainSelectors[4]}>Game of Life</li>
       </ol>
     </div>
   )

@@ -31,11 +31,11 @@ export default function Page() {
     } ) )
   }
   function selectMainVersion( version ) {
-    console.log( version );
+    //console.log( version );
     setPageStyle( prevPageStyle => ( {
       ...prevPageStyle,
       mainVersion: version,
-    } ) )
+    } ) );
   }
 
   /* PROJECT 3.2
@@ -114,7 +114,7 @@ export default function Page() {
 
       function moveOnDrag( event ) {
         const viewWidth = window.innerWidth;
-        var mousePos = window.event.screenX;
+        var mousePos = event.clientX;
         //stop movement if mouse pos is outside 60% and 80% of the screen
         if ( mousePos < viewWidth * .6 || mousePos > viewWidth * .8 )
           return;
