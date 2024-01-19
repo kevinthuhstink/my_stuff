@@ -3,46 +3,68 @@ import Showdown from 'showdown'
 
 //TODO: multiple note entries
 //      extra options for the text editor (bold, italic...)
-
 function NotesMenu( props ) {
-  const [ notesData ] = props.control;
-  const { resizerPos } = notesData;
+  const [ settings, setSettings, content ] = props.control;
+  var { resizerPos, titles } = settings;
   const menuStyle = {
     width: resizerPos,
   };
+
+  function addNote() {
+    content.current.push( "" );
+    setSettings( prevSettings => {
+      const newTitles = [...prevSettings.titles];
+      newTitles.push( `untitled ${content.current.length}` );
+      return {
+        ...prevSettings,
+        titles: newTitles,
+        activeNote: content.current.length - 1,
+      };
+    } );
+  }
+  const menuList = titles.map( element => <p>{element}</p> );
+
   return (
-    <details id="notes--menu" style={menuStyle}>
-      <summary>Notes</summary>
-    </details>
-  ); //stick <p>s inside
+    <div id="notes--menu">
+      <details style={menuStyle}>
+        <summary>Notes</summary>
+        {menuList}
+      </details>
+      <button onClick={addNote}>+</button>
+    </div>
+  );
 }
 
 
-//for now notesEntry contains an object with text
 function NotesEntry( props ) {
-  const [ notesData, setNotesData, textRef ] = props.control;
-  const { displayText, inputStyle } = notesData;
+  const [ settings, setSettings, content ] = props.control;
+  const { displayText, titles, activeNote, inputStyle } = settings;
 
   function NotesTabbar( props ) {
     //display each open tab
     function NotesTab( props ) {
       return (
         <div className="notes--tab">
+          {props.name}
         </div>
       )
+    }
+    const openTabs = [];
+    for ( let i = 0; i < content.current.length; i++ ) {
+      openTabs.push( <NotesTab key={i} name={titles[i]} /> );
     }
 
     return (
       <div id="notes--tabbar">
+        { openTabs }
       </div>
     )
   }
 
   function NotesPanel() {
-
     function setInputStyle( event ) {
       const { name, value } = event.target;
-      setNotesData( prevData => ( {
+      setSettings( prevData => ( {
         ...prevData,
         inputStyle: {
           ...prevData.inputStyle,
@@ -52,7 +74,7 @@ function NotesEntry( props ) {
     }
 
     function toggleMarkdown() {
-      setNotesData( prevData => {
+      setSettings( prevData => {
         if ( prevData.displayText ) {
           return {
             ...prevData,
@@ -60,7 +82,7 @@ function NotesEntry( props ) {
           };
         }
         const converter = new Showdown.Converter();
-        const htmlText = converter.makeHtml( textRef.current );
+        const htmlText = converter.makeHtml( content.current[activeNote] );
         return {
           ...prevData,
           displayText: htmlText,
@@ -70,7 +92,7 @@ function NotesEntry( props ) {
 
     return (
       <div id="notes--panel">
-        <button onClick={() => toggleMarkdown( setNotesData )}>
+        <button onClick={() => toggleMarkdown( setSettings )}>
           { displayText ? "Edit Note" : "Display Markdown" }
         </button>
         <div id="notes--textoptions">
@@ -104,11 +126,10 @@ function NotesEntry( props ) {
      * however any changes to state auto-rerenders the textarea
      * ex. font size, font family
      * so the text needs to be stored somewhere */
-
     function handleText( event ) {
       //handles changes to the note
       const value = event.target.textContent;
-      textRef.current = value;
+      content.current[activeNote] = value;
       //console.log( value );
     }
 
@@ -118,30 +139,34 @@ function NotesEntry( props ) {
         contentEditable="true"
         style={inputStyle}
         onInput={handleText}>
-        {textRef.current}
+        {content.current[activeNote]}
       </div>
     );
   }
 
   return (
     <section id="notes--main">
-      <NotesTabbar />
-      <NotesPanel />
-      { displayText ?
-        <div id="notes--markdown" dangerouslySetInnerHTML={{__html: displayText}} /> :
-        <NotesTextarea /> }
+      { activeNote !== null ?
+        <>
+          <NotesTabbar />
+          <NotesPanel />
+          { displayText ?
+            <div id="notes--markdown" dangerouslySetInnerHTML={{__html: displayText}} /> :
+            <NotesTextarea /> }
+        </> :
+        <div id="notes--inactive">No notes open currently.</div> }
     </section>
   );
 }
 
 export default function Notes( props ) {
-  const [ notesData, setNotesData ] = props.control;
-  const resizerPos = notesData.resizerPos;
+  const [ settings, setSettings ] = props.control;
+  const resizerPos = settings.resizerPos;
   const NotesResizer = props => <div {...props} id="notes--resizer" draggable="true" />;
   const resizerStyle = {
     left: resizerPos,
   };
-  React.useEffect( () => initResizer( setNotesData ), [ setNotesData ] );
+  React.useEffect( () => initResizer( setSettings ), [ setSettings ] );
 
   return (
     <div id="notes">

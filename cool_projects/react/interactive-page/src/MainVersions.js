@@ -13,21 +13,56 @@ import sliderMechanics from './Slider.js'
 import Notes from './Notes.js'
 
 function Main5( props ) {
-  const [ notesData, setNotesData ] = React.useState( {
+  const [ settings, setSettings ] = React.useState( {
     displayText: "",
     resizerPos: null,
+    titles: [],
+    activeNote: null,
     inputStyle: {
       fontSize: "12px",
       fontFamily: "monospace",
     },
   } );
-  const textRef = React.useRef( null );
-  const control = [ notesData, setNotesData, textRef ];
+  const content = React.useRef( [] );
+  const control = [ settings, setSettings, content ];
 
   return (
     <main id="main5" style={props.mainStyle}>
       <h1 className="main--title">Main 5: Notes App</h1>
       <Notes control={control} />
+    </main>
+  )
+}
+
+function Main1( props ) {
+  const backgroundImageStyle = {
+    right: `${100 - props.pageStyle.mainWidth}vw`,
+  }
+  return (
+    <main id="main1" style={props.mainStyle}>
+      <h1 className="main--title">Main 1: Static Page</h1>
+      {data.todoList}
+      <img className="main--background" src={nerv} style={backgroundImageStyle} alt="" />
+    </main>
+  )
+}
+
+function Main2( props ) {
+  return (
+    <main id="main2" style={props.mainStyle}>
+      <h1 className="main--title">Main 2: Reusable Card Component</h1>
+      {data.todoList}
+      <Cardbar />
+    </main>
+  )
+}
+
+function Main3( props ) {
+  return (
+    <main id="main3" style={props.mainStyle}>
+      <h1 className="main--title">Main 3: Interactive Components</h1>
+      <p>Type in 'donut' for a donut!</p>
+      <Form buttonStyle={props.mainStyle.buttonStyle} />
     </main>
   )
 }
@@ -249,39 +284,6 @@ function Main4( props ) {
         gameFunctions={gameFunctions}
         Slider={Slider}
         sliderStates={sliderStates} />
-    </main>
-  )
-}
-
-function Main1( props ) {
-  const backgroundImageStyle = {
-    right: `${100 - props.pageStyle.mainWidth}vw`,
-  }
-  return (
-    <main id="main1" style={props.mainStyle}>
-      <h1 className="main--title">Main 1: Static Page</h1>
-      {data.todoList}
-      <img className="main--background" src={nerv} style={backgroundImageStyle} alt="" />
-    </main>
-  )
-}
-
-function Main2( props ) {
-  return (
-    <main id="main2" style={props.mainStyle}>
-      <h1 className="main--title">Main 2: Reusable Card Component</h1>
-      {data.todoList}
-      <Cardbar />
-    </main>
-  )
-}
-
-function Main3( props ) {
-  return (
-    <main id="main3" style={props.mainStyle}>
-      <h1 className="main--title">Main 3: Interactive Components</h1>
-      <p>Type in 'donut' for a donut!</p>
-      <Form buttonStyle={props.mainStyle.buttonStyle} />
     </main>
   )
 }
