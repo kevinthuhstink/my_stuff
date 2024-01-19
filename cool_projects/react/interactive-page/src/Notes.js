@@ -1,9 +1,8 @@
 import React from 'react'
 import Showdown from 'showdown'
 
-//TODO: multiple note entries
-//      extra options for the text editor (bold, italic...)
-function NotesMenu( props ) {
+//TODO: rename and delete note entries
+function FileMenu( props ) {
   const [ settings, setSettings, content ] = props.control;
   var { resizerPos, titles } = settings;
   const menuStyle = {
@@ -18,17 +17,44 @@ function NotesMenu( props ) {
       return {
         ...prevSettings,
         titles: newTitles,
-        activeNote: content.current.length - 1,
+        activeNote: prevSettings.activeNote === null ? 0 : prevSettings.activeNote,
       };
     } );
   }
-  const menuList = titles.map( element => <p>{element}</p> );
+
+  const files = React.useMemo( () => {
+    const init = [];
+    for ( let i = 0; i < titles.length; i++ )
+      init.push( <p className="notes--file" key={i}>{titles[i]}</p> );
+    return init;
+  }, [ titles ] );
+
+  function editFile( event ) {
+    //1. replace the file name with a text input
+    const element = event.target;
+    element.addEventListener( "blur", stopEdit );
+    const field = document.createElement( "input" );
+    field.type = "text";
+    field.className = "rename--field";
+    const fileList = element.parentNode;
+    fileList.replaceChild( field, element );
+
+    function stopEdit( event ) {
+      fileList.replaceChild( element, field );
+    }
+  }
+
+  React.useEffect( () => {
+    const domFiles = Array.from( document.getElementsByClassName( "notes--file" ) );
+    domFiles.forEach( file => file.addEventListener( "dblclick", editFile ) );
+    return () => domFiles.forEach( file => file.removeEventListener( "dblclick", editFile ) );
+  }, [ files ] );
 
   return (
     <div id="notes--menu">
       <details style={menuStyle}>
-        <summary>Notes</summary>
-        {menuList}
+        <summary>Files</summary>
+        {files}
       </details>
       <button onClick={addNote}>+</button>
     </div>
@@ -40,19 +66,27 @@ function NotesEntry( props ) {
   const [ settings, setSettings, content ] = props.control;
   const { displayText, titles, activeNote, inputStyle } = settings;
 
+  //displays each open tab
   function NotesTabbar( props ) {
-    //display each open tab
+
     function NotesTab( props ) {
+      function loadNote( ind ) {
+        setSettings( prevSettings => ( {
+          ...prevSettings,
+          activeNote: ind,
+        } ) );
+      }
+
       return (
-        <div className="notes--tab">
-          {props.name}
+        <div onClick={() => loadNote(props.listId)}>
+          {titles[props.listId]}
         </div>
       )
     }
+
     const openTabs = [];
-    for ( let i = 0; i < content.current.length; i++ ) {
-      openTabs.push( <NotesTab key={i} name={titles[i]} /> );
-    }
+    for ( let i = 0; i < content.current.length; i++ )
+      openTabs.push( <NotesTab key={i} listId={i} /> );
 
     return (
       <div id="notes--tabbar">
@@ -130,13 +164,13 @@ function NotesEntry( props ) {
       //handles changes to the note
       const value = event.target.textContent;
       content.current[activeNote] = value;
-      //console.log( value );
     }
 
     return (
       <div
         id="notes--input"
         contentEditable="true"
+        suppressContentEditableWarning="true"
         style={inputStyle}
         onInput={handleText}>
         {content.current[activeNote]}
@@ -159,6 +193,7 @@ function NotesEntry( props ) {
   );
 }
 
+
 export default function Notes( props ) {
   const [ settings, setSettings ] = props.control;
   const resizerPos = settings.resizerPos;
@@ -170,7 +205,7 @@ export default function Notes( props ) {
 
   return (
     <div id="notes">
-      <NotesMenu control={props.control} />
+      <FileMenu control={props.control} />
       <NotesResizer style={resizerStyle} />
       <NotesEntry control={props.control} />
     </div>
