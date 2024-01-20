@@ -18,9 +18,14 @@ function Main5( props ) {
     resizerPos: null,
     titles: [],
     activeNote: null,
+    tabbar: [], //an array of indices
+    fileNum: 1,
     inputStyle: {
       fontSize: "12px",
       fontFamily: "monospace",
+      fontWeight: null,
+      fontStyle: null,
+      textDecoration: null,
     },
   } );
   const content = React.useRef( [] );

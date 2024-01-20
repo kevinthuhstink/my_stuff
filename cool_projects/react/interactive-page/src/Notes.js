@@ -1,10 +1,10 @@
 import React from 'react'
 import Showdown from 'showdown'
 
-//TODO: rename and delete note entries
+//TODO: bolding, italics, underline
 function FileMenu( props ) {
   const [ settings, setSettings, content ] = props.control;
-  var { resizerPos, titles } = settings;
+  var { resizerPos, titles, fileNum } = settings;
   const menuStyle = {
     width: resizerPos,
   };
@@ -13,42 +13,83 @@ function FileMenu( props ) {
     content.current.push( "" );
     setSettings( prevSettings => {
       const newTitles = [...prevSettings.titles];
-      newTitles.push( `untitled ${content.current.length}` );
+      newTitles.push( `untitled ${fileNum}` );
+      const newTabbar = [...prevSettings.tabbar];
+      newTabbar.push( content.current.length );
       return {
         ...prevSettings,
         titles: newTitles,
+        tabbar: newTabbar,
+        fileNum: prevSettings.fileNum + 1,
         activeNote: prevSettings.activeNote === null ? 0 : prevSettings.activeNote,
       };
     } );
   }
 
+  const deleteNote = React.useCallback( function( ind ) {
+    const newNotes = content.current.slice( 0, ind ).concat( content.current.slice( ind + 1 ) );
+    content.current = newNotes;
+    setSettings( prevSettings => {
+      const newTitles = prevSettings.titles.slice( 0, ind ).concat( prevSettings.titles.slice( ind + 1 ) );
+      const findInd = prevSettings.tabbar.indexOf( ind );
+      var newTabbar = prevSettings.tabbar;
+      if ( findInd !== -1 )
+        newTabbar = prevSettings.titles.slice( 0, findInd ).concat( prevSettings.titles.slice( findInd + 1 ) );
+      return {
+        ...prevSettings,
+        titles: newTitles,
+        tabbar: newTabbar,
+        activeNote: ind === prevSettings.activeNote ? null : prevSettings.activeNote,
+      }
+    } );
+  }, [ setSettings, content ] );
+
   const files = React.useMemo( () => {
     const init = [];
     for ( let i = 0; i < titles.length; i++ )
-      init.push( <p className="notes--file" key={i}>{titles[i]}</p> );
+      init.push( 
+        <div className="file--container">
+          <p className="notes--file" key={i}>
+            {titles[i]}
+          </p>
+          <button onClick={() => deleteNote(i)}>X</button>
+        </div> );
     return init;
-  }, [ titles ] );
+  }, [ titles, deleteNote ] );
 
-  function editFile( event ) {
+  const editFilename = React.useCallback( function( event ) {
     //1. replace the file name with a text input
     const element = event.target;
-    element.addEventListener( "blur", stopEdit );
     const field = document.createElement( "input" );
     field.type = "text";
     field.className = "rename--field";
+    field.value = element.textContent;
     const fileList = element.parentNode;
     fileList.replaceChild( field, element );
+    field.addEventListener( "blur", stopEdit );
+    field.focus();
 
+    //2. change the filename when completed
     function stopEdit( event ) {
+      field.removeEventListener( "blur", stopEdit );
       fileList.replaceChild( element, field );
+      setSettings( prevSettings => {
+        const ind = prevSettings.titles.indexOf( element.textContent );
+        const newTitles = [...titles];
+        newTitles[ind] = field.value;
+        return {
+          ...prevSettings,
+          titles: newTitles,
+        };
+      } );
     }
-  }
+  }, [ setSettings, titles ] );
 
   React.useEffect( () => {
-    const domFiles = Array.from( document.getElementsByClassName( "notes--file" ) );
-    domFiles.forEach( file => file.addEventListener( "dblclick", editFile ) );
-    return () => domFiles.forEach( file => file.removeEventListener( "dblclick", editFile ) );
-  }, [ files ] );
+    const domFiles = Array.from( document.getElementsByClassName( "file--container" ) );
+    domFiles.forEach( file => file.addEventListener( "dblclick", editFilename ) );
+    return () => domFiles.forEach( file => file.removeEventListener( "dblclick", editFilename ) );
+  }, [ files, editFilename ] );
 
   return (
     <div id="notes--menu">
@@ -64,12 +105,21 @@ function FileMenu( props ) {
 
 function NotesEntry( props ) {
   const [ settings, setSettings, content ] = props.control;
-  const { displayText, titles, activeNote, inputStyle } = settings;
+  const { displayText, titles, activeNote, inputStyle, tabbar } = settings;
 
   //displays each open tab
   function NotesTabbar( props ) {
 
     function NotesTab( props ) {
+      const tabStyle = {
+        background: props.listId === activeNote ?
+          "gray" :
+          "lightgray",
+        color: props.listId === activeNote ?
+          "white" :
+          "black",
+      }
+
       function loadNote( ind ) {
         setSettings( prevSettings => ( {
           ...prevSettings,
@@ -78,15 +128,15 @@ function NotesEntry( props ) {
       }
 
       return (
-        <div onClick={() => loadNote(props.listId)}>
+        <div className="notes--tab" onClick={() => loadNote(props.listId)} style={tabStyle}>
           {titles[props.listId]}
         </div>
       )
     }
 
     const openTabs = [];
-    for ( let i = 0; i < content.current.length; i++ )
-      openTabs.push( <NotesTab key={i} listId={i} /> );
+    for ( let ind in tabbar )
+      openTabs.push( <NotesTab key={ind} listId={ind} /> );
 
     return (
       <div id="notes--tabbar">
@@ -96,8 +146,26 @@ function NotesEntry( props ) {
   }
 
   function NotesPanel() {
+    const boldStyle = {
+      background: inputStyle.fontWeight ? "#222222" : null,
+      color: inputStyle.fontWeight ? "white" : null,
+    }
+    const italicStyle = {
+      background: inputStyle.fontStyle ? "#222222" : null,
+      color: inputStyle.fontStyle ? "white" : null,
+    }
+    const underlineStyle = {
+      background: inputStyle.textDecoration ? "#222222" : null,
+      color: inputStyle.fontWeight ? "white" : null,
+    }
     function setInputStyle( event ) {
-      const { name, value } = event.target;
+      var { name, value } = event.target;
+      if ( name === "fontWeight" )
+        value = value !== null ? null : "bold";
+      else if ( name === "fontStyle" )
+        value = value !== null ? null : "italic";
+      else if ( name === "textDecoration" )
+        value = value !== null ? null : "underline";
       setSettings( prevData => ( {
         ...prevData,
         inputStyle: {
@@ -130,9 +198,9 @@ function NotesEntry( props ) {
           { displayText ? "Edit Note" : "Display Markdown" }
         </button>
         <div id="notes--textoptions">
-          <button name="bold">B</button>
-          <button name="italic">I</button>
-          <button name="underline">U</button>
+          <button id="notes--bold" name="fontWeight" onChange={setInputStyle} style={boldStyle}>B</button>
+          <button id="notes--italic" name="fontStyle" onChange={setInputStyle} style={italicStyle}>I</button>
+          <button id="notes--underline" name="textDecoration" onChange={setInputStyle} style={underlineStyle}>U</button>
         </div>
         <div>
           <label htmlFor="notes--fontsize">Font Size</label>
@@ -180,7 +248,7 @@ function NotesEntry( props ) {
 
   return (
     <section id="notes--main">
-      { activeNote !== null ?
+      { content.current.length !== 0 ?
         <>
           <NotesTabbar />
           <NotesPanel />

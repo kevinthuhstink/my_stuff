@@ -622,7 +622,8 @@ main .todolist li::marker {
 }
 #notes--panel {
   padding: 3px;
-  background: lightgray;
+  background: gray;
+  color: white;
   display: grid;
   display: flex;
   flex-direction: row;
@@ -638,15 +639,20 @@ main .todolist li::marker {
   height: 100%;
   resize: none;
   background: white;
+  white-space: pre-wrap;
 }
 #notes--tabbar {
   display: flex;
   height: 29px;
-  padding: 4px;
   background: lightgray;
 }
-#notes--tab {
-  border-top-left-radius: 6px;
+.notes--tab {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   color: white;
   background: gray;
+  padding: 6px;
+}
+.notes--tab:hover {
+  background: silver;
 }
