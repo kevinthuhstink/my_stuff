@@ -35,19 +35,18 @@ export default function Form( props ) {
   const thingElements = things.map( i => <li key={i}>{i}</li> ) //oh wow JSX objs can be keys too
   */
 
-  const [ APIData, setAPIData ] = React.useState( {
+  const [APIData, setAPIData] = React.useState( {
     usrIn: "",
     img: null,
     textOut: "",
   } );
 
-  React.useEffect(
-    function() {
+  React.useEffect(() => {
       //fetch( "https://bible-api.com/?random=verse" ).then(
-      fetch( "https://bible-api.com/john 3:16" ).then(
+      fetch("https://jsonplaceholder.typicode.com/posts").then(
         fetchBible_fulfill,
         //reject case: instantialize APIData with null (unable to connect)
-        prevData => setAPIData( {
+        prevData => setAPIData({
           ...prevData,
           verse: null,
         } )
@@ -55,22 +54,20 @@ export default function Form( props ) {
 
       //fulfill case: fetch verse APIData and put json into APIData.verse
       function fetchBible_fulfill( call ) {
-        call.json().then( callData => setAPIData( prevData => ( {
-              ...prevData,
-              verse: callData
-            } ) )
-        );
+        call.json().then( callData => 
+          setAPIData( prevData => ( {
+            ...prevData,
+            verse: callData
+          })));
       }
-    }, []
-  );
+    }, []);
 
   function bibleVerse() {
     if ( APIData.verse === null )
       return "Could not fetch Bible verse";
-    const setText = APIData.verse.text;
-    const setReference = APIData.verse.reference;
-    var quote = `${setReference}\r\n${setText}`;
-    return quote;
+    //calc a random int from 0 to 100 and display that
+    const rand = Math.floor(Math.random() * 100);
+    return APIData.verse[rand].title;
   }
 
   //make sure either text or img is displayed at one time, never both

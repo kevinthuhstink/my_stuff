@@ -596,6 +596,7 @@ main .todolist li::marker {
   position: relative;
   display: flex;
   flex-direction: row;
+  min-height: 400px;
   height: 80vh;
   border: #222222 4px solid;
   border-radius: 6px;
@@ -608,11 +609,29 @@ main .todolist li::marker {
 #notes--menu {
   width: 10vw;
   background: lightgray;
+  overflow-y: auto;
+}
+details > summary {
+  margin-bottom: 6px;
+}
+.file--container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid silver;
+}
+.notes--file {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 14px;
 }
 #notes--resizer {
   width: 4px;
   background: #222222;
   cursor: col-resize;
+  z-index: 1;
 }
 #notes--main {
   display: flex;
@@ -624,7 +643,6 @@ main .todolist li::marker {
   padding: 3px;
   background: gray;
   color: white;
-  display: grid;
   display: flex;
   flex-direction: row;
   align-content: space-between;
@@ -645,6 +663,8 @@ main .todolist li::marker {
   display: flex;
   height: 29px;
   background: lightgray;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 .notes--tab {
   border-top-left-radius: 10px;
@@ -652,7 +672,17 @@ main .todolist li::marker {
   color: white;
   background: gray;
   padding: 6px;
+  flex-shrink: 0;
 }
-.notes--tab:hover {
+.notes--tab button {
+  background: none;
+  border: none;
+  margin-left: 10px;
+  padding-left: 3px;
+  padding-right: 3px;
+  position: relative;
+  border-radius: 4px;
+}
+.notes--tab button:hover {
   background: silver;
 }
