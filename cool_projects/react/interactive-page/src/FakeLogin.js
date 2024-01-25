@@ -33,7 +33,7 @@ export default function FakeLogin( props ) {
           name="password"
           value={props.data.password}
           onChange={props.handleChange}
-          placeholder="Password" 
+          placeholder="Password"
           style={styles} /><br />
         <input
           className="text--in"
