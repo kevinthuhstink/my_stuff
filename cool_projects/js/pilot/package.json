@@ -1,0 +1,13 @@
+{
+  "name": "pilot",
+  "version": "1.0.0",
+  "description": "kevin cheng's first steps in nodeJS",
+  "main": "1-module.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "Kevin Cheng",
+  "license": "ISC"
+}
