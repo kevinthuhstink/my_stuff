@@ -17,11 +17,13 @@ export default function Page() {
   //apply it onto the children components
   const [ pageStyle, setPageStyle ] = React.useState( defaultPageStyle );
   function defaultPageStyle() {
+    const displaySidebar = window.innerWidth >= 800;
     return {
       taro: false,
       mainVersion: 0,
-      mainWidth: 70, //in vw
-      sidebarWidth: 30,
+        displaySidebar: displaySidebar,
+        mainWidth: displaySidebar ? 70 : 100, //in vw
+        sidebarWidth: displaySidebar ? 30 : null,
     };
   }
   function toggleColors() {
@@ -96,15 +98,33 @@ export default function Page() {
    * Want the div to be able to move left and right, not up and down using the dragger
    * have the resizer follow the mouse, set state based on its xcoord,
    * then have the Main and Sidebar divs follow it */
-  React.useEffect( handleResizer, [ fakeFormData.submit ] );
+  React.useEffect(handleResizer, [fakeFormData.submit, pageStyle.displaySidebar]);
   function handleResizer() {
     if ( !fakeFormData.submit )
       return; //do nothing if we're on the fake form screen
 
+    window.addEventListener('resize', displaySidebar);
     const resizerObj = document.getElementById( "resizer" );
-    resizerObj.addEventListener( "mousedown", dragResizer );
-    return () => resizerObj.removeEventListener( "mousedown", dragResizer );
+    if (resizerObj)
+      resizerObj.addEventListener( "mousedown", dragResizer );
+    return () => {
+      if (resizerObj)
+        resizerObj.removeEventListener( "mousedown", dragResizer );
+      window.removeEventListener('resize', displaySidebar);
+    }
 
+    function displaySidebar(event) {
+      event.preventDefault();
+      setPageStyle(prevPageStyle => {
+        const displaySidebar = window.innerWidth >= 800
+        return {
+          ...prevPageStyle,
+          displaySidebar: displaySidebar,
+          mainWidth: displaySidebar ? 70 : 100,
+          sidebarWidth: displaySidebar ? 30 : null,
+        }
+      })
+    }
     //drag and move sidebar on mousedown
     function dragResizer( event ) {
       //have it on document so the resizer div follows the mouse anywhere in the document
@@ -152,34 +172,36 @@ export default function Page() {
     },
   }
 
-  var sections = [
-    <Header
-      taro={pageStyle.taro}
-      title={fakeFormData.KC}
-      selectMainVersion={selectMainVersion}
-      key={0} />,
-    <Main
-      renderEffects={fakeFormData.submit}
-      mainStyle={mainStyle}
-      pageStyle={pageStyle}
-      key={1} />,
-    <Resizer
-      position={pageStyle.mainWidth}
-      key={2} />,
-    <Sidebar
-      pageStyle={pageStyle}
-      formData={fakeFormData}
-      retakeForm={handleSubmit}
-      toggleColors={toggleColors}
-      key={3} />,
-  ]; //end taro pageStyle
-
   //on fake form submission, load {sections}
   return (
     <div className="page">
       { !fakeFormData.submit ?
         <FakeLogin data={fakeFormData} handleChange={handleChange} handleSubmit={handleSubmit} /> :
-        sections }
+        <>
+          <Header
+            taro={pageStyle.taro}
+            title={fakeFormData.KC}
+            selectMainVersion={selectMainVersion}
+            key={0} />
+          <Main
+            renderEffects={fakeFormData.submit}
+            mainStyle={mainStyle}
+            pageStyle={pageStyle}
+            key={1} />
+          { pageStyle.displaySidebar &&
+          <>
+          <Resizer position={pageStyle.mainWidth}
+            key={2} />
+          <Sidebar
+            pageStyle={pageStyle}
+            formData={fakeFormData}
+            retakeForm={handleSubmit}
+            toggleColors={toggleColors}
+            key={3} />
+          </>
+          }
+        </>
+       }
     </div>
   )
 }
