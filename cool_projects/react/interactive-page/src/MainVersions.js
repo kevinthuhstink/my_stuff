@@ -13,13 +13,17 @@ import sliderMechanics from './Slider.js'
 import Notes from './Notes.js'
 
 function Main5(props) {
+  function initItem(name, alt) {
+    if (!localStorage.getItem(name))
+      return alt;
+    return JSON.parse(localStorage.getItem(name));
+  }
+  const content = React.useRef(initItem("notes"));
   const [settings, setSettings] = React.useState({
-    displayText: "",
-    resizerPos: null,
-    titles: [],
-    activeNote: null,
-    tabbar: [], //an array of indices
-    fileNum: 1,
+    titles: initItem("titles", []),
+    tabbar: initItem("tabbar", []),
+    fileNum: initItem("fileNum", 1),
+    activeNote: initItem("activeNote", null),
     inputStyle: {
       fontSize: "12px",
       fontFamily: "monospace",
@@ -27,9 +31,18 @@ function Main5(props) {
       fontStyle: null,
       textDecoration: null,
     },
-  } );
-  const content = React.useRef([]);
+    resizerPos: null,
+    displayText: "",
+  });
+
+  console.log(localStorage);
   const control = [settings, setSettings, content];
+  React.useEffect(() => {
+    localStorage.setItem("titles", JSON.stringify(settings.titles));
+    localStorage.setItem("tabbar", JSON.stringify(settings.tabbar));
+    localStorage.setItem("activeNote", JSON.stringify(settings.activeNote));
+    localStorage.setItem("fileNum", JSON.stringify(settings.fileNum));
+  }, [settings]);
 
   return (
     <main id="main5" style={props.mainStyle}>

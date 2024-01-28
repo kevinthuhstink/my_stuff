@@ -295,6 +295,8 @@ function NotesEntry(props) {
     function handleText(event) {
       const value = event.target.textContent;
       content.current[activeNote] = value;
+      //console.log("localStorage rewrite");
+      localStorage.setItem("notes", JSON.stringify(content.current));
     }
 
     return (

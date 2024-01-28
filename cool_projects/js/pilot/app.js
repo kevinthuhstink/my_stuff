@@ -1,62 +1,54 @@
-/* down here in backend, we have no access to
- *  window or document global objects
- * instead, we have access to stuff like
- *  __dirname - path to current dir
- *  __filename - file name
- *  require - function to use modules
- *            NOTE ALSO EXECS FUNCTION CALLS IN THE MODULE
- *            this is because all function calls of the module itself
- *            are included and called within the require() call
- *  module - information about current module
- *  process - info about the environment that the program is being exec'd in
- *            could be in places like React or Perl or other */
+/* the event loop runs the immediate code
+ *  (ie. top level functions)
+ * and then only after those functions are ran,
+ * subsequent callbacks and async funcs are finished */
 
-const os = require('os'); //information about user's OS
-const path = require('path'); //information about directory paths
-const fs = require('fs'); //file system control
-const Buffer = require('buffer'); //file data i/o use
-const http = require('http'); //web server functionality
+const os = require('os');
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
+const buffer = require('buffer');
 
-const user = {
-  name: os.type(),
-  release: os.release(),
-  memory: os.totalmem(),
-  cwd: path.parse(__filename),
-};
-//console.log(process);
-
-/* async js is messy but
- * sync js means one user can bring down the entire server
- * if that user has an exceedingly long request
- * because the server cpu is locked in on handling that request */
-const readData = new Promise((resolve, reject) => {
-  fs.readFile("1-module.js", (err, data) => {
-    if (err)
-      reject("read failure");
-    resolve(data);
-  })
-});
-function readFileFulfill(data) {
-  const filename = 'write-test.js';
-  console.log(data.toString('utf8'));
-  fs.writeFile(filename, data, err => {
-    if (err) throw err;
-    console.log("successful write to", filename);
-  });
+/* async function asyncRead() {
+  console.log('start file read');
+  return new Promise((resolve, reject) => {
+    fs.readFile(__filename, (READ_ERR, data) => {
+      if (READ_ERR) throw READ_ERR;
+      console.log('file read complete');
+      resolve(data);
+    });
+  }); //Promises are modular and cleaner
 }
-const readFileReject = err => console.log(err, ": rejected Promise");
-readData.then(readFileFulfill, readFileReject);
+async function asyncWrite(writebuf) {
+  console.log('start file write');
+  const data = await writebuf; //just wait for the read to end
+  const filedest = path.join(os.tmpdir(), 'dest');
+  fs.writeFile(filedest, data, WRITE_ERR => {
+    if (WRITE_ERR) throw WRITE_ERR;
+  });
+  console.log('file write complete');
+} */
+async function asyncrw() {
+  const asyncRead = util.promisify(fs.readFile); //gah dayum
+  const asyncWrite = util.promisify(fs.writeFile);
+  try {
+    const readData = await asyncRead(__filename);
+    const filedest = path.join(os.tmpdir(), 'dest');
+    await asyncWrite(filedest, readData);
+  } catch (error) {
+    console.log('broken promisify');
+    throw error
+  }
+}
 
+const http = require('http');
 const server = http.createServer((req, res) => {
+  //note that a nested for loop within one page
+  //would block a bunch of requests to the whole server
   if (req.url === '/')
-    res.end('hello world! (server-side)');
-  else if (req.url === '/about')
-    res.end('my very first js server, hosted from my laptop');
-  else
-    res.end(`
-      <h1>uh oh</h1>
-      <p>the requested page doesn't exist (yet)</p>
-      <a href="/">back home</a>`
-    );
+    res.end('Hello World! (server-side)');
+  res.end('More content coming soon');
 });
-server.listen(5000);
+server.listen(5000, () => {
+  console.log('Server listening on port : 5000...');
+});
