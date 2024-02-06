@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 # since the data has 8 columns, the input tensor has shape (datapoints, 8)
 # the output is a scalar
