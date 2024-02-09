@@ -6,6 +6,7 @@ import tensorflow_datasets as tfds
 import tensorflow_probability as tfp
 import numpy as np
 import pandas as pd
+import albumentations as A
 import matplotlib.pyplot as plt
 import sklearn.metrics as skmetrics
 
@@ -189,6 +190,35 @@ def cutmix(image_cut, image_from=None, crop_box=None):
     augmented_img = im_cut - cut + subimage
     augmented_label = lamda * lb_cut + (1 - lamda) * lb_from
     return augmented_img, augmented_label
+
+# using Albumentations
+transforms = A.Compose([
+    A.Resize(IM_SIZE, IM_SIZE),
+    A.OneOf([A.HorizontalFlip(), A.VerticalFlip()], p=0.3),
+    A.RandomRotate90(),
+    A.RandomBrightnessContrast(
+        brightness_limit=0.2,
+        contrast_limit=0.2,
+        always_apply=False,
+        p=0.5),
+    # A.Cutout(num_holes=16, p=0.2)
+    ])
+
+def albument(image, label):
+    """ Applies a series of transformations described by transforms.
+
+        Uses albumentations to make these transforms extremely simple,
+        tf.numpy_function wraps the albumentation function in a tf tensor,
+        allowing dataset elements (image, labels) to be composed from within this function. """
+    def img_albument(image):
+        data = {'image': image}
+        data_aug = transforms(**data)
+        img_aug = data_aug['image']
+        img_aug = tf.cast(img_aug / 255.0, tf.float32)
+        # img_aug = tf.image.resize(img_aug, size=(IM_SIZE, IM_SIZE))
+
+    album_augment = tf.numpy_function(func=img_albument, inp=(image, label), Tout=tf.float32)
+    return album_augment, label
 
 
 # OPTIMIZATION
