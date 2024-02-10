@@ -221,7 +221,7 @@ def albument(image, label):
     return album_augment, label
 
 
-# OPTIMIZATION
+# CALLBACKS
 class LossCallback(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs):
         print("\nEpoch {}, loss = {}".format(epoch, logs['loss']))
@@ -233,7 +233,7 @@ def lr_scheduler(epoch, lr):
     return lr * tf.math.exp(-0.1 * epoch)
 
 
-# CONSTRUCTING THE MODEL // CUSTOM LAYERS
+# MODEL/LAYER SUBCLASSING
 class CustomDense(layers.Layer):
     """ Custom implementation of the Dense layer """
     def __init__(self, output_units, activation):
@@ -319,6 +319,36 @@ class MalariaModel(keras.Model): # DOESN'T WORK
         x = self.out(x)
         return x
 
+
+# CUSTOM METRICS AND LOSSES
+class CustomBCE(keras.losses.Loss):
+    def __init__(self, FACTOR=1.):
+        super(CustomBCE, self).__init__()
+        self.FACTOR = FACTOR
+
+    def call(self, y_true, y_pred):
+        bce = keras.losses.BinaryCrossentropy()
+        return bce(y_true, y_pred) * self.FACTOR
+
+class CustomAccuracy(metrics.Metric):
+    def __init__(self, name='custom_accuracy'):
+        super(CustomAccuracy, self).__init__(name=name)
+        self.success = self.add_weight(name='successes', initializer='zeros')
+        self.trials = self.add_weight(name='trials', initializer='zeros')
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        # OKAYY??? THEY DIDNT TELL ME THIS SHIT IN THE DOCUMENTATION???
+        # so when the shapes of your inputs are unhappy (32,) vs. (32,1)
+        # binary_accuracy flips its shit
+        y_true = tf.expand_dims(tf.cast(y_true, tf.float32), axis=-1)
+        out = metrics.binary_accuracy(y_true, y_pred)
+        # print(y_true, y_pred, out)
+        self.success.assign_add(tf.math.count_nonzero(out, dtype=tf.float32))
+        self.trials.assign_add(tf.cast(len(out), tf.float32))
+
+    def result(self):
+        return self.success / self.trials
+
 malaria_model = tf.keras.Sequential([
     layers.InputLayer(input_shape = (244, 244, 3)),
     FeatureExtractor(6, 3, 1, 'relu', 2),
@@ -332,7 +362,7 @@ malaria_model = tf.keras.Sequential([
 
 
 # RUNNING THE MODEL
-def run_model(model, ds, epochs=2, lr=0.001, log=False, plot=False):
+def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
     # optimizer and loss
     op = keras.optimizers.Adam(learning_rate=lr)
     bce = keras.losses.BinaryCrossentropy()
@@ -343,6 +373,7 @@ def run_model(model, ds, epochs=2, lr=0.001, log=False, plot=False):
             metrics.FalsePositives(name='false_positives'),
             metrics.TrueNegatives(name='true_negatives'),
             metrics.FalseNegatives(name='false_negatives'),
+            CustomAccuracy(),
             # metrics.BinaryAccuracy(name='accuracy'),
             # metrics.Precision(name='precision'),
             # metrics.Recall(name='recall'),
@@ -370,6 +401,42 @@ def run_model(model, ds, epochs=2, lr=0.001, log=False, plot=False):
         plt.plot(range(epochs), train_acc)
         plt.show()
     return model, zip(model.metrics_names, results)
+
+def custom_fit(model, ds):
+    """ Accomplishes the same as model.fit.
+
+        For each epoch and each batch in the epoch,
+        take steps based on the gradient of the loss function (bce).
+        GradientTape context manager lets you define some numbers,
+        and then once youre done defining it you can take a gradient
+        of some of the defined values.
+        We calculate loss within the GradientTape context manager,
+        leave the context manager, then grab the gradient w.r.t. the weights. """
+
+    loss_func = CustomBCE()
+    fit_metrics = [CustomAccuracy(), metrics.BinaryAccuracy()]
+    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+
+    @tf.function
+    def training_block(x_batch, y_batch):
+        with tf.GradientTape() as G: # calculate the gradient for this step
+            # G.watch(model.trainable_weights)
+            y_pred = model(x_batch, training=True)
+            loss = loss_func(y_batch, y_pred)
+
+        batch_gradient = G.gradient(loss, model.trainable_weights)
+        optimizer.apply_gradients(zip(batch_gradient, model.trainable_weights))
+        return y_pred, loss
+
+    for epoch in range(1): # for one epoch,
+        for step, (x_batch, y_batch) in enumerate(ds): # after every batch,
+            y_pred, loss = training_block(x_batch, y_batch)
+            for metric in fit_metrics:
+                metric.update_state(y_batch, y_pred)
+            if step % 100 == 0:
+                tf.print("Current loss: ", loss)
+                for metric in fit_metrics:
+                    tf.print(metric.name, metric.result())
 
 def dataplot(model, ds, plot=False):
     """ Displays the data and predictions provided by the malaria model """
@@ -404,11 +471,12 @@ def __main__():
 
     def run():
         # model = MalariaModel()
-        model, performance = run_model(malaria_model, ds_set, epochs=1, plot=False)
+        model, performance = run_model(malaria_model, ds_set, plot=False)
         df = pd.DataFrame(performance)
         print(df)
         dataplot(model, ds_set, plot=True)
-    run()
+    # run()
+    custom_fit(malaria_model, ds_set[0])
 
 if __name__ == '__main__':
     __main__()
