@@ -37,7 +37,10 @@ def handle_data(plot=False, split_ratios=(0.8, 0.1, 0.1)):
         return ds.map(resize)
     # print(next(ds_load.take(1).as_numpy_iterator()))
     ds = preprocess(ds_load)
+<<<<<<< HEAD
     # print(next(ds.take(1).as_numpy_iterator()))
+=======
+>>>>>>> refs/remotes/origin/main
 
     def augment(ds):
         """ Augments the input data by applying transformations on the data.
