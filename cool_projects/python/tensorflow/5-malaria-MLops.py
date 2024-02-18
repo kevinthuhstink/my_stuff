@@ -3,15 +3,21 @@ import io
 import math
 import datetime
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_probability as tfp
+
 import numpy as np
 import pandas as pd
-import seaborn
+
 import albumentations as A
+from sklearn.metrics import roc_curve
 import matplotlib.pyplot as plt
-import sklearn.metrics as skmetrics
+import seaborn
+
+from tensorboard.plugins.hparams import api as hp
+
 
 keras = tf.keras
 metrics = tf.keras.metrics
@@ -25,6 +31,23 @@ IMAGE_DIR = LOGS_DIR + '-images'
 
 log_writer = tf.summary.create_file_writer(LOGS_DIR)
 image_writer = tf.summary.create_file_writer(IMAGE_DIR)
+
+
+# HYPERPARAMETERS
+HP_DROPOUT = hp.HParam('dropout', hp.RealInterval(0.1, 0.2))
+HP_DENSE1_UNITS = hp.HParam('dense1_units', hp.Discrete([32, 64, 96, 128]))
+HP_DENSE2_UNITS = hp.HParam('dense2_units', hp.Discrete([4, 8, 12, 16]))
+HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.001, 0.01, 0.1]))
+HP_LR = hp.HParam('learning_rate', hp.RealInterval(0.0001, 0.001))
+
+default_hparams = {
+        'dropout': 0.2,
+        'regularization': 0.01,
+        'dense1': 100,
+        'dense2': 10,
+        'lr': 0.001
+        }
+
 
 
 # DATA PREPROCESSING
@@ -110,36 +133,38 @@ class FeatureExtractor(layers.Layer):
     """ Repeated convolution, batch, and pooling layers
         to process the main features of the input image """
 
-    def __init__(self):
+    def __init__(self, dropout, regularization):
         super(FeatureExtractor, self).__init__()
+        self.dropout = layers.Dropout(dropout)
         self.conv1 = layers.Conv2D(
                 filters=6,
-                kernel_size=6,
+                kernel_size=3,
                 strides=1,
                 activation='relu',
                 padding='valid',
-                kernel_regularizer=keras.regularizers.L2(0.01))
+                kernel_regularizer=keras.regularizers.L2(regularization))
         self.batch1 = layers.BatchNormalization()
         self.pool1 = layers.MaxPool2D(
                 strides=2,
-                pool_size=pool_size)
+                pool_size=2)
 
         self.conv2 = layers.Conv2D(
                 filters=16,
-                kernel_size=4,
+                kernel_size=3,
                 strides=1,
                 activation='relu',
                 padding='valid',
-                kernel_regularizer=keras.regularizers.L2(0.01))
+                kernel_regularizer=keras.regularizers.L2(regularization))
         self.batch2 = layers.BatchNormalization()
         self.pool2 = layers.MaxPool2D(
                 strides=2,
-                pool_size=pool_size)
+                pool_size=2)
 
     def call(self, x, training):
         x = self.conv1(x)
         x = self.batch1(x)
         x = self.pool1(x)
+        x = self.dropout(x)
         x = self.conv2(x)
         x = self.batch2(x)
         x = self.pool2(x)
@@ -151,14 +176,20 @@ class MalariaModel(keras.Model):
         and returns a value that determines if the input cell has been
         parasitized by malaria. """
 
-    def __init__(self, activation='relu'):
+    def __init__(self, hparams):
+        dropout = hparams['dropout']
+        regularization = hparams['regularization']
+        dense1 = hparams['dense1']
+        dense2 = hparams['dense2']
+
         super(MalariaModel, self).__init__()
         self.augmenter = Augmenter()
-        self.feature_extractor = FeatureExtractor()
+        self.feature_extractor = FeatureExtractor(dropout, regularization)
         self.flatten = layers.Flatten()
-        self.dense1 = layers.Dense(100, activation=activation)
+        self.dropout = layers.Dropout(dropout)
+        self.dense1 = layers.Dense(dense1, activation='relu')
         self.batch1 = layers.BatchNormalization()
-        self.dense2 = layers.Dense(10, activation=activation)
+        self.dense2 = layers.Dense(dense2, activation='relu')
         self.batch2 = layers.BatchNormalization()
         self.out = layers.Dense(1, activation='sigmoid')
 
@@ -166,8 +197,12 @@ class MalariaModel(keras.Model):
         x = self.augmenter(x)
         x = self.feature_extractor(x)
         x = self.flatten(x)
+        if training:
+            x = self.dropout(x)
         x = self.dense1(x)
         x = self.batch1(x)
+        if training:
+            x = self.dropout(x)
         x = self.dense2(x)
         x = self.batch2(x)
         x = self.out(x)
@@ -269,6 +304,46 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
     return model, stat.history
 
 
+def tune_model(ds):
+    def tune_fit(hparams):
+        op = keras.optimizers.Adam(learning_rate=hparams['lr'])
+        bce = keras.losses.BinaryCrossentropy()
+        ds_train = ds[0]
+        ds_eval = ds[1]
+
+        model = MalariaModel(hparams)
+        model.compile(optimizer=op, loss=bce, metrics=['accuracy'])
+        hparam_stat = model.fit(
+            ds_train,
+            epochs=1,
+            verbose=1,
+            validation_data=ds_eval)
+        return hparam_stat.history['accuracy']
+
+    run_num = 0;
+    for dense1 in HP_DENSE1_UNITS.domain.values:
+        for dense2 in HP_DENSE2_UNITS.domain.values:
+            for dropout in (HP_DROPOUT.domain.min_value, HP_DROPOUT.domain.max_value):
+                for regularization in HP_REGULARIZATION.domain.values:
+                    for lr in (HP_LR.domain.min_value, HP_LR.domain.max_value):
+
+                        hparams = {
+                                'dropout': dropout,
+                                'regularization': regularization,
+                                'dense1': dense1,
+                                'dense2': dense2,
+                                'lr': lr
+                                }
+                        hparam_writer = tf.summary.create_file_writer(
+                                LOGS_DIR + '/' + str(run_num))
+                        with hparam_writer.as_default():
+                            hp.hparams(hparams)
+                            accuracy = tune_fit(hparams)
+                            tf.summary.text('hparams', str(hparams), step=run_num)
+                            tf.summary.scalar('accuracy', accuracy[-1], step=run_num)
+                        run_num += 1;
+
+
 def dataplot(model, ds, plot=False):
     """ Displays the data and predictions provided by the malaria model """
     ds_test = ds[2]
@@ -285,7 +360,7 @@ def dataplot(model, ds, plot=False):
     print(confusion_matrix)
 
     if plot:
-        fp, tp, thresholds = skmetrics.roc_curve(labels, results)
+        fp, tp, thresholds = roc_curve(labels, results)
         plt.plot(fp, tp)
         plt.xlabel('False positive rate')
         plt.ylabel('True positive rate')
@@ -302,12 +377,13 @@ def __main__():
     # ds_set = handle_data()
 
     def run():
-        model = MalariaModel()
+        model = MalariaModel(default_hparams)
         model, performance = run_model(model, ds_set, epochs=2)
         df = pd.DataFrame(performance)
         print(df)
         # dataplot(model, ds_set)
-    run()
+    # run()
+    tune_model(ds_set)
 
 if __name__ == '__main__':
     __main__()
