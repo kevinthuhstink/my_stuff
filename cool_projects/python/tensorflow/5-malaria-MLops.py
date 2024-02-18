@@ -1,12 +1,14 @@
 import os
+import io
 import math
-import random
+import datetime
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_probability as tfp
 import numpy as np
 import pandas as pd
+import seaborn
 import albumentations as A
 import matplotlib.pyplot as plt
 import sklearn.metrics as skmetrics
@@ -14,6 +16,15 @@ import sklearn.metrics as skmetrics
 keras = tf.keras
 metrics = tf.keras.metrics
 layers = tf.keras.layers
+callbacks = tf.keras.callbacks
+
+exec_time = datetime.datetime.now().strftime('%d-%m-%Y_%H:%M:%S')
+LOGS_DIR = './logs/' + exec_time
+CHECKPOINT_DIR = LOGS_DIR + '-model'
+IMAGE_DIR = LOGS_DIR + '-images'
+
+log_writer = tf.summary.create_file_writer(LOGS_DIR)
+image_writer = tf.summary.create_file_writer(IMAGE_DIR)
 
 
 # DATA PREPROCESSING
@@ -32,6 +43,7 @@ def handle_data(plot=False, split_ratios=(0.8, 0.1, 0.1)):
     ds = ds_load.map(preprocess)
     # dtype: tuple of shapes(224,224,3) and scalar
 
+
     def visualize(ds):
         """ Displays the data provided by preprocessing and augmenting """
         ds_use = ds.take(4)
@@ -48,6 +60,7 @@ def handle_data(plot=False, split_ratios=(0.8, 0.1, 0.1)):
         plt.show()
     if plot:
         visualize(ds)
+
 
     def ds_splits(ds):
         """ Partitions a dataset for training, evaluation, and testing sections.
@@ -71,16 +84,14 @@ def handle_data(plot=False, split_ratios=(0.8, 0.1, 0.1)):
         return ds_train, ds_eval, ds_test
     return ds_splits(ds)
 
-def lr_scheduler(epoch, lr):
-    curve_amp = 1 / (epoch // 10 + 1)
-    lr_func = lr * tf.math.cos((epoch % 10) * math.pi/27)
-    return curve_amp * lr_func
-
 
 # MODEL/LAYER SUBCLASSING
 class Augmenter(layers.Layer):
-    """ Applies some random transformations on the input data
-        during model training. """
+    """ Normalizes and augments input data during training.
+
+        Possible transformations include a random rotation and
+        a flip in horizontal or vertical or both directions. """
+
     def __init__(self):
         super(Augmenter, self).__init__()
         self.rescale = layers.Rescaling(1/255.)
@@ -94,32 +105,35 @@ class Augmenter(layers.Layer):
             x = self.flip(x)
         return x
 
+
 class FeatureExtractor(layers.Layer):
     """ Repeated convolution, batch, and pooling layers
-        to process the main features of the input data """
-    def __init__(self, filters, kernel_size, strides, activation, pool_size):
+        to process the main features of the input image """
+
+    def __init__(self):
         super(FeatureExtractor, self).__init__()
         self.conv1 = layers.Conv2D(
-                filters=filters,
-                kernel_size=kernel_size,
-                strides=strides,
-                activation=activation,
+                filters=6,
+                kernel_size=6,
+                strides=1,
+                activation='relu',
                 padding='valid',
                 kernel_regularizer=keras.regularizers.L2(0.01))
         self.batch1 = layers.BatchNormalization()
         self.pool1 = layers.MaxPool2D(
-                strides=2 * strides,
+                strides=2,
                 pool_size=pool_size)
+
         self.conv2 = layers.Conv2D(
-                filters=2 * filters,
-                kernel_size=kernel_size,
-                strides=strides,
-                activation=activation,
+                filters=16,
+                kernel_size=4,
+                strides=1,
+                activation='relu',
                 padding='valid',
                 kernel_regularizer=keras.regularizers.L2(0.01))
         self.batch2 = layers.BatchNormalization()
         self.pool2 = layers.MaxPool2D(
-                strides=2 * strides,
+                strides=2,
                 pool_size=pool_size)
 
     def call(self, x, training):
@@ -131,13 +145,16 @@ class FeatureExtractor(layers.Layer):
         x = self.pool2(x)
         return x
 
+
 class MalariaModel(keras.Model):
-    """ A set of dense layers to determine whether a cell has malaria
-        after being processed by a feature extractor """
+    """ A convolutional neural net that takes images of cells as input
+        and returns a value that determines if the input cell has been
+        parasitized by malaria. """
+
     def __init__(self, activation='relu'):
         super(MalariaModel, self).__init__()
         self.augmenter = Augmenter()
-        self.feature_extractor = FeatureExtractor(8, 3, 1, 'relu', 2)
+        self.feature_extractor = FeatureExtractor()
         self.flatten = layers.Flatten()
         self.dense1 = layers.Dense(100, activation=activation)
         self.batch1 = layers.BatchNormalization()
@@ -157,6 +174,45 @@ class MalariaModel(keras.Model):
         return x
 
 
+# CALLBACKS
+class ConfusionMatrix(callbacks.Callback):
+    """ Logs a confusion matrix at the end of every epoch. """
+
+    def on_epoch_end(self, epoch, logs):
+        tp = logs['true_positives']
+        fp = logs['false_positives']
+        tn = logs['true_negatives']
+        fn = logs['false_negatives']
+
+        confusion_matrix = tf.constant([[tp, fp], [fn, tn]])
+        print(confusion_matrix)
+
+        plt.figure()
+        seaborn.heatmap(confusion_matrix, annot=True)
+        plt.title('Confusion Matrix')
+        plt.ylabel('True Values')
+        plt.xlabel('Predicted Values')
+        plt.axis('off')
+
+        img_buffer = io.BytesIO()
+        plt.savefig(img_buffer, format='png')
+        cm_image = tf.expand_dims(
+                tf.io.decode_png(img_buffer.getvalue()), 0)
+
+        with image_writer.as_default():
+            tf.summary.image("Training data: confusion matrix", cm_image, step=epoch)
+
+
+def lr_scheduler(epoch, lr):
+    curve_amp = 1 / (epoch // 10 + 1)
+    lr_func = lr * tf.math.cos((epoch % 10) * math.pi/27)
+    lr_val = curve_amp * lr_func
+
+    with log_writer.as_default():
+        tf.summary.scalar('Learning Rate', data=lr_val, step=epoch)
+    return lr_val
+
+
 # RUNNING THE MODEL
 def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
     op = keras.optimizers.Adam(learning_rate=lr)
@@ -168,38 +224,50 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
             metrics.TrueNegatives(name='true_negatives'),
             metrics.FalseNegatives(name='false_negatives'),
             metrics.BinaryAccuracy(name='accuracy'),
-            # metrics.Precision(name='precision'),
-            # metrics.Recall(name='recall'),
-            # metrics.AUC(name='auc'),
+            metrics.Precision(name='precision'),
+            metrics.Recall(name='recall'),
+            metrics.AUC(name='auc'),
             ]
 
-    training_end = keras.callbacks.EarlyStopping(patience=3, monitor='loss')
-    lr_scheduler_cb = keras.callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
-
-    log_fpath = os.path.join(os.getcwd(), 'logs/log.txt')
-    checkpt_fpath = os.path.join(os.getcwd(), 'logs/checkpoint.tf')
-    csv_log = keras.callbacks.CSVLogger(log_fpath)
-    checkpoint = keras.callbacks.ModelCheckpoint(
-            checkpt_fpath,
+    training_end = callbacks.EarlyStopping(patience=3, monitor='loss')
+    lr_scheduler_cb = callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
+    csv_log = callbacks.CSVLogger(LOGS_DIR)
+    tensorboard_cb = callbacks.TensorBoard(log_dir=LOGS_DIR)
+    checkpoint = callbacks.ModelCheckpoint(
+            CHECKPOINT_DIR,
             monitor='loss',
             mode='min',
             save_best_only=True)
+    confusion_matrix_cb = ConfusionMatrix()
 
-    callbacks = [lr_scheduler_cb, training_end, checkpoint]
+
+    model_callbacks = [
+            lr_scheduler_cb,
+            training_end,
+            checkpoint,
+            tensorboard_cb,
+            confusion_matrix_cb
+            ]
     if log:
-        callbacks.append(csv_log)
+        model_callbacks.append(csv_log)
 
-    model.compile(optimizer=op, loss=bce, metrics=model_metrics)
     ds_train = ds[0]
-    stat = model.fit(ds_train, epochs=epochs, verbose=1, callbacks=callbacks)
     ds_eval = ds[1]
-    results = model.evaluate(ds_eval)
+    model.compile(optimizer=op, loss=bce, metrics=model_metrics)
+    stat = model.fit(
+            ds_train,
+            epochs=epochs,
+            verbose=1,
+            callbacks=model_callbacks,
+            validation_data=ds_eval)
 
     if plot:
-        plt.suptitle('training accuracy')
+        plt.suptitle('training loss')
         plt.plot(range(epochs), stat['loss'])
+        plt.plot(range(epochs), stat['val_loss'])
         plt.show()
-    return model, zip(model.metrics_names, results)
+    return model, stat.history
+
 
 def dataplot(model, ds, plot=False):
     """ Displays the data and predictions provided by the malaria model """
@@ -230,15 +298,15 @@ def dataplot(model, ds, plot=False):
 
 # MAIN
 def __main__():
-    ds_set = handle_data(split_ratios=(0.4, 0.05, 0.05))
+    ds_set = handle_data(split_ratios=(0.02, 0.01, 0.01))
     # ds_set = handle_data()
 
     def run():
         model = MalariaModel()
-        model, performance = run_model(model, ds_set)
+        model, performance = run_model(model, ds_set, epochs=2)
         df = pd.DataFrame(performance)
         print(df)
-        dataplot(model, ds_set)
+        # dataplot(model, ds_set)
     run()
 
 if __name__ == '__main__':
