@@ -4,8 +4,8 @@ import ramiel from './img/ramiel.webp'
 import adam from './img/adam.webp'
 import sahaquiel from './img/sahaquiel.webp'
 
-/* each card displays one thing and 
- * some information regarding that thing 
+/* each card displays one thing and
+ * some information regarding that thing
  * i decided to include the eva angels
  */
 function Card( props ) {
@@ -23,15 +23,15 @@ function Card( props ) {
 const angeldata = [
   {
     title: "Leliel",
-    desc: "Higher dimensional being",
-    img: leliel, 
+    desc: "Integral to the lore of the show. The angel came, and revealed a character destroyed by his past.",
+    img: leliel,
     ep: "12",
-    key: 1, //good practice to include a key for each element i guess, must be unique to the element
+    key: 1,
     movie: false
   },
   {
     title: "Ramiel",
-    desc: "Lethal force octahedron",
+    desc: "A fan favorite. People loved watching the shrieking octahedron force out the best in our characters.",
     img: ramiel,
     ep: "5",
     key: 2,
@@ -39,7 +39,7 @@ const angeldata = [
   },
   {
     title: "Adam",
-    desc: "Second impact fella",
+    desc: "The angel behind it all, the one that nearly brought destruction to the world.",
     img: adam,
     ep: "2",
     key: 3,
@@ -47,7 +47,7 @@ const angeldata = [
   },
   {
     title: "Sahaquiel",
-    desc: "Suicide bomber angel",
+    desc: "Not a very special villain, but certainly one that really moved the conflict between our characters forward.",
     img: sahaquiel,
     ep: "10",
     key: 4,
@@ -63,8 +63,7 @@ const angeldata = [
  */
 export default function Cardbar() {
   const angels = angeldata.map( angel => {
-    //return <Card img={angel.img} title={angel.title} desc={angel.desc} ep={angel.ep} />
-    return <Card {...angel} /> //spread angel into individual props
+    return <Card {...angel} />
   } );
   return (
     <div className="cardbar">
