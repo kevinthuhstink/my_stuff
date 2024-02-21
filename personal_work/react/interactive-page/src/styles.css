@@ -356,6 +356,7 @@ main > * {
 /* PROJECT 3.1:
  * colorschemes */
 .setcolors {
+  margin-top: 50px;
   height: 50px;
   font-family: "Red Hat Display";
   font-size: 28px;
@@ -688,7 +689,6 @@ details > summary {
 .notes--tab button:hover {
   background: silver;
 }
-
 
 
 
