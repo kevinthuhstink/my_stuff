@@ -1,8 +1,7 @@
 import React from 'react'
-import Cardbar from './Cardbar.js'
 import data from './data.js'
 
-function Colorscheme( props ) {
+function Colorscheme(props) {
   return (
     <button className="setcolors" onClick={props.toggleColors} style={props.colors}>
       { !props.buttonText ?
@@ -12,7 +11,7 @@ function Colorscheme( props ) {
   )
 }
 
-function FakeFormOut( props ) {
+function FakeFormOut(props) {
   return (
     <div className="fakeform--out">
       <p>Username: {props.formData.username}</p>
@@ -22,7 +21,7 @@ function FakeFormOut( props ) {
   )
 }
 
-export default function Sidebar( props ) {
+export default function Sidebar(props) {
   const sidebarStyle = {
     background: props.pageStyle.taro ?
       data.colors.sidebar.taro :
@@ -37,21 +36,11 @@ export default function Sidebar( props ) {
       "black" :
       "white"
   }
-  /* inaccurate to have derived states from props
-  const [ bg, setBg ] = React.useState( props.color );
-  function bgToggle() {
-    setColor( bg => !bg );
-  } */
 
   return (
     <div className="sidebar" style={sidebarStyle}>
-      <small className="proj">Project 1</small>
-      {data.todoList}
-      <small className="proj">Project 2</small>
-      <Cardbar />
-      <small className="proj">Project 3.1</small>
       <Colorscheme toggleColors={props.toggleColors} colors={colors} buttonText={props.pageStyle.taro} />
-      <small className="proj">Project 3.2</small>
+      <p>{props.displayText}</p>
       <FakeFormOut formData={props.formData} retakeForm={props.retakeForm} />
     </div>
   )

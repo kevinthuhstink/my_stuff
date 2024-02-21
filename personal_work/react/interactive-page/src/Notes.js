@@ -159,7 +159,7 @@ function NotesEntry(props) {
           ...prevSettings,
           activeNote: id,
         }));
-        console.log(id, tabbar);
+        //console.log("loading note", id, tabbar);
       }
 
       function removeFromTabbar() {
@@ -313,7 +313,7 @@ function NotesEntry(props) {
 
   return (
     <section id="notes--main">
-      {activeNote !== null ?
+      {content.current.length !== 0 ?
         <>
           <NotesTabbar />
           <ButtonPanel />
@@ -324,7 +324,10 @@ function NotesEntry(props) {
             /> :
             <NotesTextarea />}
         </> :
-        <div id="notes--inactive">No notes open currently.</div>}
+        <div id="notes--inactive">
+          No notes open currently.
+          Click on the plus arrow to open a new note file.
+        </div>}
     </section>
   );
 }

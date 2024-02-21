@@ -347,7 +347,7 @@ main > * {
   overflow-x: hidden;
   overflow-y: hidden;
   color: white;
-  font-size: 240px;
+  font-size: 0.5em;
   z-index: 1;
   position: relative;
   margin-top: 50px;
@@ -687,4 +687,13 @@ details > summary {
 }
 .notes--tab button:hover {
   background: silver;
+}
+
+
+
+
+/* wow, this css is a mess. */
+.sidebar > p {
+  font-size: 1.2em;
+  font-weight: bold;
 }

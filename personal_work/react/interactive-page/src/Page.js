@@ -1,120 +1,110 @@
-import React from 'react';
-import Header from './Header.js';
-import Sidebar from './Sidebar.js';
+import React from 'react'
+import Header from './Header.js'
+import Sidebar from './Sidebar.js'
 import FakeLogin from './FakeLogin.js'
 import MainVersions from './MainVersions.js'
 import data from './data.js'
-import './styles.css';
+import './styles.css'
 
-function Resizer( props ) {
-  var setPosition = {
-    left: `${props.position}vw` }
+function Resizer(props) {
+  var setPosition = {left: `${props.position}vw`}
   return <div id="resizer" draggable="true" style={setPosition}></div>
 }
 
+
 export default function Page() {
-  //pageStyle.taro can be toggled on or off
-  //apply it onto the children components
-  const [ pageStyle, setPageStyle ] = React.useState( defaultPageStyle );
+  const [pageStyle, setPageStyle] = React.useState(defaultPageStyle)
+
   function defaultPageStyle() {
-    const displaySidebar = window.innerWidth >= 800;
+    const displaySidebar = window.innerWidth >= 800
     return {
       taro: false,
       mainVersion: 0,
-        displaySidebar: displaySidebar,
-        mainWidth: displaySidebar ? 70 : 100, //in vw
-        sidebarWidth: displaySidebar ? 30 : null,
-    };
-  }
-  function toggleColors() {
-    setPageStyle( prevPageStyle => ( {
-      ...prevPageStyle,
-      taro: !prevPageStyle.taro,
-    } ) )
-  }
-  function selectMainVersion( version ) {
-    //console.log( version );
-    setPageStyle( prevPageStyle => ( {
-      ...prevPageStyle,
-      mainVersion: version,
-    } ) );
+      displaySidebar: displaySidebar,
+      mainWidth: displaySidebar ? 70 : 100, //in vw
+      sidebarWidth: displaySidebar ? 30 : null,
+    }
   }
 
-  /* PROJECT 3.2
-   * want a fake login screen to pop up
-   * grab user input
-   * then send it to the main kevinthuhstink page
-   * display that information in the sidebar
-   */
-  const [ fakeFormData, setFakeFormData ] = React.useState( {
+  function toggleColors() {
+    setPageStyle(prevPageStyle => ({
+      ...prevPageStyle,
+      taro: !prevPageStyle.taro,
+    }))
+  }
+
+  function selectMainVersion(version) {
+    setPageStyle(prevPageStyle => ({
+      ...prevPageStyle,
+      mainVersion: version,
+    }))
+  }
+
+  const [fakeFormData, setFakeFormData] = React.useState( {
       username: "",
       password: "",
       passwordConfirm: "",
       KC: false,
       submit: false
-    } );
+    })
 
-  function handleChange( event ) {
-    setFakeFormData( function( prevData ) {
-      const { name, value, type, checked } = event.target;
-      return ( {
+  function handleChange(event) {
+    setFakeFormData(function(prevData) {
+      const {name, value, type, checked} = event.target
+      return ({
         ...prevData,
         [name]: type === "checkbox" ? checked : value
-      } );
-    } )
-  } //end handleChange
+      })
+    })
+  }
 
-  function handleSubmit( onSubmit ) {
-    onSubmit.preventDefault();
+  function handleSubmit(onSubmit) {
+    onSubmit.preventDefault()
     //retake form
-    if ( fakeFormData.submit ) {
-      setFakeFormData( {
+    if (fakeFormData.submit) {
+      setFakeFormData({
         username: "",
         password: "",
         passwordConfirm: "",
         KC: false,
         submit: false
-      } );
-      setPageStyle( defaultPageStyle );
+      })
+      setPageStyle(defaultPageStyle)
     }
+
     //submit form IF passwords match
-    else if ( fakeFormData.passwordConfirm === fakeFormData.password ) {
-      console.log( "Successfully signed up" );
-      setFakeFormData( function( prevData ) {
-        return ( {
+    else if (fakeFormData.passwordConfirm === fakeFormData.password) {
+      console.log("Successfully signed up")
+      setFakeFormData(function(prevData) {
+        return ({
           ...prevData,
           submit: true
-        } );
-      } );
-    } //endif
-    else {
-      console.log( "Passwords do not match" );
+        })
+      })
     }
-  } //end handleSubmit
+    else {
+      console.log("Passwords do not match")
+    }
+  }
 
 
-  /* PROJECT 3.3:
-   * Sidebar popup menu and drag resizing
-   * Want the div to be able to move left and right, not up and down using the dragger
-   * have the resizer follow the mouse, set state based on its xcoord,
-   * then have the Main and Sidebar divs follow it */
-  React.useEffect(handleResizer, [fakeFormData.submit, pageStyle.displaySidebar]);
+  React.useEffect(handleResizer, [fakeFormData.submit, pageStyle.displaySidebar])
   function handleResizer() {
-    if ( !fakeFormData.submit )
-      return; //do nothing if we're on the fake form screen
+    if (!fakeFormData.submit)
+      return //do nothing if we're on the fake form screen
 
-    window.addEventListener('resize', displaySidebar);
-    const resizerObj = document.getElementById( "resizer" );
+    window.addEventListener('resize', displaySidebar)
+    const resizerObj = document.getElementById( "resizer" )
     if (resizerObj)
-      resizerObj.addEventListener( "mousedown", dragResizer );
+      resizerObj.addEventListener("mousedown", dragResizer)
     return () => {
       if (resizerObj)
-        resizerObj.removeEventListener( "mousedown", dragResizer );
-      window.removeEventListener('resize', displaySidebar);
+        resizerObj.removeEventListener( "mousedown", dragResizer )
+      window.removeEventListener('resize', displaySidebar)
     }
 
     function displaySidebar(event) {
-      event.preventDefault();
+      event.preventDefault()
       setPageStyle(prevPageStyle => {
         const displaySidebar = window.innerWidth >= 800
         return {
@@ -125,44 +115,77 @@ export default function Page() {
         }
       })
     }
-    //drag and move sidebar on mousedown
-    function dragResizer( event ) {
-      //have it on document so the resizer div follows the mouse anywhere in the document
-      event.preventDefault(); //just good to have i guess
-      document.addEventListener( "mousemove", moveOnDrag );
-      document.addEventListener( "mouseup", stopDrag );
 
-      function moveOnDrag( event ) {
-        const viewWidth = window.innerWidth;
-        var mousePos = event.clientX;
+    //drag and move sidebar on mousedown
+    function dragResizer(event) {
+      //have it on document so the resizer div follows the mouse anywhere in the document
+      event.preventDefault() //just good to have i guess
+      document.addEventListener("mousemove", moveOnDrag)
+      document.addEventListener("mouseup", stopDrag)
+
+      function moveOnDrag(event) {
+        const viewWidth = window.innerWidth
+        var mousePos = event.clientX
         //stop movement if mouse pos is outside 60% and 80% of the screen
-        if ( mousePos < viewWidth * .6 || mousePos > viewWidth * .8 )
-          return;
-        var newWidth = mousePos * 100 / viewWidth; //px -> vw
-        setPageStyle( prevpageStyle => ( {
+        if (mousePos < viewWidth * .6 || mousePos > viewWidth * .8)
+          return
+        var newWidth = mousePos * 100 / viewWidth //px -> vw
+        setPageStyle(prevpageStyle => ({
           ...prevpageStyle,
           mainWidth: newWidth,
           sidebarWidth: 100 - newWidth,
-        } ) );
+        }))
       }
 
-      function stopDrag( event ) {
+      function stopDrag(event) {
         //kill moving div effects
-        document.removeEventListener( "mousemove", moveOnDrag );
-        document.removeEventListener( "mouseup", stopDrag );
+        document.removeEventListener("mousemove", moveOnDrag)
+        document.removeEventListener("mouseup", stopDrag)
       }
     }
   }
 
+  const sidebarMessages = [
+    "Click on the dotted buttons above to see my development progress.",
+
+    `This was one of my first web development projects in forever.
+    I used this page to relearn a lot of CSS that I've long forgotten,
+    and learned some new CSS stuff along the way,
+    namely flexbox and gradients.`,
+
+    `This was my real first challenge in React. I had to figure out
+    what a prop was and how to pass them into reusable components.
+    Overall, not too bad, and also good CSS review.`,
+
+    `Certainly a huge step up from the last page.
+    Because there's no backend, this form isn't handled in any
+    meaningful way, but it still makes API calls, and loads images
+    based on what you submit (submit "donut" for a donut).`,
+
+    `Apparently many people's first Javascript final project
+    was to code Conway's Game of Life, so here it is, with
+    a scalable grid and variable window size. Also, these sliders are
+    all completely custom as well.`,
+
+    `As of now, the last thing I've done was include a note-taking app.
+    Arguably easier than Conway's Game of Life, however tracking data and
+    responding to user input in the textarea was definetly suitable
+    practice in Javascript. Unfortunately, I can't get newlines to work.
+    Hopefully when I revisit this, I'll improve on it and maybe even
+    keep building more.`
+  ]
+
 
   //styletools for all Mains
-  var Main = MainVersions[pageStyle.mainVersion];
+  const Main = MainVersions[pageStyle.mainVersion]
+  const sidebarText = sidebarMessages[pageStyle.mainVersion]
+
   const mainStyle = {
     background: pageStyle.taro ?
       data.colors.main.taro :
       data.colors.main.default,
     width: `${pageStyle.mainWidth}vw`,
-    buttonStyle: { //doesn't have to be only css styletools
+    buttonStyle: {
       background: pageStyle.taro ?
         data.colors.header.taro :
         data.colors.header.default,
@@ -197,6 +220,7 @@ export default function Page() {
             formData={fakeFormData}
             retakeForm={handleSubmit}
             toggleColors={toggleColors}
+            displayText={sidebarText}
             key={3} />
           </>
           }

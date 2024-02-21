@@ -18,7 +18,7 @@ function Main5(props) {
       return alt;
     return JSON.parse(localStorage.getItem(name));
   }
-  const content = React.useRef(initItem("notes"));
+  const content = React.useRef(initItem("notes", []));
   const [settings, setSettings] = React.useState({
     titles: initItem("titles", []),
     tabbar: initItem("tabbar", []),
@@ -311,6 +311,7 @@ const Title = props => (
     <main id="main5" style={props.mainStyle}>
       <h1 className="main--title">Hello Everyone!</h1>
     </main> );
+
 //load the main version corresponding to props.mainVersion
 //0 (default) means most recent
 const MainVersions = [
