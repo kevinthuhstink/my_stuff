@@ -39,10 +39,10 @@ HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.0001, 0.001,
 HP_LR = hp.HParam('learning_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 
 default_hparams = {
-        'dropout': 0.2,
+        'dropout': 0.1,
         'regularization': 0.01,
-        'dense1': 100,
-        'dense2': 10,
+        'dense1': 96,
+        'dense2': 12,
         'lr': 0.001
         }
 

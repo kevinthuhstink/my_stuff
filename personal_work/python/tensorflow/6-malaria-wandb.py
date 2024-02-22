@@ -19,6 +19,9 @@ import seaborn
 from tensorboard.plugins.hparams import api as hp
 import tensorboard_plugin_profile
 
+import wandb
+from wandb.keras import WandbCallback
+
 
 keras = tf.keras
 metrics = tf.keras.metrics
@@ -30,6 +33,18 @@ LOGS_DIR = './logs/' + exec_time
 CHECKPOINT_DIR = LOGS_DIR + '-model'
 IMAGE_DIR = LOGS_DIR + '-images'
 
+wandb.config = {
+        'learning-rate': 0.001,
+        'epochs': 200,
+        'batch_size': 32,
+        'dropout_rate': 0.1,
+        'IM_SIZE': 224,
+        'regularization': 0.001,
+        'dense1': 96,
+        'dense2': 12
+        }
+wb_cfg = wandb.config;
+
 
 # HYPERPARAMETERS
 HP_DROPOUT = hp.HParam('dropout', hp.Discrete([0.1, 0.2, 0.3]))
@@ -39,13 +54,12 @@ HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.0001, 0.001,
 HP_LR = hp.HParam('learning_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 
 default_hparams = {
-        'dropout': 0.2,
+        'dropout': 0.1,
         'regularization': 0.01,
-        'dense1': 100,
-        'dense2': 10,
+        'dense1': 96,
+        'dense2': 12,
         'lr': 0.001
         }
-
 
 
 # DATA PREPROCESSING
@@ -176,7 +190,7 @@ class MalariaModel(keras.Model):
 
     def __init__(self, hparams):
         hp_active = hparams.keys()
-        dropout = hparams['dropout'] if 'dropout' in hp_active else 0.2
+        dropout = hparams['dropout'] if 'dropout' in hp_active else 0.1
         regularization = hparams['regularization'] if 'regularization' in hp_active else 0.01
         dense1 = hparams['dense1'] if 'dense1' in hp_active else 96
         dense2 = hparams['dense2'] if 'dense2' in hp_active else 12
@@ -248,6 +262,11 @@ def lr_scheduler(epoch, lr):
 
 
 # RUNNING THE MODEL
+def run_model_wandb():
+    wandb.init(project='Malaria_Detection', entity='kev72eat')
+    pass
+
+
 def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
     op = keras.optimizers.Adam(learning_rate=lr)
     bce = keras.losses.BinaryCrossentropy()
@@ -394,7 +413,8 @@ def __main__():
         print(df)
         # dataplot(model, ds_set)
     # run()
-    tune_model(ds_set)
+    run_model_wandb()
+    # tune_model(ds_set)
 
 if __name__ == '__main__':
     __main__()
