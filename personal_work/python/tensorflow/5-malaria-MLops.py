@@ -248,7 +248,7 @@ def lr_scheduler(epoch, lr):
 
 
 # RUNNING THE MODEL
-def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
+def run_model(model, ds, epochs=1, lr=0.001, plot=False):
     op = keras.optimizers.Adam(learning_rate=lr)
     bce = keras.losses.BinaryCrossentropy()
 
@@ -266,14 +266,12 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
             metrics.AUC(name='auc'),
             ]
 
-    training_end = callbacks.EarlyStopping(patience=3, monitor='loss')
+    training_end = callbacks.EarlyStopping(patience=3)
     lr_scheduler_cb = callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
     csv_log = callbacks.CSVLogger(LOGS_DIR)
     tensorboard_cb = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
     checkpoint = callbacks.ModelCheckpoint(
             CHECKPOINT_DIR,
-            monitor='loss',
-            mode='min',
             save_best_only=True)
     confusion_matrix_cb = ConfusionMatrix()
 
@@ -285,8 +283,6 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
             tensorboard_cb,
             confusion_matrix_cb
             ]
-    if log:
-        model_callbacks.append(csv_log)
 
     ds_train = ds[0]
     ds_eval = ds[1]
