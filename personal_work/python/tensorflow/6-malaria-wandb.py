@@ -32,13 +32,17 @@ exec_time = datetime.datetime.now().strftime('%d-%m-%Y_%H:%M:%S')
 LOGS_DIR = './logs/' + exec_time
 CHECKPOINT_DIR = LOGS_DIR + '-model'
 IMAGE_DIR = LOGS_DIR + '-images'
+TUNE_DIR = './logs/hparam_tune-' + exec_time
+
+log_writer = tf.summary.create_file_writer(LOGS_DIR)
+image_writer = tf.summary.create_file_writer(IMAGE_DIR)
 
 wandb.config = {
-        'learning-rate': 0.001,
-        'epochs': 200,
-        'batch_size': 32,
-        'dropout_rate': 0.1,
         'IM_SIZE': 224,
+        'lr': 0.001,
+        'epochs': 5,
+        'batch_size': 32,
+        'dropout': 0.1,
         'regularization': 0.001,
         'dense1': 96,
         'dense2': 12
@@ -53,26 +57,18 @@ HP_DENSE2_UNITS = hp.HParam('dense2_units', hp.Discrete([4, 8, 12, 16]))
 HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 HP_LR = hp.HParam('learning_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 
-default_hparams = {
-        'dropout': 0.1,
-        'regularization': 0.01,
-        'dense1': 96,
-        'dense2': 12,
-        'lr': 0.001
-        }
-
 
 # DATA PREPROCESSING
-IM_SIZE=244
 def handle_data(plot=False, split_ratios=(0.8, 0.1, 0.1)):
     """ Reads, preprocesses and parititions data from a file
 
         plot: Determines whether the input data will be displayed
-        IM_SIZE: Determinees the size of the input data images
         split_ratios: Determines what proportion of the base dataset
                       is used for training, evaluation, and testing """
+
     ds_load = tfds.load('malaria', shuffle_files=True)['train']
     def preprocess(elem):
+        IM_SIZE = wb_cfg['IM_SIZE']
         image = tf.image.resize(elem['image'], (IM_SIZE, IM_SIZE))
         return image, elem['label']
     ds = ds_load.map(preprocess)
@@ -125,7 +121,8 @@ class Augmenter(layers.Layer):
     """ Normalizes and augments input data during training.
 
         Possible transformations include a random rotation and
-        a flip in horizontal or vertical or both directions. """
+        a flip in horizontal or vertical or both directions.
+        Using this layer allows the GPU to process image transformations. """
 
     def __init__(self):
         super(Augmenter, self).__init__()
@@ -252,6 +249,11 @@ class ConfusionMatrix(callbacks.Callback):
 
 
 def lr_scheduler(epoch, lr):
+    """ Schedules different learning rates during model training.
+
+        Follows a cosine graph whose amplitude decreases every 10th epoch,
+        determined by 1 / (epoch // 10 + 1) """
+
     curve_amp = 1 / (epoch // 10 + 1)
     lr_func = lr * tf.math.cos((epoch % 10) * math.pi/27)
     lr_val = curve_amp * lr_func
@@ -262,17 +264,15 @@ def lr_scheduler(epoch, lr):
 
 
 # RUNNING THE MODEL
-def run_model_wandb():
+def run_model_wandb(ds):
+    """ Runs the model using Weights and Biases. """
+
     wandb.init(project='Malaria_Detection', entity='kev72eat')
-    pass
+    epochs = wb_cfg['epochs']
+    model = MalariaModel(wb_cfg)
 
-
-def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
-    op = keras.optimizers.Adam(learning_rate=lr)
+    op = keras.optimizers.Adam(learning_rate=wb_cfg['lr'])
     bce = keras.losses.BinaryCrossentropy()
-
-    log_writer = tf.summary.create_file_writer(LOGS_DIR)
-    image_writer = tf.summary.create_file_writer(IMAGE_DIR)
 
     model_metrics = [
             metrics.TruePositives(name='true_positives'),
@@ -285,27 +285,22 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
             metrics.AUC(name='auc'),
             ]
 
-    training_end = callbacks.EarlyStopping(patience=3, monitor='loss')
+    training_end = callbacks.EarlyStopping(patience=3)
     lr_scheduler_cb = callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
-    csv_log = callbacks.CSVLogger(LOGS_DIR)
     tensorboard_cb = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
     checkpoint = callbacks.ModelCheckpoint(
             CHECKPOINT_DIR,
-            monitor='loss',
-            mode='min',
             save_best_only=True)
     confusion_matrix_cb = ConfusionMatrix()
-
 
     model_callbacks = [
             lr_scheduler_cb,
             training_end,
             checkpoint,
             tensorboard_cb,
-            confusion_matrix_cb
+            confusion_matrix_cb,
+            WandbCallback()
             ]
-    if log:
-        model_callbacks.append(csv_log)
 
     ds_train = ds[0]
     ds_eval = ds[1]
@@ -317,20 +312,23 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
             callbacks=model_callbacks,
             validation_data=ds_eval)
 
-    if plot:
-        plt.suptitle('training loss')
-        plt.plot(range(epochs), stat['loss'])
-        plt.plot(range(epochs), stat['val_loss'])
-        plt.show()
     return model, stat.history
 
 
 def tune_model(ds):
+    """ Tunes the hyperparameters selected for the model.
+
+        Hyperparameters to be tuned include the dropout rate,
+        regularization rate, dense layer sizes, and initial learning rate. """
+
     def tune_fit(hparams, epochs=1):
+        """ Fits a model with the given hyperparameters. """
+
         lr = hparams['lr'] if 'lr' in hparams.keys() else 0.001
         op = keras.optimizers.Adam(learning_rate=lr)
         bce = keras.losses.BinaryCrossentropy()
-        tboard = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
+        lr_scheduler_cb = callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
+        tboard = callbacks.TensorBoard(log_dir=TUNE_DIR)
         ds_train = ds[0]
         ds_eval = ds[1]
 
@@ -340,42 +338,50 @@ def tune_model(ds):
             ds_train,
             epochs=epochs,
             verbose=1,
-            callbacks=[tboard],
+            callbacks=[lr_scheduler_cb, tboard],
             validation_data=ds_eval)
         return hparam_stat.history['val_accuracy']
 
     run_num = 0;
     # for dense1 in HP_DENSE1_UNITS.domain.values:
         # for dense2 in HP_DENSE2_UNITS.domain.values:
-    for dropout in HP_DROPOUT.domain.values:
-        for regularization in HP_REGULARIZATION.domain.values:
+    # for dropout in HP_DROPOUT.domain.values:
+    for regularization in HP_REGULARIZATION.domain.values:
                     # for lr in HP_LR.domain.values:
 
-                hparams = {
-                        'dropout': dropout,
-                        'regularization': regularization,
-                        # 'dense1': dense1,
-                        # 'dense2': dense2,
-                        # 'lr': lr
-                        }
+        hparams = {
+                # 'dropout': dropout,
+                'regularization': regularization,
+                # 'dense1': dense1,
+                # 'dense2': dense2,
+                # 'lr': lr
+                }
 
-                text_log = 'Current run number: ' + str(run_num) + '\n'
-                for key in hparams.keys():
-                    text_log += '{0}: {1}\n'.format(key, hparams[key])
-                print(text_log)
+        text_log = 'Current run number: ' + str(run_num) + '\n'
+        for key in hparams.keys():
+            text_log += '{0}: {1}\n'.format(key, hparams[key])
+        print(text_log)
 
-                hparam_writer = tf.summary.create_file_writer(
-                        LOGS_DIR + '/' + str(run_num))
-                with hparam_writer.as_default():
-                    hp.hparams(hparams)
-                    accuracy = tune_fit(hparams, epochs=5)
-                    tf.summary.text('hparams', str(hparams), step=run_num)
-                    tf.summary.scalar('accuracy', accuracy[-1], step=run_num)
-                run_num += 1;
+        this_run_dir = TUNE_DIR + '/' + str(run_num)
+        hparam_writer = tf.summary.create_file_writer(this_run_dir)
+        with hparam_writer.as_default():
+            hp.hparams(hparams)
+            accuracy = tune_fit(hparams, epochs=5)
+            tf.summary.text('hparams', str(hparams), step=run_num)
+            tf.summary.scalar('accuracy', accuracy[-1], step=run_num)
+        run_num += 1;
 
 
 def dataplot(model, ds, plot=False):
-    """ Displays the data and predictions provided by the malaria model """
+    """ Displays the data and predictions provided by the malaria model.
+
+        If plot=True, an ROC plot with labels at certain threshold values
+        are displayed.
+        The threshold value determines the threshold at which a model's output
+        is positive or negative. Lower threshold values leads to more
+        positive outputs, so the goal is to choose a threshold that maximizes
+        true positives while minimizing false positives. """
+
     ds_test = ds[2]
     labels = []
     for img, label in ds_test.as_numpy_iterator():
@@ -384,7 +390,6 @@ def dataplot(model, ds, plot=False):
     model_use = ds_test.batch(32).prefetch(tf.data.AUTOTUNE)
     results = model.predict(model_use)
     results = results.squeeze().round().astype('int32')
-    # print(labels, results)
 
     confusion_matrix = tf.math.confusion_matrix(labels, results)
     print(confusion_matrix)
@@ -403,17 +408,11 @@ def dataplot(model, ds, plot=False):
 
 # MAIN
 def __main__():
-    ds_set = handle_data(split_ratios=(0.2, 0.04, 0.04))
+    ds_set = handle_data(split_ratios=(0.2, 0.1, 0.1))
     # ds_set = handle_data()
 
-    def run():
-        model = MalariaModel(default_hparams)
-        model, performance = run_model(model, ds_set, epochs=2)
-        df = pd.DataFrame(performance)
-        print(df)
-        # dataplot(model, ds_set)
-    # run()
-    run_model_wandb()
+    # run_model()
+    run_model_wandb(ds_set)
     # tune_model(ds_set)
 
 if __name__ == '__main__':

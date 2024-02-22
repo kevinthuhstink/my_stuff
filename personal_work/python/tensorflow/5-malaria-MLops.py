@@ -29,6 +29,7 @@ exec_time = datetime.datetime.now().strftime('%d-%m-%Y_%H:%M:%S')
 LOGS_DIR = './logs/' + exec_time
 CHECKPOINT_DIR = LOGS_DIR + '-model'
 IMAGE_DIR = LOGS_DIR + '-images'
+TUNE_DIR = './logs/hparam_tune-' + exec_time
 
 
 # HYPERPARAMETERS
@@ -307,7 +308,7 @@ def tune_model(ds):
         lr = hparams['lr'] if 'lr' in hparams.keys() else 0.001
         op = keras.optimizers.Adam(learning_rate=lr)
         bce = keras.losses.BinaryCrossentropy()
-        tboard = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
+        tboard = callbacks.TensorBoard(log_dir=TUNE_DIR, profile_batch=50)
         ds_train = ds[0]
         ds_eval = ds[1]
 
@@ -342,7 +343,7 @@ def tune_model(ds):
             print(text_log)
 
             hparam_writer = tf.summary.create_file_writer(
-                    LOGS_DIR + '/' + str(run_num))
+                    TUNE_DIR + '/' + str(run_num))
             with hparam_writer.as_default():
                 hp.hparams(hparams)
                 accuracy = tune_fit(hparams, epochs=8)
