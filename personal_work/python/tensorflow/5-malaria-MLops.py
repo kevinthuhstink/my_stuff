@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import seaborn
 
 from tensorboard.plugins.hparams import api as hp
+import tensorboard_plugin_profile
 
 
 keras = tf.keras
@@ -31,10 +32,10 @@ IMAGE_DIR = LOGS_DIR + '-images'
 
 
 # HYPERPARAMETERS
-HP_DROPOUT = hp.HParam('dropout', hp.Discrete([0.1, 0.15, 0.2, 0.25, 0.3]))
+HP_DROPOUT = hp.HParam('dropout', hp.Discrete([0.1, 0.2, 0.3]))
 HP_DENSE1_UNITS = hp.HParam('dense1_units', hp.Discrete([32, 64, 96, 128]))
 HP_DENSE2_UNITS = hp.HParam('dense2_units', hp.Discrete([4, 8, 12, 16]))
-HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.0001, 0.001, 0.01, 0.1]))
+HP_REGULARIZATION = hp.HParam('regularization_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 HP_LR = hp.HParam('learning_rate', hp.Discrete([0.0001, 0.001, 0.01]))
 
 default_hparams = {
@@ -175,7 +176,7 @@ class MalariaModel(keras.Model):
 
     def __init__(self, hparams):
         hp_active = hparams.keys()
-        dropout = hparams['dropout'] if 'dropout' in hp_active else 0.2
+        dropout = hparams['dropout'] if 'dropout' in hp_active else 0.1
         regularization = hparams['regularization'] if 'regularization' in hp_active else 0.01
         dense1 = hparams['dense1'] if 'dense1' in hp_active else 96
         dense2 = hparams['dense2'] if 'dense2' in hp_active else 12
@@ -268,7 +269,7 @@ def run_model(model, ds, epochs=1, lr=0.001, log=False, plot=False):
     training_end = callbacks.EarlyStopping(patience=3, monitor='loss')
     lr_scheduler_cb = callbacks.LearningRateScheduler(lr_scheduler, verbose=1)
     csv_log = callbacks.CSVLogger(LOGS_DIR)
-    tensorboard_cb = callbacks.TensorBoard(log_dir=LOGS_DIR)
+    tensorboard_cb = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
     checkpoint = callbacks.ModelCheckpoint(
             CHECKPOINT_DIR,
             monitor='loss',
@@ -310,6 +311,7 @@ def tune_model(ds):
         lr = hparams['lr'] if 'lr' in hparams.keys() else 0.001
         op = keras.optimizers.Adam(learning_rate=lr)
         bce = keras.losses.BinaryCrossentropy()
+        tboard = callbacks.TensorBoard(log_dir=LOGS_DIR, profile_batch=50)
         ds_train = ds[0]
         ds_eval = ds[1]
 
@@ -319,31 +321,38 @@ def tune_model(ds):
             ds_train,
             epochs=epochs,
             verbose=1,
+            callbacks=[tboard],
             validation_data=ds_eval)
         return hparam_stat.history['val_accuracy']
 
     run_num = 0;
     # for dense1 in HP_DENSE1_UNITS.domain.values:
         # for dense2 in HP_DENSE2_UNITS.domain.values:
-    for dropout in (HP_DROPOUT.domain.min_value, HP_DROPOUT.domain.max_value):
-        for regularization in HP_REGULARIZATION.domain.values:
+    # for dropout in HP_DROPOUT.domain.values:
+    for regularization in HP_REGULARIZATION.domain.values:
                     # for lr in HP_LR.domain.values:
 
-                hparams = {
-                        'dropout': dropout,
-                        'regularization': regularization,
-                        # 'dense1': dense1,
-                        # 'dense2': dense2,
-                        # 'lr': lr
-                        }
-                hparam_writer = tf.summary.create_file_writer(
-                        LOGS_DIR + '/' + str(run_num))
-                with hparam_writer.as_default():
-                    hp.hparams(hparams)
-                    accuracy = tune_fit(hparams, epochs=5)
-                    tf.summary.text('hparams', str(hparams), step=run_num)
-                    tf.summary.scalar('accuracy', accuracy[-1], step=run_num)
-                run_num += 1;
+            hparams = {
+                    'dropout': dropout,
+                    'regularization': regularization,
+                    # 'dense1': dense1,
+                    # 'dense2': dense2,
+                    # 'lr': lr
+                    }
+
+            text_log = 'Current run number: ' + str(run_num) + '\n'
+            for key in hparams.keys():
+                text_log += '{0}: {1}\n'.format(key, hparams[key])
+            print(text_log)
+
+            hparam_writer = tf.summary.create_file_writer(
+                    LOGS_DIR + '/' + str(run_num))
+            with hparam_writer.as_default():
+                hp.hparams(hparams)
+                accuracy = tune_fit(hparams, epochs=8)
+                tf.summary.text('hparams', str(hparams), step=run_num)
+                tf.summary.scalar('accuracy', accuracy[-1], step=run_num)
+            run_num += 1;
 
 
 def dataplot(model, ds, plot=False):
