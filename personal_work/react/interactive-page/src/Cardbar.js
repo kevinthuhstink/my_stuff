@@ -8,11 +8,11 @@ import sahaquiel from './img/sahaquiel.webp'
  * some information regarding that thing
  * i decided to include the eva angels
  */
-function Card( props ) {
+function Card(props) {
   return (
     <div className="card">
-      { props.img && <img className="card--img" src={props.img} alt=""/> }
-      { props.movie && <div className="card--badge">IN MOVIES</div> }
+      {props.img && <img className="card--img" src={props.img} alt=""/>}
+      {props.movie && <div className="card--badge">IN MOVIES</div>}
       <h3 className="card--title">{props.title}</h3>
       <p className="card--desc">{props.desc}</p>
       <p className="card--ep">Angel #{props.ep}</p>
@@ -55,16 +55,8 @@ const angeldata = [
   }
 ];
 
-/* angeldata contains a list of maps
- * img->image,
- * title->title...
- * angels contains a list of card elements
- * that can be insta-rendered in the final JSX object
- */
 export default function Cardbar() {
-  const angels = angeldata.map( angel => {
-    return <Card {...angel} />
-  } );
+  const angels = angeldata.map(angel => <Card {...angel} />)
   return (
     <div className="cardbar">
       {angels}
