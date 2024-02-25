@@ -1,24 +1,24 @@
-import React from 'react';
-import data from './data.js';
+import React from 'react'
+import data from './data.js'
 //main1
-import nerv from './img/nerv.png';
+import nerv from './img/nerv.png'
 //main2
-import Cardbar from './Cardbar.js';
+import Cardbar from './Cardbar.js'
 //main3
-import Form from './form_components/Form.js';
+import Form from './form_components/Form.js'
 //main4
-import GameOfLife from './GameOfLife.js'
-import sliderMechanics from './Slider.js'
+import GameOfLife from './game_of_life_components/GameOfLife.js'
+import {initSliders} from './Slider.js'
 //main5
 import Notes from './Notes.js'
 
 function Main5(props) {
   function initItem(name, alt) {
     if (!localStorage.getItem(name))
-      return alt;
-    return JSON.parse(localStorage.getItem(name));
+      return alt
+    return JSON.parse(localStorage.getItem(name))
   }
-  const content = React.useRef(initItem("notes", []));
+  const content = React.useRef(initItem("notes", []))
   const [settings, setSettings] = React.useState({
     titles: initItem("titles", []),
     tabbar: initItem("tabbar", []),
@@ -33,16 +33,16 @@ function Main5(props) {
     },
     resizerPos: null,
     displayText: "",
-  });
+  })
 
-  console.log(localStorage);
-  const control = [settings, setSettings, content];
+  console.log(localStorage)
+  const control = [settings, setSettings, content]
   React.useEffect(() => {
-    localStorage.setItem("titles", JSON.stringify(settings.titles));
-    localStorage.setItem("tabbar", JSON.stringify(settings.tabbar));
-    localStorage.setItem("activeNote", JSON.stringify(settings.activeNote));
-    localStorage.setItem("fileNum", JSON.stringify(settings.fileNum));
-  }, [settings]);
+    localStorage.setItem("titles", JSON.stringify(settings.titles))
+    localStorage.setItem("tabbar", JSON.stringify(settings.tabbar))
+    localStorage.setItem("activeNote", JSON.stringify(settings.activeNote))
+    localStorage.setItem("fileNum", JSON.stringify(settings.fileNum))
+  }, [settings])
 
   return (
     <main id="main5" style={props.mainStyle}>
@@ -90,88 +90,85 @@ function Main4(props) {
     //init default values
     showID: false,
     gameActive: null,
-  } );
-  const [Slider, initSliders] = sliderMechanics;
-  const cellSizeSlider = {
-    id: "cellSize",
-    min: 8,
-    max: 32,
-    value: 32, //includes border
-    pos: 100,
-    sliderTitle: "Change Cell Size",
-  }
-  const intervalSlider = {
-    id: "interval",
-    min: 30,
-    max: 1000,
-    value: 1000,
-    pos: 100,
-    sliderTitle: "Change Game Speed",
-  }
-  const initSliderStates = {
-    cellSize: cellSizeSlider,
-    interval: intervalSlider,
+  } )
+  const sliders = {
+    cellSize: {
+      id: "cellSize",
+      min: 8,
+      max: 32,
+      value: 32, //includes border
+      pos: 100,
+      sliderTitle: "Change Cell Size",
+    },
+    intervalSlider: {
+      id: "interval",
+      min: 30,
+      max: 1000,
+      value: 1000,
+      pos: 100,
+      sliderTitle: "Change Game Speed",
+    }
   }
 
 
   //game render functions
-  const [sliderStates, setSliderStates] = React.useState( initSliderStates );
-  React.useEffect(() => initSliders(setSliderStates), [initSliders]);
+  const [sliderStates, setSliderStates] = React.useState(sliders)
+  React.useEffect(() => initSliders(setSliderStates), [])
 
   function setGrid() {
-    const gridObj = document.getElementById( "game--grid" );
+    const gridObj = document.getElementById("game--grid")
     if (gridObj == null)
-      return;
+      return
 
-    //once grid has been initialized, recalc when resized using ResizeObserverEntry syntax
-    function calcGrid(entry) {
-      //apparently ResizeObserver activates on initialization as well
-      //only entry.borderBoxSizes are altered and the function isn't actually ran
-      const cellSize = sliderStates.cellSize.value;
-      const updateColNum = Math.floor((entry.borderBoxSize[0].inlineSize - 32) / cellSize);
-      const updateRowNum = Math.floor((entry.borderBoxSize[0].blockSize - 32) / cellSize);
+    function generateGrid(entry) {
+      const cellSize = sliderStates.cellSize.value
+      const gridWidth = entry.borderBoxSize[0].inlineSize - 32
+      const gridHeight = entry.borderBoxSize[0].blockSize - 32
+      const colNum = Math.floor(gridWidth / cellSize)
+      const rowNum = Math.floor(gridHeight / cellSize)
 
       function reloadGrid(prevGame) {
         //stand-in for the setGame state setter
         //remakes grid on changes to grid size or cell size
-        if (updateRowNum === prevGame.rowNum && updateColNum === prevGame.colNum)
-          return prevGame;
-        if (prevGame.gameActive)
-          clearInterval(prevGame.gameActive);
+        if (rowNum === prevGame.rowNum && colNum === prevGame.colNum)
+          return prevGame
+        if (prevGame.gameActive) //stops the game on resize
+          clearInterval(prevGame.gameActive)
 
-        //create new cellsData 2d array with new width and length
-        var updateCellsData = [];
-        for (var ypos = 0; ypos < updateRowNum; ypos++) {
-          updateCellsData.push([]);
-          for (var xpos = 0; xpos < updateColNum; xpos++) {
-            updateCellsData[ypos].push({
+        //generate new cellsData 2d array with newly calculated width and length
+        var cellsData = []
+        for (var ypos = 0; ypos < rowNum; ypos++) {
+          cellsData.push([])
+          for (var xpos = 0; xpos < colNum; xpos++) {
+            cellsData[ypos].push({
               alive: false,
-              key: ypos * updateColNum + xpos,
-              id: ypos * updateColNum + xpos,
-            });
+              key: ypos * colNum + xpos,
+              id: ypos * colNum + xpos,
+            })
           }
         }
 
         return {
           ...prevGame,
-          colNum: updateColNum,
-          rowNum: updateRowNum,
-          cellsData: updateCellsData,
+          colNum: colNum,
+          rowNum: rowNum,
+          cellsData: cellsData,
           gameActive: 0,
         }
       } //end reloadGrid()
 
-      setGame(prevGame => reloadGrid(prevGame));
-    } //end calcGrid()
+      setGame(prevGame => reloadGrid(prevGame))
+    }
 
-    const gridObserver = new ResizeObserver(gridUpdateEntry => {
-      for (const entry of gridUpdateEntry)
-        calcGrid(entry);
-    });
-    gridObserver.observe(gridObj);
-    return () => gridObserver.disconnect();
+    const gridObserver = new ResizeObserver(resizeEntries => {
+      const resizeGrid = resizeEntries[0]
+      generateGrid(resizeGrid)
+    })
+
+    gridObserver.observe(gridObj)
+    return () => gridObserver.disconnect()
   } //end setGrid()
-  React.useEffect(setGrid, [sliderStates.cellSize.value]);
+  React.useEffect(setGrid, [sliderStates.cellSize.value])
 
 
   //game mutator functions
@@ -181,109 +178,108 @@ function Main4(props) {
       return cellRow.map(cell => ({
         ...cell,
         alive: liveFunction(cell),
-      }));
-    });
+      }))
+    })
   }
 
-  function toggleCell(cellID) {
-    const liveFunction = cell => cell.id === cellID ? !cell.alive : cell.alive;
+  function toggleCell(selected) {
+    const liveFunction = cell => cell.id === selected ? !cell.alive : cell.alive
     setGame(prevGame => ({
       ...prevGame,
       cellsData: setCellsStatus(prevGame.cellsData, liveFunction),
-    }));
+    }))
   } //end toggleCell()
 
   function toggleID() {
     setGame(prevGame => ({
       ...prevGame,
       showID: !prevGame.showID,
-    }));
+    }))
   }
 
   function randomGrid() {
-    const liveFunction = cell => !!Math.floor(Math.random() * 2);
+    const liveFunction = cell => !!Math.floor(Math.random() * 2)
     setGame(prevGame => ({
       ...prevGame,
       cellsData: setCellsStatus(prevGame.cellsData, liveFunction),
-    }));
+    }))
   }
 
 
   //gameplay functions
-  const runGenerationCallback = React.useCallback(runGeneration, []);
-  //what this line does is it wraps the runGeneration function
+  const runGenerationCallback = React.useCallback(runGeneration, [])
   //so that the runGenerationCallback itself doesn't change, even if runGeneration will
   function runGeneration() {
+
     setGame(prevGame => {
-      function checkStatus(cell) {
-        //checks if a given cell should live or die according to the rules of the game
-        const grid = prevGame.cellsData;
-        const cellID = cell.id;
-        const ypos = Math.floor(cellID / prevGame.colNum);
-        const xpos = cellID % prevGame.colNum;
+      function determineAlive(cell) {
+        const grid = prevGame.cellsData
+        const cellID = cell.id
+        const ypos = Math.floor(cellID / prevGame.colNum)
+        const xpos = cellID % prevGame.colNum
 
         //calc the number of live neighbors the cell has
-        let liveNeighbors = 0;
+        let liveNeighbors = 0
         //orthogonal
         if (ypos > 0 && grid[ypos - 1][xpos].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (xpos > 0 && grid[ypos][xpos - 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (xpos < prevGame.colNum - 1 && grid[ypos][xpos + 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
         //diagonal
         if (xpos > 0 && ypos > 0 && grid[ypos - 1][xpos - 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (xpos > 0 && ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos - 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (xpos < prevGame.colNum - 1 && ypos > 0 && grid[ypos - 1][xpos + 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
         if (xpos < prevGame.colNum - 1 && ypos < prevGame.rowNum - 1 && grid[ypos + 1][xpos + 1].alive)
-          liveNeighbors++;
+          liveNeighbors++
 
         //determine if the cell should die or live
         if (liveNeighbors === 3)
-          return true;
+          return true
         if (liveNeighbors === 2)
-          return grid[ypos][xpos].alive;
+          return grid[ypos][xpos].alive
         else
-          return false;
+          return false
       }
 
       return {
         ...prevGame,
-        cellsData: setCellsStatus(prevGame.cellsData, checkStatus),
+        cellsData: setCellsStatus(prevGame.cellsData, determineAlive),
       }
-    });
+    })
   }
 
   //timers are meant to run async so wrap them in a useEffect
   function runGame() {
     const timingID = game.gameActive ?
       clearInterval(game.gameActive) :
-      setInterval(runGenerationCallback, sliderStates.interval.value);
+      setInterval(runGenerationCallback, sliderStates.interval.value)
     setGame(prevGame => ({
       ...prevGame,
       gameActive: timingID,
-    }));
+    }))
   }
 
   //the interval slider callback function
   function resetInterval() {
     setGame(prevGame => {
       if (!prevGame.gameActive)
-        return prevGame;
-      clearInterval(prevGame.gameActive);
+        return prevGame
+      clearInterval(prevGame.gameActive)
       return {
         ...prevGame,
         gameActive:
           setInterval(runGenerationCallback, sliderStates.interval.value),
       }
-    });
+    })
   }
-  React.useEffect(resetInterval, [sliderStates.interval.value, runGenerationCallback]);
+  React.useEffect(resetInterval, [sliderStates.interval.value, runGenerationCallback])
 
   const gameFunctions = [
     runGeneration,
@@ -301,7 +297,6 @@ function Main4(props) {
         gameStyle={props.mainStyle}
         toggleCell={toggleCell}
         gameFunctions={gameFunctions}
-        Slider={Slider}
         sliderStates={sliderStates} />
     </main>
   )
@@ -310,11 +305,11 @@ function Main4(props) {
 const Title = props => (
     <main id="main5" style={props.mainStyle}>
       <h1 className="main--title">Hello Everyone!</h1>
-    </main> );
+    </main>)
 
 //load the main version corresponding to props.mainVersion
 //0 (default) means most recent
-const MainVersions = [
+export const MainVersions = [
   Title,
   Main1,
   Main2,
@@ -322,5 +317,3 @@ const MainVersions = [
   Main4,
   Main5
 ]
-
-export default MainVersions;
