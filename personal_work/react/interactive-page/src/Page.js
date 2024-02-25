@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from './Header.js'
+import Header from './header_components/Header.js'
 import Sidebar from './Sidebar.js'
 import FakeLogin from './FakeLogin.js'
 import MainVersions from './MainVersions.js'
