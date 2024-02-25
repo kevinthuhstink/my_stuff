@@ -335,22 +335,10 @@ main > * {
   width: inherit;
   height: auto;
 }
-.donut--out {
-  width: inherit;
-}
 .donut--gif {
   position: absolute;
   width: 100%;
   height: auto;
-}
-.donut--text {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  color: white;
-  font-size: 0.5em;
-  z-index: 1;
-  position: relative;
-  margin-top: 50px;
 }
 
 /* PROJECT 3.1:

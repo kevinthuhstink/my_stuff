@@ -5,7 +5,7 @@ import nerv from './img/nerv.png';
 //main2
 import Cardbar from './Cardbar.js';
 //main3
-import Form from './Form.js';
+import Form from './form_components/Form.js';
 //main4
 import GameOfLife from './GameOfLife.js'
 import sliderMechanics from './Slider.js'
