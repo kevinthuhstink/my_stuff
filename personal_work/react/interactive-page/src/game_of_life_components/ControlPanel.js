@@ -1,6 +1,6 @@
 import {Slider} from '../Slider.js'
 
-export function ControlPanel(props) {
+export default function ControlPanel(props) {
   const [runGeneration, runGame, toggleID, randomGrid, resetInterval] = props.gameFunctions
   const {cellSize, interval} = props.sliderStates
   const buttonColors = props.controlStyle.buttonStyle

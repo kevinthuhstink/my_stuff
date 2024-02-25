@@ -309,7 +309,7 @@ const Title = props => (
 
 //load the main version corresponding to props.mainVersion
 //0 (default) means most recent
-export const MainVersions = [
+const MainVersions = [
   Title,
   Main1,
   Main2,
@@ -317,3 +317,4 @@ export const MainVersions = [
   Main4,
   Main5
 ]
+export default MainVersions

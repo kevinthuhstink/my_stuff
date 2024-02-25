@@ -1,4 +1,4 @@
-export function GameGrid(props) {
+export default function GameGrid(props) {
   const cellSize = props.sliderStates.cellSize.value
 
   function Cell(props) {
