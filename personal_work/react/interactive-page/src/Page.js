@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from './header_components/Header.js'
-import Sidebar from './Sidebar.js'
+import Sidebar from './sidebar_components/Sidebar.js'
 import FakeLogin from './FakeLogin.js'
 import MainVersions from './MainVersions.js'
 import data from './data.js'
@@ -145,7 +145,9 @@ export default function Page() {
     }
   }
 
-  const sidebarMessages = [
+
+  //these will be the text descriptions of each main screen
+  const mainDescriptions = [
     "Click on the dotted buttons above to see my development progress.",
 
     `This was one of my first web development projects in forever.
@@ -178,7 +180,7 @@ export default function Page() {
 
   //styletools for all Mains
   const Main = MainVersions[pageStyle.mainVersion]
-  const sidebarText = sidebarMessages[pageStyle.mainVersion]
+  const sidebarText = mainDescriptions[pageStyle.mainVersion]
 
   const mainStyle = {
     background: pageStyle.taro ?
@@ -220,7 +222,7 @@ export default function Page() {
             formData={fakeFormData}
             retakeForm={handleSubmit}
             toggleColors={toggleColors}
-            displayText={sidebarText}
+            mainDescriptions={sidebarText}
             key={3} />
           </>
           }
