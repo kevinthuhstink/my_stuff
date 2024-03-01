@@ -1,3 +1,5 @@
+from random import randint
+
 class Clue:
 
 
@@ -10,8 +12,18 @@ class Clue:
         self.player_locations = {player: {} for player in self.players}
 
     def make_solution(self):
-        #write your implementation below
-        pass
+        ''' Creates a random solution for the current game. '''
+
+        sol_character = randint(0, len(self.characters) - 1)
+        sol_weapon = randint(0, len(self.weapons) - 1)
+        sol_room = randint(0, len(self.rooms) - 1)
+
+        self.solution = {
+                "Character": self.characters[sol_character],
+                "Weapon": self.weapons[sol_weapon],
+                "Room": self.rooms[sol_room]
+                }
+
 
     def distribute_cards(self):
         #write your implementation below
@@ -32,3 +44,29 @@ class Clue:
     def update_scoring_sheet(self,player,suggestion,response):
         #write your implementation below
         pass
+
+
+    # HELPER FUNCTIONS
+    def print_fields(self, fields):
+        ''' Prints game information.
+
+            fields: A list containing strings that correspond to game
+                state variables.
+                Possible values in fields are 'solution', 'players',
+                'characters', 'weapons', 'rooms', 'scoring_sheets',
+                and 'player_locations' '''
+
+        if 'solution' in fields:
+            print(self.solution)
+        if 'players' in fields:
+            print(self.players)
+        if 'characters' in fields:
+            print(self.characters)
+        if 'weapons' in fields:
+            print(self.weapons)
+        if 'rooms' in fields:
+            print(self.rooms)
+        if 'scoring_sheets' in fields:
+            print(self.scoring_sheets)
+        if 'player_locations' in fields:
+            print(self.player_locations)
