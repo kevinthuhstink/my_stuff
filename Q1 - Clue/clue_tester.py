@@ -2,7 +2,7 @@ from clue import Clue
 
 def __main__():
     default_players = ["Player 1", "Player 2", "Player 3",
-                       "Player 4", "Player 5", "Player 6"]
+                       "Player 4", "Player 5"]
     default_characters = ["Plum", "White", "Scarlet", "Green",
                           "Mustard", "Peacock"]
     default_weapons = ["Rope", "Dagger", "Wrench", "Pistol",
@@ -13,7 +13,9 @@ def __main__():
     game = Clue(default_players, default_characters,
                 default_weapons, default_rooms)
     game.make_solution()
-    game.print_fields(['solution'])
+    game.distribute_cards()
+    game.print_fields(['solution', 'available_characters', 'available_weapons'])
+    game.print_fields(['players'])
 
 
 if __name__ == '__main__':

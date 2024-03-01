@@ -12,22 +12,56 @@ class Clue:
         self.player_locations = {player: {} for player in self.players}
 
     def make_solution(self):
-        ''' Creates a random solution for the current game. '''
+        ''' Creates a random solution for the current game.
 
-        sol_character = randint(0, len(self.characters) - 1)
-        sol_weapon = randint(0, len(self.weapons) - 1)
-        sol_room = randint(0, len(self.rooms) - 1)
+            Also initializes private fields for the remaining available
+            characters and weapons for each player to have when setting up
+            the game.
+            '''
+
+        sol_char, available_chars = grab_random(self.characters)
+        sol_wep, available_weps = grab_random(self.weapons)
+        sol_room, available_rooms = grab_random(self.rooms)
 
         self.solution = {
-                "Character": self.characters[sol_character],
-                "Weapon": self.weapons[sol_weapon],
-                "Room": self.rooms[sol_room]
+                "Character": sol_char,
+                "Weapon": sol_wep,
+                "Room": sol_room
                 }
+
+        self.__available_characters = available_chars
+        self.__available_weapons = available_weps
+        self.__available_rooms = available_rooms
 
 
     def distribute_cards(self):
-        #write your implementation below
-        pass
+        ''' Distributes one unique character and uniqe weapon to each player
+            in the game.
+
+            Accomplishes this by replacing the players array of string names
+            with dicts containing the player name, its character, and its weapon.
+            '''
+
+        player_setup = []
+        for player in self.players:
+            character, other_chars = grab_random(self.__available_characters)
+            weapon, other_weps = grab_random(self.__available_weapons)
+            room, other_rooms = grab_random(self.__available_rooms)
+
+            player_setup.append({
+                "Name": player,
+                "Character": character,
+                "Weapon": weapon,
+                "Room": room
+                })
+
+            self.__available_characters = other_chars
+            self.__available_weapons = other_weps
+            self.__available_rooms = other_rooms
+
+        self.players = player_setup
+
+
 
     def move_player(self,player):
         #write your implementation below
@@ -45,8 +79,6 @@ class Clue:
         #write your implementation below
         pass
 
-
-    # HELPER FUNCTIONS
     def print_fields(self, fields):
         ''' Prints game information.
 
@@ -56,6 +88,7 @@ class Clue:
                 'characters', 'weapons', 'rooms', 'scoring_sheets',
                 and 'player_locations' '''
 
+        # PUBLIC FIELDS
         if 'solution' in fields:
             print(self.solution)
         if 'players' in fields:
@@ -70,3 +103,24 @@ class Clue:
             print(self.scoring_sheets)
         if 'player_locations' in fields:
             print(self.player_locations)
+
+        #PRIVATE FIELDS
+        if 'available_characters' in fields:
+            print(self.__available_characters)
+        if 'available_weapons' in fields:
+            print(self.__available_weapons)
+
+
+def grab_random(choices):
+    ''' Selects a random item from a list.
+
+        From the possible entries in choices, selects one and returns it
+        and the list without that choice.
+
+        choices: Any list.
+        return: A tuple containing a randomly selected item, and
+                the choices list without the selected item. '''
+
+    selection = randint(0, len(choices) - 1)
+    leftover = choices[:selection] + choices[selection + 1:]
+    return choices[selection], leftover
