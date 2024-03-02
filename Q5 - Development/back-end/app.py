@@ -1,9 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import Table
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources=r'/*')
 db = Table.Table()
 
 
@@ -17,7 +17,8 @@ def heartbeat():
 # A request to add items to the catalog (use the request body to store data)
 @app.route("/catalog/item", methods=["POST"])
 def add_item():
-    new_task = request.body
+    new_task = request.get_json()
+    print(new_task)
     result = jsonify({"body": db.add(new_task)})
     result.status_code = 200
     return result
@@ -35,6 +36,12 @@ def get_items():
     res = jsonify({"body": db.data})
     res.status_code = 200
     return res
+
+
+def cors_preflight():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 if __name__ == '__main__':

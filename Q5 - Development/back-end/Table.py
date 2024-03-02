@@ -8,7 +8,7 @@ class Table:
         self.gen_table_rows()
 
 
-    def gen_table_rows(self, rows=16):
+    def gen_table_rows(self, rows=8):
         ''' Generates some number of random rows to mess around with. '''
 
         def gen_rand_str():
@@ -22,7 +22,7 @@ class Table:
             row = {
                 "time": randint(0, 999),
                 "task": gen_rand_str(),
-                "status": "good!",
+                "status": "init " + str(rows),
                 "key": self.get_key(),
                 }
             self.data.append(row)
@@ -33,7 +33,12 @@ class Table:
         return self.__keynum - 1
 
 
-    def add(self, task):
-        task['key'] = self.get_key()
-        self.data.append(task)
-        return task
+    def add(self, data):
+        new_task = {
+                'task': data['task'],
+                'time': data['time'],
+                'status': data['status'],
+                'key': self.get_key()
+                }
+        self.data.append(new_task)
+        return new_task

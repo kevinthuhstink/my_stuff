@@ -12,16 +12,23 @@ export default function Form(props) {
   async function onSubmit(event) {
     event.preventDefault()
 
-    const formData = new FormData(event.currentTarget)
-    formData.time = Date.now()
-    formData.status = 'incomplete'
+    const formData = {
+      task: new FormData(event.currentTarget),
+      time: Date.now(),
+      status: 'incomplete'
+    }
+    console.log(formData)
 
-    const response = await fetch('https://localhost:5000/catalog/item', {
+    const response = await fetch('http://localhost:5000/catalog/item', {
       method: 'POST',
-      body: formData
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(formData)
     })
 
-    return response.json()
+    if (!response.ok)
+      throw new Error('Failed to POST data to server')
+
+    props.setData(prevData => prevData.append(response.json().body))
   }
 
   //Updates the input state on user input

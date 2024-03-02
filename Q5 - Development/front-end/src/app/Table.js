@@ -11,7 +11,7 @@ export default function Table(props) {
   return (
     <table>
       <caption>
-        Taskmaster
+        Catalog
       </caption>
 
       <thead>
