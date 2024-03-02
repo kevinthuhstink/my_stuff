@@ -1,4 +1,5 @@
 from random import randint
+from functools import reduce
 
 class Clue:
 
@@ -43,7 +44,7 @@ class Clue:
             Accomplishes this by replacing the players array of string names
             with dicts containing the player name, its character, and its weapon.
             return: A dictionary containing the cards distributed to each player.
-            Throws an exception if there are no players in the game.
+            Throws an exception if there are less than 2 players in the game.
             '''
 
         def update_available_cards():
@@ -66,7 +67,7 @@ class Clue:
                 card_tuple: A tuple with booleans from update_available_cards.
                 return: False if card_tuple contains all False, True otherwise.
                 '''
-            return card_types["Character"] and card_types["Weapon"] and card_types["Room"]
+            return card_types["Character"] or card_types["Weapon"] or card_types["Room"]
 
         def init_player_setup():
             ''' Initializes a dictionary of players, where each player
@@ -81,7 +82,7 @@ class Clue:
                         }
             return player_setup
 
-        if len(self.players) == 0:
+        if len(self.players) < 2:
             raise Exception("No players playing the game")
 
         draw_cycle = 0
@@ -99,7 +100,7 @@ class Clue:
                 self.__available_characters = other_chars
             if can_distribute["Weapon"]:
                 self.player_setup[player]["Weapon"].append(wep_card)
-                self.__available_weapons= other_weps
+                self.__available_weapons = other_weps
             if can_distribute["Room"]:
                 self.player_setup[player]["Room"].append(room_card)
                 self.__available_rooms = other_rooms
@@ -111,7 +112,11 @@ class Clue:
 
     def move_player(self,player):
         ''' Assigns a player a random new room. '''
-        pass
+        prev_room = self.player_locations[player]
+        new_room = grab_random(self.rooms)[0]
+        while new_room == prev_room:
+            new_room = grab_random(self.rooms)[0]
+        self.player_locations[player] = new_room
 
     def make_suggestion(self,player,character,weapon,room):
         ''' Allows a player to make a suggestion by choosing a character,
@@ -121,13 +126,55 @@ class Clue:
             that match the suggestion. Otherwise, they reply with 'None'.
             player: The player making the suggestion.
             character: The game character they're suggesting.
-            weapon: The game weapon they're claiming as the murder weapon.
-            room: The room they're claiming as the murder room.
+            weapon: The game weapon player is suggesting as the murder weapon.
+            room: The room player is claiming as the murder room.
                   room must be the same room player is in right now.
-            return: True if the accusation is correct, False otherwise.
+            return: A dictionary containing the original suggestion
+                    and responses from each other player.
+
+            Throws an exception if the room that's suggested isn't the
+            room the player is in.
+            Throws an exception if the suggesting player isn't in the game.
             '''
-        #write your implementation below
-        pass
+
+        def random_card(other_player):
+            ''' Returns a random card from a dictionary of cards. '''
+            cards = reduce(lambda c, ctype: c + ctype,
+                           self.player_setup[other_player].values())
+            return grab_random(cards)[0]
+
+        if player not in self.players:
+            raise Exception("Player making suggestion isn't in the game.")
+        if self.player_locations[player] != room:
+            raise Exception("Suggested room not the same as the room player is currently in.")
+
+        suggestion = {
+                "Character": character,
+                "Weapon": weapon,
+                "Room": room
+                }
+        responses = {}
+
+        for other_player in self.players:
+            if player == other_player:
+                continue
+            cards = self.player_setup[other_player]
+            valid_cards = []
+
+            if character in cards["Character"]:
+                valid_cards.append(character)
+            elif weapon in cards["Weapon"]:
+                valid_cards.append(weapon)
+            elif room in cards["Room"]:
+                valid_cards.append(room)
+
+            if valid_cards == []:
+                responses[other_player] = None
+            else:
+                responses[other_player] = grab_random(valid_cards)[0]
+
+        return { "Suggestion": suggestion, "Response": responses }
+
 
     def make_accusation(self,player,character,weapon,room):
         ''' Allows a player to make an accusation by choosing whatever they
@@ -141,15 +188,28 @@ class Clue:
             room: The room they're claiming as the murder room.
                   room must be the same room player is in right now.
             return: True if the accusation is correct, False otherwise.
+
+            Throws an exception if the room that's accused isn't the
+            room the player is in.
+            Throws an exception if the suggesting player isn't in the game.
             '''
-        if player_locations[player] != room:
-            return False
-        pass
+        if player not in self.players:
+            raise Exception("Player making accusation isn't in the game.")
+        if self.player_locations[player] != room:
+            raise Exception("Accused room not the same as the room player is currently in.")
+
+        if (self.solutions["Character"] == character and
+            self.solutions["Weapon"] == weapon and
+            self.solutions["Room"] == room):
+            return True
+
 
     def update_scoring_sheet(self,player,suggestion,response):
         #write your implementation below
         pass
 
+
+    # HELPER FUNCTIONS BELOW
     def print_fields(self, fields):
         ''' Prints game information.
 
@@ -182,6 +242,8 @@ class Clue:
             print(self.__available_characters)
         if 'available_weapons' in fields:
             print(self.__available_weapons)
+        if 'available_rooms' in fields:
+            print(self.__available_rooms)
 
 
 def grab_random(choices):
@@ -200,3 +262,8 @@ def grab_random(choices):
     selection = randint(0, len(choices) - 1)
     leftover = choices[:selection] + choices[selection + 1:]
     return choices[selection], leftover
+
+
+def player_room(game, player):
+    ''' Returns the room player is currently in given a game of Clue. '''
+    return game.player_locations[player]

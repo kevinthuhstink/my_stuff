@@ -15,8 +15,15 @@ def __main__():
                 default_weapons, default_rooms)
     game.make_solution()
     game.distribute_cards()
-    game.print_fields(['solution', 'available_characters', 'available_weapons'])
+    game.print_fields(['solution', 'available_characters', 'available_weapons', 'available_rooms'])
     game.print_fields(['player_setup'])
+
+    for player in game.players:
+        game.move_player(player)
+    # game.print_fields(['player_locations'])
+    test = game.make_suggestion("Player 1", "Plum", "Rope",
+                                game.player_locations["Player 1"])
+    print(test)
 
 
 if __name__ == '__main__':
