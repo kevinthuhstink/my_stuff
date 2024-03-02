@@ -1,11 +1,36 @@
 from flask import Flask, jsonify
+from random import randint
 
 app = Flask(__name__)
+
+def tableRows():
+    ''' Generates 40 random rows to mess around with. '''
+
+    def gen_rand_str():
+        ''' Creates a random string between length 8 and 16. '''
+        rand_str = ""
+        for i in range(randint(8, 16)):
+            rand_str += chr(randint(97, 122))
+        return rand_str
+
+    rows = []
+    for i in range(40):
+        row = {
+                "time": randint(0, 999),
+                "task": gen_rand_str(),
+                "status": "good!",
+                "key": i,
+                }
+        rows.append(row)
+    return rows
+
 
 
 @app.route("/heartbeat")
 def heartbeat():
-    return jsonify({"status": "healthy"})
+    result = jsonify({"body": tableRows()})
+    result.status_code = 200
+    return result
 
 
 # A request to add items to the catalog (use the request body to store data)
@@ -23,11 +48,13 @@ def remove_item(item_id):
 # A request to get all items in the catalog
 @app.route("/catalog", methods=["GET"])
 def get_items():
-    return "TODO: Implement me!"
+    res = jsonify({"body": tableRows()})
+    res.status_code = 200
+    return res
 
 
 # ... implement any other routes you need or want to use below ... #
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
