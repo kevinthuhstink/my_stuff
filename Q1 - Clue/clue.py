@@ -18,14 +18,13 @@ class Clue:
             Also initializes private fields for the remaining available
             characters and weapons for each player to have when setting up
             the game.
-            Throws an exception if any card lists are empty.
+            Throws an exception if any sets of cards are empty.
             '''
-
         sol_char, available_chars = grab_random(self.characters)
         sol_wep, available_weps = grab_random(self.weapons)
         sol_room, available_rooms = grab_random(self.rooms)
         if sol_char == None or sol_wep == None or sol_room == None:
-            raise Exception("Game initialized with no cards")
+            raise Exception("Game initialized with cards missing")
 
         self.solution = {
                 "Character": sol_char,
@@ -67,7 +66,9 @@ class Clue:
                 card_tuple: A tuple with booleans from update_available_cards.
                 return: False if card_tuple contains all False, True otherwise.
                 '''
-            return card_types["Character"] or card_types["Weapon"] or card_types["Room"]
+            return (card_types["Character"] or
+                    card_types["Weapon"] or
+                    card_types["Room"])
 
         def init_player_setup():
             ''' Initializes a dictionary of players, where each player
@@ -83,7 +84,7 @@ class Clue:
             return player_setup
 
         if len(self.players) < 2:
-            raise Exception("No players playing the game")
+            raise Exception("Less than players in the game")
 
         draw_cycle = 0
         self.player_setup = init_player_setup()
@@ -111,7 +112,12 @@ class Clue:
         return self.player_setup
 
     def move_player(self,player):
-        ''' Assigns a player a random new room. '''
+        ''' Assigns a player a random new room.
+            Throws an exception if player isn't in the game.
+            '''
+        if player not in self.players:
+            raise Exception("Player not in the game.")
+
         prev_room = self.player_locations[player]
         new_room = grab_random(self.rooms)[0]
         while new_room == prev_room:
@@ -137,12 +143,6 @@ class Clue:
             Throws an exception if the suggesting player isn't in the game.
             '''
 
-        def random_card(other_player):
-            ''' Returns a random card from a dictionary of cards. '''
-            cards = reduce(lambda c, ctype: c + ctype,
-                           self.player_setup[other_player].values())
-            return grab_random(cards)[0]
-
         if player not in self.players:
             raise Exception("Player making suggestion isn't in the game.")
         if self.player_locations[player] != room:
@@ -155,26 +155,26 @@ class Clue:
                 }
         responses = {}
 
-        for other_player in self.players:
+        # allow eliminated players to respond to suggestions
+        for other_player in self.player_setup.keys():
             if player == other_player:
                 continue
             cards = self.player_setup[other_player]
-            valid_cards = []
+            matches = []
 
             if character in cards["Character"]:
-                valid_cards.append(character)
+                matches.append(character)
             elif weapon in cards["Weapon"]:
-                valid_cards.append(weapon)
+                matches.append(weapon)
             elif room in cards["Room"]:
-                valid_cards.append(room)
+                matches.append(room)
 
-            if valid_cards == []:
+            if matches == []:
                 responses[other_player] = None
             else:
-                responses[other_player] = grab_random(valid_cards)[0]
+                responses[other_player] = grab_random(matches)[0]
 
         return { "Suggestion": suggestion, "Response": responses }
-
 
     def make_accusation(self,player,character,weapon,room):
         ''' Allows a player to make an accusation by choosing whatever they
@@ -182,6 +182,8 @@ class Clue:
 
             Checks the accusation with the cards in the solution.
             Eliminates that player from the game if their accusation is wrong.
+            Player can't make any future accusations, but still responds to
+            suggestions as if they were still in the game.
             player: The player making the accusation.
             character: The game character they're accusing.
             weapon: The game weapon they're claiming as the murder weapon.
@@ -192,16 +194,22 @@ class Clue:
             Throws an exception if the room that's accused isn't the
             room the player is in.
             Throws an exception if the suggesting player isn't in the game.
+            Throws an exception if the player has been eliminated.
             '''
         if player not in self.players:
             raise Exception("Player making accusation isn't in the game.")
         if self.player_locations[player] != room:
             raise Exception("Accused room not the same as the room player is currently in.")
 
-        if (self.solutions["Character"] == character and
-            self.solutions["Weapon"] == weapon and
-            self.solutions["Room"] == room):
+        if (self.solution["Character"] == character and
+            self.solution["Weapon"] == weapon and
+            self.solution["Room"] == room):
             return True
+
+        self.players.remove(player)
+        del self.player_locations[player]
+        del self.scoring_sheets[player]
+        return False
 
 
     def update_scoring_sheet(self,player,suggestion,response):
