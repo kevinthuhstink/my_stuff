@@ -4,13 +4,8 @@ class Table:
 
     def __init__(self):
         self.data = []
+        self.__keynum = 0
         self.gen_table_rows()
-
-
-    def add(self, task):
-        task['key'] = len(self.data)
-        self.data.append(task)
-        return task
 
 
     def gen_table_rows(self, rows=16):
@@ -28,6 +23,17 @@ class Table:
                 "time": randint(0, 999),
                 "task": gen_rand_str(),
                 "status": "good!",
-                "key": i,
+                "key": self.get_key(),
                 }
             self.data.append(row)
+
+
+    def get_key(self):
+        self.__keynum += 1
+        return self.__keynum - 1
+
+
+    def add(self, task):
+        task['key'] = self.get_key()
+        self.data.append(task)
+        return task
