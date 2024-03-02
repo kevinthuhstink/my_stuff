@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 
 /**
@@ -18,17 +16,18 @@ export default function Form(props) {
     formData.time = Date.now()
     formData.status = 'incomplete'
 
-    const response = await fetch('/catalog/item', {
+    const response = await fetch('https://localhost:5000/catalog/item', {
       method: 'POST',
       body: formData
     })
+
+    return response.json()
   }
 
+  //Updates the input state on user input
   function handleInput(event) {
     event.preventDefault()
-
-    const {name, value} = event.target
-    setTaskInput(() => value)
+    setTaskInput(event.target.value)
   }
 
   return (

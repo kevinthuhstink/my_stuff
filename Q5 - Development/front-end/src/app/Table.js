@@ -2,7 +2,7 @@ import TableRow from './TableRow.js'
 
 export default function Table(props) {
 
-  var tableRows
+  var tableRows = []
   if (props.data) {
     tableRows = props.data.map(
       elem => <TableRow key={elem.key} taskDetails={elem} />)
