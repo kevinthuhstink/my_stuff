@@ -1,5 +1,6 @@
 import { revalidatePath } from 'next/cache'
-import Table from './Table.tsx'
+import Table from './Table.js'
+import Form from './Form.js'
 
 async function getData() {
   revalidatePath('http://localhost:5000/catalog')
@@ -13,12 +14,14 @@ async function getData() {
 }
 
 export default async function Page() {
+
   const data = await getData()
   console.log(data)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Table data={data.body} />
+      <Form />
     </main>
   );
 }
