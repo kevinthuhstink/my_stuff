@@ -21,7 +21,9 @@ export default function Table(props) {
           <th scope="col">Status</th>
         </tr>
       </thead>
-     {tableRows}
+      <tbody>
+       {tableRows}
+      </tbody>
     </table>
   )
 }
