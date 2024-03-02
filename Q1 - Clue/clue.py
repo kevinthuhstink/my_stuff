@@ -135,18 +135,25 @@ class Clue:
             weapon: The game weapon player is suggesting as the murder weapon.
             room: The room player is claiming as the murder room.
                   room must be the same room player is in right now.
-            return: A dictionary containing the original suggestion
+            return: A tuple containing the original suggestion
                     and responses from each other player.
 
             Throws an exception if the room that's suggested isn't the
             room the player is in.
             Throws an exception if the suggesting player isn't in the game.
+            Throws an exception if suggeested values aren't in the game.
             '''
 
         if player not in self.players:
             raise Exception("Player making suggestion isn't in the game.")
         if self.player_locations[player] != room:
             raise Exception("Suggested room not the same as the room player is currently in.")
+        if character not in self.characters:
+            raise Exception("Suggested character isn't in the game.")
+        if weapon not in self.weapons:
+            raise Exception("Suggested weapon isn't in the game.")
+        if room not in self.rooms:
+            raise Exception("Suggested room isn't in the game.")
 
         suggestion = {
                 "Character": character,
@@ -174,7 +181,7 @@ class Clue:
             else:
                 responses[other_player] = grab_random(matches)[0]
 
-        return { "Suggestion": suggestion, "Response": responses }
+        return suggestion, responses
 
     def make_accusation(self,player,character,weapon,room):
         ''' Allows a player to make an accusation by choosing whatever they
@@ -194,12 +201,18 @@ class Clue:
             Throws an exception if the room that's accused isn't the
             room the player is in.
             Throws an exception if the suggesting player isn't in the game.
-            Throws an exception if the player has been eliminated.
+            Throws an exception if suggeested values aren't in the game.
             '''
         if player not in self.players:
             raise Exception("Player making accusation isn't in the game.")
         if self.player_locations[player] != room:
             raise Exception("Accused room not the same as the room player is currently in.")
+        if character not in self.characters:
+            raise Exception("Suggested character isn't in the game.")
+        if weapon not in self.weapons:
+            raise Exception("Suggested weapon isn't in the game.")
+        if room not in self.rooms:
+            raise Exception("Suggested room isn't in the game.")
 
         if (self.solution["Character"] == character and
             self.solution["Weapon"] == weapon and
@@ -211,10 +224,21 @@ class Clue:
         del self.scoring_sheets[player]
         return False
 
-
     def update_scoring_sheet(self,player,suggestion,response):
-        #write your implementation below
-        pass
+        ''' Updates the player's scoring sheet after making a suggestion.
+
+            suggestion: The suggestion made by the player.
+            response: The responses from the other players to the suggestion.
+            Throws an exception if player isn't in the game.
+            '''
+        if player not in self.players:
+            raise Exception("Player making accusation isn't in the game.")
+
+        for suggest_val in suggestion.values():
+            if suggest_val in response.values():
+                self.scoring_sheets[player][suggest_val] = False
+            else
+                self.scoring_sheets[player][suggest_val] = True
 
 
     # HELPER FUNCTIONS BELOW

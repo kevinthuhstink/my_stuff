@@ -1,4 +1,4 @@
-from clue import Clue
+from clue import Clue, player_room
 
 def __main__():
     default_players = ["Player 1", "Player 2", "Player 3",
@@ -15,18 +15,21 @@ def __main__():
                 default_weapons, default_rooms)
     game.make_solution()
     game.distribute_cards()
-    # game.print_fields(['solution', 'available_characters', 'available_weapons', 'available_rooms'])
+    # game.print_fields(['solution', 'available_characters',
+                       # 'available_weapons', 'available_rooms'])
     # game.print_fields(['player_setup'])
 
     for player in game.players:
         game.move_player(player)
     # game.print_fields(['player_locations'])
-    test = game.make_suggestion("Player 1", "Plum", "Rope",
-                                game.player_locations["Player 1"])
+    suggest, res = game.make_suggestion(
+            "Player 1", "Plum", "Rope", player_room("Player 1"))
+
+    ''' FALSE ACCUSATION
     game.make_accusation("Player 1", "Plum", "Rope",
                          game.player_locations["Player 1"])
     game.print_fields(['players', 'player_locations', 'scoring_sheets'])
-    game.print_fields(['player_setup'])
+    game.print_fields(['player_setup']) '''
 
 
 if __name__ == '__main__':
