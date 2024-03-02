@@ -9,19 +9,16 @@ db = Table.Table()
 
 @app.route("/heartbeat")
 def heartbeat():
-    result = jsonify({"body": db.data})
-    result.status_code = 200
-    return result
+    return jsonify({"status": "healthy"}), 200
 
 
 # A request to add items to the catalog (use the request body to store data)
 @app.route("/catalog/item", methods=["POST"])
 def add_item():
     new_task = request.get_json()
-    print(new_task)
-    result = jsonify({"body": db.add(new_task)})
-    result.status_code = 200
-    return result
+    res = jsonify({"body": db.add(new_task)})
+    res.status_code = 200
+    return res
 
 
 # A request to remove items from the catalog using an item id

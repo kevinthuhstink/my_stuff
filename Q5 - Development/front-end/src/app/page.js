@@ -20,6 +20,7 @@ export default function Page() {
   const [data, setData] = React.useState([])
   React.useEffect(() => {
     getData().then(res => {
+      console.log(res.body)
       setData(res.body)
     })
   }, [])
