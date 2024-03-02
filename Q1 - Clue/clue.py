@@ -36,7 +36,6 @@ class Clue:
         self.__available_weapons = available_weps
         self.__available_rooms = available_rooms
 
-
     def distribute_cards(self):
         ''' Distributes the remaining cards available to each player once
             solutions have been decided in the game.
@@ -44,6 +43,7 @@ class Clue:
             Accomplishes this by replacing the players array of string names
             with dicts containing the player name, its character, and its weapon.
             return: A dictionary containing the cards distributed to each player.
+            Throws an exception if there are no players in the game.
             '''
 
         def update_available_cards():
@@ -81,6 +81,9 @@ class Clue:
                         }
             return player_setup
 
+        if len(self.players) == 0:
+            raise Exception("No players playing the game")
+
         draw_cycle = 0
         self.player_setup = init_player_setup()
         can_distribute = update_available_cards()
@@ -105,7 +108,6 @@ class Clue:
             can_distribute = update_available_cards()
 
         return self.player_setup
-
 
     def move_player(self,player):
         ''' Assigns a player a random new room. '''
