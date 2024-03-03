@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import React from 'react'
-import Table from './Table.js'
+import Catalog from './Catalog.js'
 import Form from './Form.js'
 
 async function getData() {
@@ -26,8 +26,8 @@ export default function Page() {
   }, [])
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Table data={data} />
+    <main className="flex min-h-screen flex-col items-center justify-between p-12">
+      <Catalog data={data} setData={setData} />
       <Form setData={setData} />
     </main>
   );

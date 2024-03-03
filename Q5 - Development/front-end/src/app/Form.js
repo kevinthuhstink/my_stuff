@@ -12,13 +12,14 @@ export default function Form(props) {
   async function onSubmit(event) {
     event.preventDefault()
 
+    const fetchLink = 'http://localhost:5000/catalog/item'
     const formData = {
       task: new FormData(event.target).get('task'),
       time: Date.now() % 1000,
       status: 'incomplete'
     }
 
-    const response = await fetch('http://localhost:5000/catalog/item', {
+    const response = await fetch(fetchLink, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(formData)
@@ -39,16 +40,17 @@ export default function Form(props) {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <label>Input new task</label>
+    <form onSubmit={onSubmit} className="flex flex-col">
+      <label>Input new task:</label>
       <input
         type="text"
         name="task"
         value={taskInput}
         onInput={handleInput}
-        placeholder="Task">
+        placeholder="Task"
+        className="border border-black bg-gray-300 mb-[10px]">
       </input>
-      <button type="submit">
+      <button type="submit" className="border border-black bg-gray-300 rounded">
         Submit new task!
       </button>
     </form>
