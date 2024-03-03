@@ -42,3 +42,12 @@ class Table:
                 }
         self.data.append(new_task)
         return new_task
+
+
+    def remove(self, item_id):
+        for i in range(len(self.data)):
+            task = self.data[i]
+            if item_id == data.key:
+                self.data = self.data[:i] + self.data[i + 1:]
+                break
+        return self.data

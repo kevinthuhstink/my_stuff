@@ -24,7 +24,10 @@ def add_item():
 # A request to remove items from the catalog using an item id
 @app.route("/catalog/item/<item_id>", methods=["DELETE"])
 def remove_item(item_id):
-    return "TODO: Implement me!"
+    rm_task = request.get_json()
+    res = jsonify({"body": db.remove(item_id)})
+    res.status_code = 200
+    return res
 
 
 # A request to get all items in the catalog
@@ -33,12 +36,6 @@ def get_items():
     res = jsonify({"body": db.data})
     res.status_code = 200
     return res
-
-
-def cors_preflight():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
 
 
 if __name__ == '__main__':
