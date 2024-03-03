@@ -22,6 +22,7 @@ def add_item():
 
 
 # A request to remove items from the catalog using an item id
+# Responds with the deleted item
 @app.route("/catalog/item/<item_id>", methods=["DELETE"])
 def remove_item(item_id):
     return jsonify({"body": db.remove(item_id)}), 200

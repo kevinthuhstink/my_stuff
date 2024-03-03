@@ -1,4 +1,4 @@
-import ItemListing from './ItemListing.js'
+import Item from './Item.js'
 
 export default function Catalog(props) {
 
@@ -7,7 +7,7 @@ export default function Catalog(props) {
   var tableRows = []
   if (props.data) {
     tableRows = props.data.map(
-      elem => <ItemListing key={elem.key} taskDetails={elem} setData={props.setData} />)
+      elem => <Item key={elem.key} taskDetails={elem} setData={props.setData} />)
   }
 
   return (
