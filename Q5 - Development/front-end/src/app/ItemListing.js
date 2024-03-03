@@ -4,15 +4,14 @@ export default function ItemListing(props) {
   async function handleRemove(event) {
     event.preventDefault()
 
-    //Resupplies the new Catalog
-    response.json().then(resData => {
-      props.setData(resData.body)
-    })
+    props.setData(prevData => prevData.filter(elem => elem.key != key))
 
     const fetchLink = 'http://localhost:5000/catalog/item/' + key
+    console.log(fetchLink)
     const response = await fetch(fetchLink, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
+      body: null
     })
 
     if (!response.ok)

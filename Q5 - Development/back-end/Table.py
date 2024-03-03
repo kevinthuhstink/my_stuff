@@ -47,7 +47,8 @@ class Table:
     def remove(self, item_id):
         for i in range(len(self.data)):
             task = self.data[i]
-            if item_id == data.key:
+            if item_id == task['key']:
+                tmp = task
                 self.data = self.data[:i] + self.data[i + 1:]
-                break
-        return self.data
+                return task
+        return None

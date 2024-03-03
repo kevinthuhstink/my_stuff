@@ -24,10 +24,7 @@ def add_item():
 # A request to remove items from the catalog using an item id
 @app.route("/catalog/item/<item_id>", methods=["DELETE"])
 def remove_item(item_id):
-    rm_task = request.get_json()
-    res = jsonify({"body": db.remove(item_id)})
-    res.status_code = 200
-    return res
+    return jsonify({"body": db.remove(item_id)}), 200
 
 
 # A request to get all items in the catalog
