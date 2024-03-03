@@ -33,7 +33,6 @@ export default function Form(props) {
     })
   }
 
-  //Updates the input state on user input
   function handleInput(event) {
     event.preventDefault()
     setTaskInput(event.target.value)
@@ -51,7 +50,7 @@ export default function Form(props) {
         className="border border-black bg-gray-300 mb-[10px]">
       </input>
       <button type="submit" className="border border-black bg-gray-300 rounded">
-        Submit new task!
+        Submit new item!
       </button>
     </form>
   )
