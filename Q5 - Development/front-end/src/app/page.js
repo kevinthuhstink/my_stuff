@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import React from 'react'
 import Topbar from './components/Topbar.js'
+import Dropdown from './components/Dropdown.js'
 import Catalog from './components/Catalog.js'
 import Form from './components/Form.js'
 
@@ -34,13 +35,19 @@ export default function Page() {
     })
   }, [])
 
+  const [dropdown, setDropdown] = React.useState(false)
+  const mainStyle = "absolute right-0 p-4 overflow-auto " + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
+
   return (
     <>
-      <Topbar />
+      <Topbar dropdown={dropdown} setDropdown={setDropdown} />
       <main className="flex flex-col justify-between h-[calc(100vh-6rem)] w-full
-                       fixed bottom-0 p-6 overflow-y-auto">
-        <Catalog data={data} setData={setData} />
-        <Form setData={setData} />
+                       fixed bottom-0">
+        <Dropdown showWhen={dropdown} />
+        <section className={mainStyle}>
+          <Catalog data={data} setData={setData} />
+          <Form setData={setData} />
+        </section>
       </main>
     </>
   );
