@@ -18,7 +18,7 @@ export default function ItemListing(props) {
   async function handleRemove(event) {
     event.preventDefault()
 
-    props.setData(prevData => prevData.filter(elem => elem.key !== props.id))
+    props.setData(prevData => prevData.filter(elem => elem.id !== props.id))
 
     const fetchLink = 'http://localhost:5000/catalog/item/' + props.id
     console.log(fetchLink)

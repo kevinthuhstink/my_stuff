@@ -8,7 +8,7 @@ import CatalogRow from './CatalogRow.js'
  * props
  *   data: An array of objects representing catalog items.
  *         Each item in the array should have:
- *         {key: number; name: string; time: number; status: string}
+ *         {id: number; name: string; time: number; status: string}
  *   setData: A function to change the catalog data.
  *            Unused for this element, but necessary to pass down into
  *            its Item children.
@@ -17,12 +17,12 @@ export default function Catalog(props) {
 
   const rowSetup = [
       {
-        key: 0,
+        id: 0,
         header: "All Items",
         filter: item => true
       },
       {
-        key: 1,
+        id: 1,
         header: "Status: incomplete",
         filter: item => item.status === "incomplete"
       }
@@ -31,7 +31,7 @@ export default function Catalog(props) {
   var rows = []
   if (props.data) {
     rows = rowSetup.map(
-      elem => <CatalogRow key={elem.key} {...elem} data={props.data} setData={props.setData} />)
+      elem => <CatalogRow key={elem.id} {...elem} data={props.data} setData={props.setData} />)
   }
 
   return (

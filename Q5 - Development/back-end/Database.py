@@ -2,21 +2,21 @@ from random import randint
 
 class Database:
     ''' Stores an array of items as the database's data, and
-        generates unique keys for each entry in the database. '''
+        generates unique ids for each entry in the database. '''
 
     def __init__(self):
         self.data = []
-        self.__keynum = 0
+        self.__idnum = 0
         self.gen_table_rows()
 
 
     def gen_table_rows(self, entries=8):
         ''' Generates some random data entries to mess around with.
 
-            Each data entry has a time, task, status, and key.
+            Each data entry has a time, task, status, and id.
             Time and task are randomly generated,
-            the status is 'init', and key is a unique integer that increments
-            for every item created, so no two items have the same key.
+            the status is 'init', and id is a unique integer that increments
+            for every item created, so no two items have the same id.
             entries: The number of entries in the newly initialized data.
             '''
 
@@ -34,17 +34,17 @@ class Database:
                 "time": randint(0, 999),
                 "task": gen_rand_str(),
                 "status": "init " + str(entries),
-                "key": self.get_key(),
+                "id": self.gen_id(),
                 }
             self.data.append(entry)
 
 
-    def get_key(self):
-        ''' Function that generates keys for unique data entries.
-            The first entry is given key 0, the second gets key 1, etc.
+    def gen_id(self):
+        ''' Function that generates ids for unique data entries.
+            The first entry is given id 0, the second gets id 1, etc.
             '''
-        self.__keynum += 1
-        return self.__keynum - 1
+        self.__idnum += 1
+        return self.__idnum - 1
 
 
     def add(self, entry):
@@ -57,7 +57,7 @@ class Database:
             'name': entry['name'],
             'time': entry['time'],
             'status': entry['status'],
-            'key': self.get_key()
+            'id': self.gen_id()
             }
         self.data.append(new_task)
         return new_task
@@ -66,15 +66,15 @@ class Database:
     def remove(self, item_id):
         ''' Removes the entry with a given item_id.
 
-            item_id: The key of the entry to remove.
-            return: The recently deleted data entry if the key was found
+            item_id: The id of the entry to remove.
+            return: The recently deleted data entry if the id was found
                     and deleted without errors,
-                    None if the key doesn't exist in the database
+                    None if the id doesn't exist in the database
                     '''
         for i in range(len(self.data)):
-            task = self.data[i]
-            if item_id == task['key']:
-                tmp = task
+            entry = self.data[i]
+            if item_id == entry['id']:
+                tmp = entry
                 self.data = self.data[:i] + self.data[i + 1:]
-                return task
+                return entry
         return None

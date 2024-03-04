@@ -10,6 +10,7 @@ import Item from './Item.js'
  *         Each item in the array should have:
  *         {key: number; name: string; time: number; status: string}
  *   key: Identifier for catalog rows.
+ *   id: Accessible identifier for catalog rows.
  *   setData: A function to change the catalog data.
  *            Unused for this element, but necessary to pass down into
  *            its Item children.
@@ -23,7 +24,7 @@ export default function CatalogRow(props) {
   var items = []
   if (props.data) {
     items = props.data.filter(props.filter).map(
-      elem => <Item id={elem.key} {...elem} setData={props.setData} />)
+      elem => <Item key={elem.id} {...elem} setData={props.setData} />)
   }
 
   return (
