@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import Table
+import Database
 
 app = Flask(__name__)
 CORS(app, resources=r'/*')
-db = Table.Table()
+db = Database.Database()
 
 
 @app.route("/heartbeat")
