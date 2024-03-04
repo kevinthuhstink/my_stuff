@@ -37,7 +37,8 @@ export default function Page() {
   return (
     <>
       <Topbar />
-      <main className="flex flex-col justify-between min-h-[calc(100vh-6rem)] w-full fixed bottom-0 p-6">
+      <main className="flex flex-col justify-between h-[calc(100vh-6rem)] w-full
+                       fixed bottom-0 p-6 overflow-y-auto">
         <Catalog data={data} setData={setData} />
         <Form setData={setData} />
       </main>

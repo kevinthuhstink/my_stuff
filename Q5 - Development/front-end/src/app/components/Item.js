@@ -34,8 +34,8 @@ export default function ItemListing(props) {
 
   return (
     <div id="task-cell"
-      className="p-3 w-[150px] border border-black ml-2 flex-shrink-0 rounded
-                 flex flex-col">
+      className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
+                 flex flex-col rounded shadow-lg">
       <p className="block">Time: {props.time}</p>
       <p className="block">{props.name}</p>
       <p className="block">Status: {props.status}</p>
