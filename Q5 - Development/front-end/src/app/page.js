@@ -6,6 +6,10 @@ import Topbar from './components/Topbar.js'
 import Catalog from './components/Catalog.js'
 import Form from './components/Form.js'
 
+
+/**
+ * Returns all catalog items from the server.
+ */
 async function getData() {
   const res = await fetch('http://localhost:5000/catalog', { method: 'GET' })
 
@@ -16,6 +20,10 @@ async function getData() {
   return res.json()
 }
 
+/**
+ * On page load, sends a request to get all catalog items from the server, and
+ * passes that data into its children.
+ */
 export default function Page() {
 
   const [data, setData] = React.useState([])

@@ -1,7 +1,17 @@
 import CatalogRow from './CatalogRow.js'
 
 /**
- * Creates a catalog of items by creating rows of items
+ * The catalog of items.
+ * Contains multiple rows, each of which filters some items out from
+ * being displayed.
+ *
+ * props
+ *   data: An array of objects representing catalog items.
+ *         Each item in the array should have:
+ *         {key: number; name: string; time: number; status: string}
+ *   setData: A function to change the catalog data.
+ *            Unused for this element, but necessary to pass down into
+ *            its Item children.
  */
 export default function Catalog(props) {
 
