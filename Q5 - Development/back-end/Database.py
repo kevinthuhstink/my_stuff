@@ -32,7 +32,7 @@ class Database:
         for i in range(entries):
             entry = {
                 "time": randint(0, 999),
-                "task": gen_rand_str(),
+                "name": gen_rand_str(),
                 "status": "init " + str(entries),
                 "id": self.gen_id(),
                 }
