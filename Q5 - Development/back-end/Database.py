@@ -1,16 +1,63 @@
+import csv
+import os
+from time import time
 from random import randint
 
 class Database:
     ''' Stores an array of items as the database's data, and
-        generates unique ids for each entry in the database. '''
+        generates unique ids for each entry in the database.
+
+        Uses a plaintext csv to save data.
+        Each data item must contain data for all fields in self.keys.
+        '''
 
     def __init__(self):
         self.data = []
+        self.keys = ['id', 'name', 'time', 'status']
         self.__idnum = 0
-        self.gen_table_rows()
+        self.file = "./data.csv"
+        self.read_file()
+        self.gen_db_entries()
 
 
-    def gen_table_rows(self, entries=8):
+    def read_file(self):
+        ''' Reads the file specified by self.file and populates self.data
+            with data.
+
+            The file is a csv file that holds information about every
+            data entry in the Database.
+            A cheap replacement for database frameworks.
+            Ignores all entries without a valid key
+            '''
+        if not os.path.exists(self.file):
+            return
+
+        with open(self.file, newline='') as file:
+            reader = csv.DictReader(file)
+
+            for entry in reader:
+                if 'id' not in entry.keys():
+                    continue
+
+                for key in entry.keys():
+                    if entry[key].isnumeric():
+                        entry[key] = int(entry[key])
+                print(entry)
+
+                if entry['id'] > self.__idnum:
+                    self.__idnum = entry['id']
+                self.data.append(entry)
+
+
+    def write_file(self):
+        with open(self.file, mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=self.keys)
+            writer.writeheader()
+            writer.writerows(self.data)
+            print('successful write')
+
+
+    def gen_db_entries(self, entries=8):
         ''' Generates some random data entries to mess around with.
 
             Each data entry has a time, task, status, and id.
@@ -31,10 +78,10 @@ class Database:
 
         for i in range(entries):
             entry = {
-                "time": randint(0, 999),
-                "name": gen_rand_str(),
-                "status": "init " + str(entries),
                 "id": self.gen_id(),
+                "name": gen_rand_str(),
+                "time": int(time()),
+                "status": "init db: " + str(entries),
                 }
             self.data.append(entry)
 
@@ -54,12 +101,13 @@ class Database:
             return: The newly created database entry.
             '''
         new_task = {
+            'id': self.gen_id(),
             'name': entry['name'],
             'time': entry['time'],
-            'status': entry['status'],
-            'id': self.gen_id()
+            'status': entry['status']
             }
         self.data.append(new_task)
+        print(self.data)
         return new_task
 
 
