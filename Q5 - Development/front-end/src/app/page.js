@@ -34,14 +34,13 @@ export default function Page() {
   }, [])
 
   const [dropdown, setDropdown] = React.useState(false)
-  const mainStyle = "absolute right-0 p-4 overflow-auto h-full "
+  const mainStyle = "p-4 overflow-auto h-full "
     + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
   return (
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
-      <main className="flex flex-col justify-between h-[calc(100vh-6rem)] w-full
-                       fixed bottom-0">
+      <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
         <Dropdown showWhen={dropdown} />
         <section className={mainStyle}>
           <Catalog data={data} setData={setData} />
