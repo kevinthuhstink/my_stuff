@@ -7,17 +7,17 @@ class Database:
     ''' Stores an array of items as the database's data, and
         generates unique ids for each entry in the database.
 
-        Uses a plaintext csv to save data.
+        Uses a csv to save data.
         Each data item must contain data for all fields in self.keys.
+        fname: The relative destination of a file to read saved data from.
         '''
 
-    def __init__(self):
+    def __init__(self, fname='data.csv'):
         self.data = []
         self.keys = ['id', 'name', 'time', 'status']
         self.__idnum = 0
-        self.file = "./data.csv"
+        self.file = fname
         self.read_file()
-        self.gen_db_entries()
 
 
     def read_file(self):
@@ -27,10 +27,12 @@ class Database:
             The file is a csv file that holds information about every
             data entry in the Database.
             A cheap replacement for database frameworks.
-            Ignores all entries without a valid key
+            Ignores all entries without a valid id.
             '''
         if not os.path.exists(self.file):
-            return
+            with open(self.file, 'x'):
+                self.gen_db_entries()
+                return
 
         with open(self.file, newline='') as file:
             reader = csv.DictReader(file)
@@ -42,19 +44,22 @@ class Database:
                 for key in entry.keys():
                     if entry[key].isnumeric():
                         entry[key] = int(entry[key])
-                print(entry)
 
-                if entry['id'] > self.__idnum:
-                    self.__idnum = entry['id']
+                if entry['id'] >= self.__idnum:
+                    self.__idnum = entry['id'] + 1
+                # print(entry)
                 self.data.append(entry)
 
 
     def write_file(self):
+        ''' Overwrites the previous database file with the information
+            in this database.
+            '''
         with open(self.file, mode='w', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=self.keys)
             writer.writeheader()
             writer.writerows(self.data)
-            print('successful write')
+        return
 
 
     def gen_db_entries(self, entries=8):
@@ -95,7 +100,8 @@ class Database:
 
 
     def add(self, entry):
-        ''' Adds a new entry to the database.
+        ''' Adds a new entry to this database, and appends the new data entry
+            into the file specified by self.file.
 
             entry: A dictionary containing keys: name, time, and status.
             return: The newly created database entry.
@@ -108,6 +114,7 @@ class Database:
             }
         self.data.append(new_task)
         print(self.data)
+        self.write_file()
         return new_task
 
 
@@ -124,5 +131,6 @@ class Database:
             if item_id == entry['id']:
                 tmp = entry
                 self.data = self.data[:i] + self.data[i + 1:]
+                self.write_file()
                 return entry
         return None

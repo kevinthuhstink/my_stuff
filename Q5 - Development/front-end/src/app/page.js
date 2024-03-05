@@ -1,6 +1,5 @@
 'use client'
 
-import { revalidatePath } from 'next/cache'
 import React from 'react'
 import Topbar from './components/Topbar.js'
 import Dropdown from './components/Dropdown.js'
@@ -36,7 +35,8 @@ export default function Page() {
   }, [])
 
   const [dropdown, setDropdown] = React.useState(false)
-  const mainStyle = "absolute right-0 p-4 overflow-auto " + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
+  const mainStyle = "absolute right-0 p-4 overflow-auto h-full "
+    + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
   return (
     <>

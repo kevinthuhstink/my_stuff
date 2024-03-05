@@ -24,7 +24,7 @@ export default function Form(props) {
     const fetchLink = 'http://localhost:5000/catalog/item'
     const formData = {
       name: new FormData(event.target).get('name'),
-      time: Date.now() % 1000,
+      time: Date.now(),
       status: 'incomplete'
     }
 

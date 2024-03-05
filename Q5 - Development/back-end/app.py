@@ -15,8 +15,8 @@ def heartbeat():
 # A request to add items to the catalog (use the request body to store data)
 @app.route("/catalog/item", methods=["POST"])
 def add_item():
-    new_task = request.get_json()
-    res = jsonify({"body": db.add(new_task)})
+    entry = request.get_json()
+    res = jsonify({"body": db.add(entry)})
     res.status_code = 200
     return res
 
@@ -38,3 +38,5 @@ def get_items():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    db.write_file()
+    print("end main")

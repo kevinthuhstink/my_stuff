@@ -30,6 +30,12 @@ export default function ItemListing(props) {
 
     if (!response.ok)
       throw new Error('Failed to DELETE item')
+
+    response.json().then(res => {
+      console.log(res)
+      if (res.body.id !== props.id)
+        throw new Error("Removed item doesn\'t match removed server item")
+    })
   }
 
   return (
