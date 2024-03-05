@@ -9,6 +9,8 @@ class Database:
 
         Uses a csv to save data.
         Each data item must contain data for all fields in self.keys.
+        Ineffeciently writes the entire catalog back and forth into the csv
+        after every addition and removal operation.
         fname: The relative destination of a file to read saved data from.
         '''
 

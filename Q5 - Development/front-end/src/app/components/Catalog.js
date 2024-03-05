@@ -18,14 +18,27 @@ export default function Catalog(props) {
   const rowSetup = [
       {
         id: 0,
+        header: "Recent Additions",
+        filter: item => true,
+        sort: (a, b) => a.id - b.id,
+        capacity: 8,
+      },
+      {
+        id: 1,
         header: "All Items",
         filter: item => true
       },
       {
-        id: 1,
+        id: 2,
         header: "Status: incomplete",
         filter: item => item.status === "incomplete"
-      }
+      },
+      {
+        id: 3,
+        header: "All items sorted by name",
+        filter: item => true,
+        sort: (a, b) => a.name.localeCompare(b.name),
+      },
     ]
 
   var rows = []

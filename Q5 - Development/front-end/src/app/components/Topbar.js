@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import menuHide from './menu-hide.svg'
+import menuShow from './menu-show.svg'
 
 /**
  * props
@@ -7,7 +9,7 @@ import Image from 'next/image'
 export default function Topbar(props) {
 
   const handleDropdown = () => props.setDropdown(prevDropdown => !prevDropdown)
-  const menuIcon = props.dropdown ? "/menu-hide.svg" : "/menu-show.svg"
+  const menuIcon = props.dropdown ? menuHide : menuShow
   const menuAlt = props.dropdown ? "HIDE" : "SHOW"
 
   return (

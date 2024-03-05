@@ -18,14 +18,27 @@ import Item from './Item.js'
  *           to be displayed on this catalog row.
  *           fn: (item: {}) => boolean
  *   header: A title for this row.
+ *   capacity: Optional, if set, determines the max number of items in this
+ *             row of items.
+ *   sort: Optional, sorting comparison function on catalog items.
+ *         If set, sorts catalog items row of items before filtering them.
+ *         fn: (a: {}, b: {}) => number
  */
 export default function CatalogRow(props) {
 
   var items = []
   if (props.data) {
+    if (props.sort) {
+      items = props.data.sort(props.sort).filter(props.filter).map(
+        elem => <Item key={elem.id} {...elem} setData={props.setData} />)
+    }
+    else
     items = props.data.filter(props.filter).map(
       elem => <Item key={elem.id} {...elem} setData={props.setData} />)
   }
+
+  if (props.capacity)
+    items = items.slice(0, props.capacity)
 
   return (
     <div className="flex flex-col mb-10">
