@@ -14,6 +14,8 @@ export default function ItemListing(props) {
 
   /**
    * Event handler that removes this item from the database.
+   * Checks the item id to ensure the same items were removed from display
+   * and from the server database.
    */
   async function handleRemove(event) {
     event.preventDefault()
@@ -38,12 +40,32 @@ export default function ItemListing(props) {
     })
   }
 
+  /**
+   * Formats the time.
+   * return: A string representation of the item's time.
+   */
+  function formatTime() {
+    const dateFormat = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+      timeZone: "America/New_York"
+    }
+
+    const date = new Date(props.time)
+    return Intl.DateTimeFormat('en-US', dateFormat).format(date)
+  }
+
   return (
     <div id="task-cell"
       className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
                  flex flex-col rounded shadow-lg">
-      <p className="block">Time: {props.time}</p>
       <p className="block">{props.name}</p>
+      <p className="block">Time: {formatTime()}</p>
       <p className="block">Status: {props.status}</p>
       <button onClick={handleRemove} className="inline-block rounded border-2 border-black bg-gray-400 justify-self-end">
         remove

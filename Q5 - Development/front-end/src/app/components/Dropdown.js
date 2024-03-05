@@ -9,7 +9,10 @@ export default function Dropdown(props) {
   return (
     <div className="absolute bg-red-100 bottom-0 left-0 h-full w-[200px] p-4
                     flex flex-col">
-      <a href="./item" className="">
+      <a href="/" className="mb-4">
+        Home Page
+      </a>
+      <a href="/item" className="">
         List item for sale
       </a>
     </div>
