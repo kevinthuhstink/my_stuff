@@ -128,7 +128,7 @@ class Database:
                     '''
         for i in range(len(self.data)):
             entry = self.data[i]
-            if item_id == entry['id']:
+            if int(item_id) == entry['id']:
                 tmp = entry
                 self.data = self.data[:i] + self.data[i + 1:]
                 self.write_file()
