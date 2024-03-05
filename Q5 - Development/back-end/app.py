@@ -3,7 +3,7 @@ from flask_cors import CORS
 import Database
 
 app = Flask(__name__)
-CORS(app, resources=r'/*')
+CORS(app, resources=r'/*', supports_credentials=True)
 db = Database.Database()
 
 
@@ -38,5 +38,3 @@ def get_items():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    db.write_file()
-    print("end main")

@@ -3,15 +3,15 @@ import React from 'react'
 /**
  * A form that takes user input and posts that information as a new catalog item
  * to the server.
- *
- * props
- *   setData: A function to set catalog data.
- *            Used for rebuilding the catalog upon submission of a new item.
  */
 export default function Form(props) {
 
   //React state for form inputs.
-  const [taskInput, setTaskInput] = React.useState("")
+  const [input, setInput] = React.useState({
+    name: "",
+    price: "",
+    owner: "",
+  })
 
   /**
    * Sends a request to the server to create a new catalog item.
@@ -21,9 +21,13 @@ export default function Form(props) {
   async function onSubmit(event) {
     event.preventDefault()
 
+    for (var field in input)
+      if (input[field].trim().length < 1)
+        throw new Error("Form fields must not be empty")
+
     const fetchLink = 'http://localhost:5000/catalog/item'
     const formData = {
-      name: new FormData(event.target).get('name'),
+      ...input,
       time: Date.now(),
       status: 'incomplete'
     }
@@ -36,30 +40,50 @@ export default function Form(props) {
 
     if (!response.ok)
       throw new Error('Failed to POST data to server')
-
-    response.json().then(resData => {
-      props.setData(prevData => prevData.concat(resData.body))
-    })
   }
 
   //State handler/updater for form inputs.
   function handleInput(event) {
     event.preventDefault()
-    setTaskInput(event.target.value)
+    const { name, value } = event.target
+    setInput(prevInput => ({
+      ...prevInput,
+      [name]: value
+    }))
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col">
-      <label>Input new task:</label>
-      <input
-        type="text"
-        name="name"
-        value={taskInput}
-        onInput={handleInput}
-        placeholder="New data entry"
-        className="border border-black bg-gray-300 mb-[10px]">
-      </input>
-      <button type="submit" className="border border-black bg-gray-300 rounded">
+    <form onSubmit={onSubmit} className="flex flex-col p-6">
+      <div className="grid grid-cols-2">
+        <label className="mr-4">Your Name:</label>
+        <input
+          type="text"
+          name="owner"
+          value={input.owner}
+          onInput={handleInput}
+          className="border border-black bg-gray-200 mb-[10px] rounded">
+        </input>
+        <label className="mr-4">Item name:</label>
+        <input
+          type="text"
+          name="name"
+          value={input.name}
+          onInput={handleInput}
+          className="border border-black bg-gray-200 mb-[10px] rounded">
+        </input>
+        <label className="mr-4">Price:</label>
+        <input
+          type="text"
+          name="price"
+          value={input.price}
+          onInput={handleInput}
+          className="border border-black bg-gray-200 mb-[10px] rounded">
+        </input>
+      </div>
+      <button
+        type="submit"
+        className="border border-black bg-red-100 rounded
+                   h-[40px] w-[60%] place-self-center">
         Submit new item!
       </button>
     </form>

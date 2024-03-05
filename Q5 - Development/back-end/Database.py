@@ -16,7 +16,7 @@ class Database:
 
     def __init__(self, fname='data.csv'):
         self.data = []
-        self.keys = ['id', 'name', 'time', 'status']
+        self.keys = ['id', 'owner', 'price', 'name', 'time', 'status']
         self.__idnum = 0
         self.file = fname
         self.read_file()
@@ -28,7 +28,6 @@ class Database:
 
             The file is a csv file that holds information about every
             data entry in the Database.
-            A cheap replacement for database frameworks.
             Ignores all entries without a valid id.
             '''
         if not os.path.exists(self.file):
@@ -67,11 +66,9 @@ class Database:
     def gen_db_entries(self, entries=8):
         ''' Generates some random data entries to mess around with.
 
-            Each data entry has a time, task, status, and id.
-            Time and task are randomly generated,
-            the status is 'init', and id is a unique integer that increments
-            for every item created, so no two items have the same id.
-            entries: The number of entries in the newly initialized data.
+            Each data entry has a randomly geneerated name, status,
+            owner, and price.
+            entries: The number of entries to generate.
             '''
 
         def gen_rand_str(len_bounds=(8,16)):
@@ -87,6 +84,8 @@ class Database:
             entry = {
                 "id": self.gen_id(),
                 "name": gen_rand_str(),
+                "price": randint(0, 1000),
+                "owner": gen_rand_str(),
                 "time": int(time()),
                 "status": "init db: " + str(entries),
                 }
@@ -108,16 +107,19 @@ class Database:
             entry: A dictionary containing keys: name, time, and status.
             return: The newly created database entry.
             '''
-        new_task = {
+        item = {
             'id': self.gen_id(),
+            'price': entry['price'],
+            'owner': entry['owner'],
             'name': entry['name'],
             'time': entry['time'],
             'status': entry['status']
             }
-        self.data.append(new_task)
-        print(self.data)
-        self.write_file()
-        return new_task
+        self.data.append(item)
+        with open(self.file, 'a') as file:
+            writer = csv.DictWriter(file, fieldnames=self.keys)
+            writer.writerow(item)
+        return item
 
 
     def remove(self, item_id):
