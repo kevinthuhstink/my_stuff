@@ -14,9 +14,9 @@ class Database:
         fname: The relative destination of a file to read saved data from.
         '''
 
-    def __init__(self, fname='data.csv'):
+    def __init__(self, keys, fname='data.csv'):
         self.data = []
-        self.keys = ['id', 'owner', 'price', 'name', 'time', 'status']
+        self.keys = keys
         self.__idnum = 0
         self.file = fname
         self.read_file()
@@ -65,8 +65,6 @@ class Database:
     def gen_db_entries(self, entries=8):
         ''' Generates some random data entries to mess around with.
 
-            Each data entry has a randomly geneerated name, status,
-            owner, and price.
             entries: The number of entries to generate.
             '''
 
@@ -80,14 +78,9 @@ class Database:
             return rand_str
 
         for i in range(entries):
-            entry = {
-                "id": self.gen_id(),
-                "name": gen_rand_str(),
-                "price": randint(0, 1000),
-                "owner": gen_rand_str(),
-                "time": int(time()),
-                "status": "init db: " + str(entries),
-                }
+            entry = {}
+            for field in self.keys:
+                entry[field] = gen_rand_str()
             self.data.append(entry)
 
 
@@ -106,19 +99,12 @@ class Database:
             entry: A dictionary containing keys: name, time, and status.
             return: The newly created database entry.
             '''
-        item = {
-            'id': self.gen_id(),
-            'price': entry['price'],
-            'owner': entry['owner'],
-            'name': entry['name'],
-            'time': entry['time'],
-            'status': entry['status']
-            }
-        self.data.append(item)
+        entry['id'] = self.gen_id()
+        self.data.append(entry)
         with open(self.file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=self.keys)
-            writer.writerow(item)
-        return item
+            writer.writerow(entry)
+        return entry
 
 
     def remove(self, item_id):
@@ -151,3 +137,21 @@ class Database:
             if entry['id'] == item_id:
                 return entry
         return None
+
+
+    def set_field(self, item_id, key, value):
+        ''' Sets one data entry's value in the database.
+
+            Searches for the item based on item_id, then sets the information
+            in key to value.
+            item_id: The id of the item to set information for
+            key: The name of the item's variable to set information for
+            value: The information to set the data as
+            return: The entry that had its value set,
+                    None if item_id couldn't be found
+            '''
+        entry = self.get_item()
+        if not entry:
+            return None
+        entry[key] = value
+        return entry
