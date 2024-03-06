@@ -65,11 +65,11 @@ export default function ItemListing(props) {
       className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
                  flex flex-col rounded shadow-lg">
       <p className="block">{props.name}</p>
-      <p className="block">Time: {formatTime()}</p>
       <p className="block">Status: {props.status}</p>
       <button onClick={handleRemove} className="inline-block rounded border-2 border-black bg-gray-400 justify-self-end">
         remove
       </button>
+      <p className="block text-2xl">${props.price}</p>
     </div>
   )
 }

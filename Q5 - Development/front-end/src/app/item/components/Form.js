@@ -53,39 +53,41 @@ export default function Form(props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col p-6">
-      <div className="grid grid-cols-2">
-        <label className="mr-4">Your Name:</label>
-        <input
-          type="text"
-          name="owner"
-          value={input.owner}
-          onInput={handleInput}
-          className="border border-black bg-gray-200 mb-[10px] rounded">
-        </input>
-        <label className="mr-4">Item name:</label>
-        <input
-          type="text"
-          name="name"
-          value={input.name}
-          onInput={handleInput}
-          className="border border-black bg-gray-200 mb-[10px] rounded">
-        </input>
-        <label className="mr-4">Price:</label>
-        <input
-          type="text"
-          name="price"
-          value={input.price}
-          onInput={handleInput}
-          className="border border-black bg-gray-200 mb-[10px] rounded">
-        </input>
-      </div>
-      <button
-        type="submit"
-        className="border border-black bg-red-100 rounded
-                   h-[40px] w-[60%] place-self-center">
-        Submit new item!
-      </button>
-    </form>
+    <div className="w-full">
+      <form onSubmit={onSubmit} className="flex flex-col w-[600px] p-6">
+        <div className="grid grid-cols-3 gap-3 text-l">
+          <label>Your Name:</label>
+          <input
+            type="text"
+            name="owner"
+            value={input.owner}
+            onInput={handleInput}
+            className="border border-black bg-gray-200 rounded col-span-2">
+          </input>
+          <label>Item name:</label>
+          <input
+            type="text"
+            name="name"
+            value={input.name}
+            onInput={handleInput}
+            className="border border-black bg-gray-200 rounded col-span-2">
+          </input>
+          <label>Price:</label>
+          <input
+            type="text"
+            name="price"
+            value={input.price}
+            onInput={handleInput}
+            className="border border-black bg-gray-200 rounded col-span-2">
+          </input>
+        </div>
+        <button
+          type="submit"
+          className="border border-black bg-red-100 rounded mt-6
+                     h-[40px] w-[60%] place-self-center">
+          Submit new item!
+        </button>
+      </form>
+    </div>
   )
 }

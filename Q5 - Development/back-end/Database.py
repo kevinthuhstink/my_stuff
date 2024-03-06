@@ -30,7 +30,7 @@ class Database:
             data entry in the Database.
             Ignores all entries without a valid id.
             '''
-        if not os.path.exists(self.file):
+        if not os.path.isfile(self.file):
             with open(self.file, 'x'):
                 self.gen_db_entries()
                 return
@@ -48,7 +48,6 @@ class Database:
 
                 if entry['id'] >= self.__idnum:
                     self.__idnum = entry['id'] + 1
-                # print(entry)
                 self.data.append(entry)
 
 
