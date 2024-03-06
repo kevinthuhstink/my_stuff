@@ -60,8 +60,12 @@ export default function ItemListing(props) {
     return Intl.DateTimeFormat('en-US', dateFormat).format(date)
   }
 
+  function redirect() {
+    window.location.href = "http://localhost:3000/catalog/" + props.id
+  }
+
   return (
-    <div id="task-cell"
+    <div onClick={redirect}
       className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
                  flex flex-col rounded shadow-lg">
       <p className="block">{props.name}</p>
