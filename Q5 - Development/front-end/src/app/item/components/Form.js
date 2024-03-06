@@ -21,9 +21,12 @@ export default function Form(props) {
   async function onSubmit(event) {
     event.preventDefault()
 
-    for (var field in input)
-      if (input[field].trim().length < 1)
+    for (var field in input) {
+      if (input[field].trim().length < 1) {
         throw new Error("Form fields must not be empty")
+        return
+      }
+    }
 
     const fetchLink = 'http://localhost:5000/catalog/item'
     const formData = {

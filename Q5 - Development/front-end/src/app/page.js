@@ -13,14 +13,18 @@ export default function Page() {
             THE<br/>CATALOG.
           </h1>
           <div className="flex flex-row w-full justify-around my-12">
-            <p className="border border-black bg-red-100 rounded text-center
-                          p-3 w-[200px]">
-              <a href="./catalog">Login</a>
-            </p>
-            <p className="border border-black bg-red-100 rounded text-center
-                          p-3 w-[200px]">
-              <a href="./catalog">See our items</a>
-            </p>
+            <a href="./login">
+              <p className="border border-black bg-red-100 rounded text-center
+                            p-3 w-[200px]">
+                Login
+              </p>
+            </a>
+            <a href="./login">
+              <p className="border border-black bg-red-100 rounded text-center
+                            p-3 w-[200px]">
+                See our items
+              </p>
+            </a>
           </div>
         </div>
       </main>

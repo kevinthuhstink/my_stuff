@@ -31,8 +31,10 @@ class Database:
             Ignores all entries without a valid id.
             '''
         if not os.path.isfile(self.file):
-            with open(self.file, 'x'):
+            with open(self.file, 'w') as file:
                 self.gen_db_entries()
+                writer = csv.DictWriter(file, fieldnames=self.keys)
+                writer.writeheader()
                 return
 
         with open(self.file, newline='') as file:
@@ -150,7 +152,7 @@ class Database:
             return: The entry that had its value set,
                     None if item_id couldn't be found
             '''
-        entry = self.get_item()
+        entry = self.get_item(item_id)
         if not entry:
             return None
         entry[key] = value

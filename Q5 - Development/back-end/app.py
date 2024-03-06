@@ -4,8 +4,8 @@ import Database
 
 app = Flask(__name__)
 CORS(app, resources=r'/*', supports_credentials=True)
-db = Database.Database()
-users = Database.Database(fname="users.csv")
+db = Database.Database(keys=['id', 'owner', 'price', 'name', 'time', 'status'])
+users = Database.Database(keys=['id', 'name', 'username'], fname="users.csv")
 
 
 @app.route("/heartbeat")
@@ -42,6 +42,16 @@ def get_items():
 def get_item(item_id):
     res = jsonify({"body": db.get_item(item_id)})
     res.status_code = 200
+    return res
+
+
+# A request to create a new user
+@app.route("/login", methods=["POST"])
+def make_user():
+    user = request.get_json()
+    res = jsonify({"body": users.add(user)})
+    res.status_code = 200
+    print(user)
     return res
 
 
