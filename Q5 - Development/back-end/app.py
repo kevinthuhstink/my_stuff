@@ -46,12 +46,19 @@ def get_item(item_id):
 
 
 # A request to create a new user
-@app.route("/login", methods=["POST"])
+@app.route("/signup", methods=["POST"])
 def make_user():
     user = request.get_json()
     res = jsonify({"body": users.add(user)})
     res.status_code = 200
-    print(user)
+    return res
+
+
+@app.route("/login", methods=["GET"])
+def check_login():
+    user = request.get_json()
+    res = jsonify({"body": users.match_values(user)})
+    res.status_code = 200
     return res
 
 

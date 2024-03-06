@@ -157,3 +157,23 @@ class Database:
             return None
         entry[key] = value
         return entry
+
+
+    def match_values(self, values):
+        ''' Checks if any entry has values that exist within the database.
+
+            Checks every entry in the database.
+            values: A list of key-value pairs.
+            return: The first entry that has values that match the
+                    key-value pairs in values,
+                    None if no entry exists that matches all pairs.
+                    '''
+        for entry in self.data:
+            entry_found = True
+            for key, value in values:
+                if key not in entry.keys() or value != entry[key]:
+                    entry_found = False
+                    break
+            if entry_found:
+                return entry
+        return None
