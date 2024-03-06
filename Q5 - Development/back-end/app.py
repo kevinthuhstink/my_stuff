@@ -5,7 +5,7 @@ import Database
 app = Flask(__name__)
 CORS(app, resources=r'/*', supports_credentials=True)
 db = Database.Database(keys=['id', 'owner', 'price', 'name', 'time', 'status'])
-users = Database.Database(keys=['id', 'name', 'username'], fname="users.csv")
+users = Database.Database(keys=['id', 'name', 'username', 'password'], fname="users.csv")
 
 
 @app.route("/heartbeat")
@@ -46,9 +46,15 @@ def get_item(item_id):
 
 
 # A request to create a new user
+# Fails if the username exists in the database already
 @app.route("/signup", methods=["POST"])
 def make_user():
     user = request.get_json()
+    username = user['username']
+
+    if users.match_values([('username', username)]):
+        return jsonify({"body": None}), 200
+
     res = jsonify({"body": users.add(user)})
     res.status_code = 200
     return res
