@@ -5,6 +5,7 @@ import Database
 app = Flask(__name__)
 CORS(app, resources=r'/*', supports_credentials=True)
 db = Database.Database()
+users = Database.Database(fname="users.csv")
 
 
 @app.route("/heartbeat")

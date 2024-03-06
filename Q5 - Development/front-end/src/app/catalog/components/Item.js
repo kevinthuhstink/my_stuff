@@ -65,15 +65,20 @@ export default function ItemListing(props) {
   }
 
   return (
-    <div onClick={redirect}
+    <div
+      onClick={redirect}
       className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
-                 flex flex-col rounded shadow-lg">
-      <p className="block">{props.name}</p>
-      <p className="block">Status: {props.status}</p>
-      <button onClick={handleRemove} className="inline-block rounded border-2 border-black bg-gray-400 justify-self-end">
-        remove
-      </button>
-      <p className="block text-2xl">${props.price}</p>
+                 flex flex-col justify-between rounded shadow-lg cursor-pointer">
+      <p className="block text-2xl overflow-hidden text-ellipsis">{props.name}</p>
+      <div className="w-full">
+        <p className="block text-4xl">${props.price}</p>
+        <button
+          onClick={redirect}
+          className="inline-block rounded border-2 border-black
+                     bg-gray-400 justify-self-end w-full p-2">
+          Purchase
+        </button>
+      </div>
     </div>
   )
 }
