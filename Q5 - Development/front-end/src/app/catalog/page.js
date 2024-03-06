@@ -7,7 +7,7 @@ import Catalog from './components/Catalog.js'
 
 
 /**
- * Returns all catalog items from the server.
+ * Gets all catalog items from the server.
  */
 async function getData() {
   const res = await fetch('http://localhost:5000/catalog', { method: 'GET' })

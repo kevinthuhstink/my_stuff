@@ -137,3 +137,17 @@ class Database:
                 self.write_file()
                 return entry
         return None
+
+
+    def get_item(self, item_id):
+        ''' Gets one item from the database.
+
+            item_id: The id of the item to retrieve from the database.
+            return: The item from the database.
+                    None if the item doesn't exist in the database.
+                    '''
+        item_id = int(item_id)
+        for entry in self.data:
+            if entry['id'] == item_id:
+                return entry
+        return None

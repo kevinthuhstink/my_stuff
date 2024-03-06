@@ -36,5 +36,13 @@ def get_items():
     return res
 
 
+# A request to get one item, specified by its item id
+@app.route("/catalog/<item_id>", methods=["GET"])
+def get_item(item_id):
+    res = jsonify({"body": db.get_item(item_id)})
+    res.status_code = 200
+    return res
+
+
 if __name__ == '__main__':
     app.run(debug=True)
