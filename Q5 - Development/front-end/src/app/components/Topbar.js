@@ -5,6 +5,7 @@ import MenuShow from './MenuShow.js'
 /**
  * props
  *   dropdown: React state for displaying the dropdown menu
+ *   setDropdown: Sets whether the Dropdown is displayed or not.
  *   title: Title for the page
  */
 export default function Topbar(props) {
