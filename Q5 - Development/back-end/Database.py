@@ -149,6 +149,7 @@ class Database:
             item_id: The id of the item to set information for
             fields: A dictionary with keys corresponding to database entry
                     fields and its values representing new values.
+                    Converts numeric strings to numbers
             return: The entry that had its value set,
                     None if item_id couldn't be found
             '''
@@ -156,8 +157,11 @@ class Database:
         if not entry:
             return None
         for key in fields.keys():
+            if fields[key].isnumeric():
+                fields[key] = int(fields[key])
             if key in self.keys:
                 entry[key] = fields[key]
+        print(entry)
         return entry
 
 

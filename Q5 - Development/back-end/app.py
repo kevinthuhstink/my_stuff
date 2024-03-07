@@ -49,9 +49,10 @@ def get_item(item_id):
 # A request to put an item on sale, modifying its price
 @app.route("/item/", methods=["PUT"])
 def set_item():
-    item = request.get_json()
+    entry = request.get_json()
+    print(entry)
 
-    new_item = db.set_values(item.id, {'price': item.price})
+    new_item = db.set_fields(entry['id'], {'price': entry['sale']})
     res = jsonify({"body": new_item})
     res.status_code = 200
     return res

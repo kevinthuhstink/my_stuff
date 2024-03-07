@@ -36,6 +36,7 @@ export default function Page(params) {
   const user = React.useRef()
   const username = React.useRef()
 
+
   //Initializes item data for display.
   React.useEffect(() => {
     user.current = window.sessionStorage.getItem('userid')
@@ -65,8 +66,8 @@ export default function Page(params) {
 
       setData({
         ...res.body,
-
-        time: formatTime()
+        time: formatTime(),
+        sale: ""
       })
 
     })
@@ -77,7 +78,7 @@ export default function Page(params) {
    * Sets any success/failure messages if there are any errors
    * with user input
    */
-  function setRequestStatus() {
+  function setRequestStatus(currStatus) {
       switch (currStatus) {
         case "SUCCESS":
           setStatus(prevStatus => ({
@@ -96,6 +97,19 @@ export default function Page(params) {
         case "REMOVE_FAIL":
           setStatus(prevStatus => ({
             text: "Server error during item removal",
+            style: "text-red-500",
+          }))
+          break
+
+        case "PRICE_INVALID":
+          setStatus(prevStatus => ({
+            text: "New price must be a number less than current price",
+            style: "text-red-500",
+          }))
+
+        case "PRICE_FAIL":
+          setStatus(prevStatus => ({
+            text: "Server error while changing item price",
             style: "text-red-500",
           }))
           break
@@ -137,16 +151,16 @@ export default function Page(params) {
     })
 
     if (!response.ok) {
-      setFormStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     response.json().then(res => {
       if (res.body.id !== data.id) {
-        setFormStatus("REMOVE_FAIL")
+        setRequestStatus("REMOVE_FAIL")
         return
       }
-      setFormStatus("SUCCESS")
+      setRequestStatus("SUCCESS")
       window.location.href = "/catalog"
     })
   }
@@ -157,47 +171,67 @@ export default function Page(params) {
    * put the item on sale.
    * User chooses a new price to set the item to, less than the original price.
    */
-  async function setSale() {
+  async function setSale(event) {
     event.preventDefault()
 
-    const fetchLink = 'http://localhost:5000/item/' 
+    //Checks if the new price has any non-numeric characters.
+    function priceIsNumber() {
+      for (const char of data.sale)
+        if (!'0123456789'.includes(char))
+          return false
+      return true
+    }
+    if (!priceIsNumber() || parseInt(data.sale) >= data.price) {
+      setRequestStatus("PRICE_INVALID")
+      return
+    }
+
+    const fetchLink = 'http://localhost:5000/item/'
     const response = await fetch(fetchLink, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
-      body: null
+      body: JSON.stringify({ id: data.id, sale: data.sale })
     })
 
     if (!response.ok) {
-      setFormStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     response.json().then(res => {
-      setFormStatus("SUCCESS")
-      setData(prevData => {
-
-      })
+      setRequestStatus("SUCCESS")
+      setData(prevData => ({
+        ...res.body,
+        sale: ""
+      }))
     })
   }
 
   //Have different item options for the seller and other users
   var itemOptions
-  if (data.owner === username.current)
+  if (data.owner === username.current) {
     itemOptions = (
       <>
         <button
           onClick={handleRemove}
-          className="p-4 bg-red-100 rounded border border-black mr-8">
+          className="p-4 bg-red-100 rounded border border-black md:mr-8 sm:mb-4">
           Remove Item
         </button>
         <form
           onSubmit={setSale}
-          className="p-4 bg-red-100 rounded border border-black ">
-          <label>Put on sale</label>
-          <input/>
+          className="p-4 bg-red-100 rounded border border-black">
+          <label className="mr-4">Put on sale</label>
+          <input
+            type="text"
+            name="newPrice"
+            placeholder="New price"
+            value={data.sale}
+            className="bg-gray-100 rounded mr-4 w-[120px]"/>
+          <button className="bg-red-300 rounded border border-black p-2">Submit</button>
         </form>
       </>
     )
+  }
 
   else
     itemOptions = (
@@ -213,16 +247,16 @@ export default function Page(params) {
     <>
       <Topbar title={data.name} dropdown={dropdown} setDropdown={setDropdown} />
       <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        <section className="flex flex-col h-full w-full justify-between p-8">
+        <section className="flex flex-col h-full w-full justify-between p-8 overflow-y-auto">
 
-          <div>
+          <div className="mb-12">
             <p className="mb-6 text-2xl">Seller: {data.owner}</p>
             <p>Description:<br/>{data.description}</p>
           </div>
 
-          <div className="w-full">
+          <div className="md:w-full sm:w-[350px]">
             <p className={status.style}>{status.text}</p>
-            <div className="flex flex-row">
+            <div className="flex flex-col md:flex-row">
               <p className="text-6xl mr-6">${data.price}</p>
               {itemOptions}
             </div>
