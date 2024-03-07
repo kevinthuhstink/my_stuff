@@ -11,10 +11,15 @@ import Catalog from './components/Catalog.js'
  * and user information if there was a successful login.
  */
 async function getData() {
-  const res = await fetch('http://localhost:5000/catalog', { cache: 'no-store' })
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  var res
+  try {
+    res = await fetch('http://localhost:5000/catalog', { cache: 'no-store' })
+  } catch(exception) {
+    res.reject()
   }
+
+  if (!res.ok)
+    res.reject()
   return res.json()
 }
 
@@ -26,35 +31,46 @@ export default function Page() {
 
   const [data, setData] = React.useState([])
   React.useEffect(() => {
+
     getData().then(res => {
       console.log(res.body)
       setData(res.body)
+
+    }).catch(rej => {
+      setData("NETWORK_ERROR")
     })
   }, [])
 
   const [dropdown, setDropdown] = React.useState(false)
 
-  if (data.length === 0)
-    return (
-      <>
-        <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
-        <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-          <p className="text-4xl p-8 w-full">
-            No items currently in the catalog.<br/>Be the first to list an item
-            <a href='/item' className="text-blue-600 underline"> here.</a>
-          </p>
-          <Dropdown showWhen={dropdown} />
-        </main>
-      </>
+  var main
+  if (data === "NETWORK_ERROR")
+    main = (
+      <p className="text-4xl p-8 w-full">
+        Server unavailable at this time.<br/>Please return later.
+      </p>
+    )
+
+  else if (data.length === 0)
+    main = (
+      <p className="text-4xl p-8 w-full">
+        No items currently in the catalog.<br/>Be the first to list an item
+        <a href='/item' className="text-blue-600 underline"> here.</a>
+      </p>
+    )
+
+  else
+    main = (
+      <section className="flex flex-row h-full w-full p-8">
+        <Catalog data={data} setData={setData} />
+      </section>
     )
 
   return (
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
       <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        <section className="flex flex-row h-full w-full p-8">
-          <Catalog data={data} setData={setData} />
-        </section>
+        {main}
         <Dropdown showWhen={dropdown} />
       </main>
     </>

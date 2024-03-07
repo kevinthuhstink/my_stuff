@@ -116,11 +116,17 @@ export default function Form() {
       status: 'none'
     }
 
-    const response = await fetch(fetchLink, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(formData)
-    })
+    var response
+    try {
+      response = await fetch(fetchLink, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formData)
+      })
+    } catch(exception) {
+      setFormStatus("FETCH_FAIL")
+      return
+    }
 
     if (!response.ok) {
       setFormStatus("FETCH_FAIL")

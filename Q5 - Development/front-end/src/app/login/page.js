@@ -88,11 +88,17 @@ export default function Page() {
     }
 
     const fetchLink = 'http://localhost:5000/login'
-    const response = await fetch(fetchLink, {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(input)
-    })
+    var response
+    try {
+      response = await fetch(fetchLink, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(input)
+      })
+    } catch(exception) {
+      setLoginStatus("FETCH_FAIL")
+      return
+    }
 
     if (!response.ok) {
       setLoginStatus("FETCH_FAIL")

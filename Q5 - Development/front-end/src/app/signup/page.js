@@ -82,11 +82,17 @@ export default function Page() {
     }
 
     const fetchLink = 'http://localhost:5000/signup'
-    const response = await fetch(fetchLink, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(input)
-    })
+    var response
+    try {
+      response = await fetch(fetchLink, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(input)
+      })
+    } catch(exception) {
+      setLoginStatus("FETCH_FAIL")
+      return
+    }
 
     if (!response.ok) {
         setSignupStatus("FETCH_FAIL")

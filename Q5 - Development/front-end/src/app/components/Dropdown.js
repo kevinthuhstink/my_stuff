@@ -26,7 +26,7 @@ export default function Dropdown(props) {
     accountOptions = (
       <>
         <a href="/user" className={linkStyle}>See my items</a>
-        <p className={linkStyle} onClick={logout}>Logout</p>
+        <p className={linkStyle + " cursor-pointer"} onClick={logout}>Logout</p>
       </>
     )
   }

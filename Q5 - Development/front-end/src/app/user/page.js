@@ -5,10 +5,15 @@ import Topbar from '../components/Topbar.js'
 import Dropdown from '../components/Dropdown.js'
 
 async function getData() {
-  const res = await fetch('http://localhost:5000/catalog', { cache: 'no-store' })
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  var res
+  try {
+    res = await fetch('http://localhost:5000/catalog', { cache: 'no-store' })
+  } catch(exception) {
+    res.reject()
   }
+
+  if (!res.ok)
+    res.reject()
   return res.json()
 }
 
@@ -21,11 +26,26 @@ export default function Page() {
     user.current = window.sessionStorage.getItem('userid')
     username.current = window.sessionStorage.getItem('username')
 
-    getData().then(res => setData(res.body))
+    getData()
+      .then(res => setData(res.body))
+      .catch(() => setData("NETWORK_ERROR"))
   }, [])
 
   //React state handler for Dropdown
   const [dropdown, setDropdown] = React.useState(false)
+
+  if (data === "NETWORK_ERROR")
+    return (
+      <>
+        <Topbar title=":(" dropdown={dropdown} setDropdown={setDropdown}/>
+        <main className="w-full flex flex-row h-[calc(100%-6rem)] fixed bottom-0">
+          <p className="text-4xl p-8 w-full">
+            Server unavailable at this time.<br/>Please return later.
+          </p>
+          <Dropdown showWhen={dropdown} />
+        </main>
+      </>
+    )
 
   /**
    * Lists the active listings the user has, or a message telling them to
