@@ -49,7 +49,7 @@ export default function Catalog(props) {
 
   return (
     <>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full overflow-y-auto">
         {rows}
       </div>
     </>

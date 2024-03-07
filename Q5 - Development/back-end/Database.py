@@ -141,21 +141,23 @@ class Database:
         return None
 
 
-    def set_field(self, item_id, key, value):
+    def set_fields(self, item_id, fields):
         ''' Sets one data entry's value in the database.
 
             Searches for the item based on item_id, then sets the information
             in key to value.
             item_id: The id of the item to set information for
-            key: The name of the item's variable to set information for
-            value: The information to set the data as
+            fields: A dictionary with keys corresponding to database entry
+                    fields and its values representing new values.
             return: The entry that had its value set,
                     None if item_id couldn't be found
             '''
         entry = self.get_item(item_id)
         if not entry:
             return None
-        entry[key] = value
+        for key in fields.keys():
+            if key in self.keys:
+                entry[key] = fields[key]
         return entry
 
 
