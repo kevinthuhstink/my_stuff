@@ -11,7 +11,7 @@ import Catalog from './components/Catalog.js'
  * and user information if there was a successful login.
  */
 async function getData() {
-  const res = await fetch('http://localhost:5000/catalog', { method: 'GET' })
+  const res = await fetch('http://localhost:5000/catalog')
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
@@ -41,7 +41,7 @@ export default function Page() {
       <>
         <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
         <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-          <p className="text-4xl p-8">
+          <p className="text-4xl p-8 w-full">
             No items currently in the catalog.<br/>Be the first to list an item
             <a href='/item' className="text-blue-600 underline"> here.</a>
           </p>
@@ -54,7 +54,7 @@ export default function Page() {
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
       <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        <section className={mainStyle}>
+        <section className="flex flex-row h-full w-full fixed">
           <Catalog data={data} setData={setData} />
         </section>
         <Dropdown showWhen={dropdown} />

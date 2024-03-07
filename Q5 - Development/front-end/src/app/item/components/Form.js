@@ -22,7 +22,12 @@ export default function Form() {
   })
 
   //Stores user information.
-  const user = React.useRef(sessionStorage.getItem('userid'))
+  const user = React.useRef()
+  const username = React.useRef()
+  React.useEffect(() => {
+    user.current = window.sessionStorage.getItem('userid')
+    username.current = window.sessionStorage.getItem('username')
+  }, [])
 
   /**
    * Sends a request to the server to create a new catalog item.
@@ -55,7 +60,6 @@ export default function Form() {
           }))
           break
 
-
         case "FETCH_FAIL":
           setStatus(prevStatus => ({
             text: "Failed to send data to server, come back later",
@@ -78,7 +82,6 @@ export default function Form() {
           break
       }
     }
-
 
     if (user.current === null) {
       setFormStatus("NO_USER")
@@ -109,7 +112,7 @@ export default function Form() {
     const formData = {
       ...input,
       time: Date.now(),
-      owner: window.sessionStorage.getItem('username'),
+      owner: username,
       status: 'incomplete'
     }
 

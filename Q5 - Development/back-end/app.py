@@ -54,7 +54,7 @@ def make_user():
     user = request.get_json()
     username = user['username']
 
-    if users.match_values({'username', username}):
+    if users.match_values({'username': username}):
         return jsonify({"body": None}), 200
 
     res = jsonify({"body": users.add(user)})

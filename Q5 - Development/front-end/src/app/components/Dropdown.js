@@ -6,7 +6,12 @@ import React from 'react'
  */
 export default function Dropdown(props) {
 
-  const user = React.useRef(sessionStorage.getItem('userid'))
+  //Grab user id
+  const user = React.useRef()
+  React.useEffect(() => {
+    user.current = window.sessionStorage.getItem('userid')
+  }, [])
+
   const linkStyle = "mb-4 text-xl m-6"
 
   var profileOptions = <></>
