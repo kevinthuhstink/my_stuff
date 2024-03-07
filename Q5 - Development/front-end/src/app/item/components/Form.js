@@ -107,6 +107,7 @@ export default function Form(props) {
     const formData = {
       ...input,
       time: Date.now(),
+      owner: user.current,
       status: 'incomplete'
     }
 

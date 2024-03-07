@@ -40,6 +40,9 @@ export default function CatalogRow(props) {
   if (props.capacity)
     items = items.slice(0, props.capacity)
 
+  if (items.length === 0)
+    items = <p>No items available in this section.</p>
+
   return (
     <div className="flex flex-col mb-10">
       <h2 className="text-2xl">{props.header}</h2>

@@ -20,7 +20,7 @@ export default function Catalog(props) {
         id: 0,
         header: "Recent Additions",
         filter: item => true,
-        sort: (a, b) => a.id - b.id,
+        sort: (a, b) => b.time - a.time,
         capacity: 8,
       },
       {
@@ -30,8 +30,8 @@ export default function Catalog(props) {
       },
       {
         id: 2,
-        header: "Status: incomplete",
-        filter: item => item.status === "incomplete"
+        header: "On Sale",
+        filter: item => item.status === "sale"
       },
       {
         id: 3,
