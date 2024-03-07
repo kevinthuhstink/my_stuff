@@ -3,14 +3,16 @@ import React from 'react'
 /**
  * A form that takes user input and posts that information as a new catalog item
  * to the server.
+ * All users that want to submit items for sale must be logged into an account.
  * Price must be an integer number; decimals are not supported.
  */
-export default function Form(props) {
+export default function Form() {
 
   //React state for form inputs.
   const [input, setInput] = React.useState({
     name: "",
     price: "",
+    description: "",
   })
 
   //State that display success/errors with the form submission
@@ -107,7 +109,7 @@ export default function Form(props) {
     const formData = {
       ...input,
       time: Date.now(),
-      owner: user.current,
+      owner: window.sessionStorage.getItem('username'),
       status: 'incomplete'
     }
 
@@ -139,6 +141,11 @@ export default function Form(props) {
     }))
   }
 
+  /**
+   * Displays the account username in the item creation form.
+   * If user isn't logged in to an account, displays a message with links
+   * to login and signup pages
+   */
   function accountDisplay() {
     if (user.current === null)
       return (
@@ -175,6 +182,12 @@ export default function Form(props) {
             onInput={handleInput}
             className="border border-black bg-gray-200 rounded col-span-2">
           </input>
+          <label>Description:</label>
+          <textarea
+            name="description"
+            value={input.description}
+            onInput={handleInput}
+            className="border border-black bg-gray-100 col-span-2" />
         </div>
         <div className={status.style}>{status.text}</div>
         <button

@@ -4,7 +4,7 @@ import Database
 
 app = Flask(__name__)
 CORS(app, resources=r'/*', supports_credentials=True)
-db = Database.Database(keys=['id', 'owner', 'price', 'name', 'time', 'status'])
+db = Database.Database(keys=['id', 'owner', 'price', 'name', 'description', 'time', 'status'])
 users = Database.Database(keys=['id', 'name', 'username', 'password'], fname="users.csv")
 
 
@@ -40,7 +40,9 @@ def get_items():
 # A request to get one item, specified by its item id
 @app.route("/catalog/<item_id>", methods=["GET"])
 def get_item(item_id):
-    res = jsonify({"body": db.get_item(item_id)})
+    item = db.get_item(item_id)
+    print(item)
+    res = jsonify({"body": item})
     res.status_code = 200
     return res
 

@@ -40,26 +40,6 @@ export default function ItemListing(props) {
     })
   }
 
-  /**
-   * Formats the time.
-   * return: A string representation of the item's time.
-   */
-  function formatTime() {
-    const dateFormat = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false,
-      timeZone: "America/New_York"
-    }
-
-    const date = new Date(props.time)
-    return Intl.DateTimeFormat('en-US', dateFormat).format(date)
-  }
-
   function redirect() {
     window.location.href = "http://localhost:3000/catalog/" + props.id
   }
@@ -69,7 +49,10 @@ export default function ItemListing(props) {
       onClick={redirect}
       className="p-3 w-[200px] h-[270px] border border-black ml-4 flex-shrink-0
                  flex flex-col justify-between rounded shadow-lg cursor-pointer">
-      <p className="block text-2xl overflow-hidden text-ellipsis">{props.name}</p>
+      <div className="w-full">
+        <p className="block mb-4 text-2xl overflow-hidden text-ellipsis">{props.name}</p>
+        <p className="overflow-hidden text-ellipsis">{props.description}</p>
+      </div>
       <div className="w-full">
         <p className="block text-4xl">${props.price}</p>
         <button
