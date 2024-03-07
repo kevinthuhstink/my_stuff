@@ -19,7 +19,7 @@ export default function Page() {
                 Login
               </p>
             </a>
-            <a href="./login">
+            <a href="./catalog">
               <p className="border border-black bg-red-100 rounded text-center
                             p-3 w-[200px]">
                 See our items
