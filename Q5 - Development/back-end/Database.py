@@ -32,7 +32,6 @@ class Database:
             '''
         if not os.path.isfile(self.file):
             with open(self.file, 'w') as file:
-                self.gen_db_entries()
                 writer = csv.DictWriter(file, fieldnames=self.keys)
                 writer.writeheader()
                 return

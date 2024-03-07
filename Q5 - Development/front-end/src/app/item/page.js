@@ -7,6 +7,7 @@ import Form from './components/Form.js'
 
 export default function Page() {
 
+  //React state handler for Dropdown
   const [dropdown, setDropdown] = React.useState(false)
   const mainStyle = "absolute right-0 p-4 overflow-auto h-full "
     + (dropdown ? "w-[calc(100%-200px)]" : "w-full")

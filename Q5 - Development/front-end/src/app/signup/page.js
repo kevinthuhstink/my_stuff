@@ -101,12 +101,12 @@ export default function Page() {
         return
       }
       setSignupStatus("SUCCESS")
+      window.sessionStorage.setItem('userid', res.body.id)
+      window.sessionStorage.setItem('username', res.body.id)
+
       window.location.href = "http://localhost:3000/catalog/"
       return
-    }).catch(res => {
-      setSignupStatus("UNKNOWN_ERROR")
     })
-    setSignupStatus("UNKNOWN_ERROR")
   }
 
   return (
@@ -116,6 +116,7 @@ export default function Page() {
         <div className="w-full flex flex-col place-items-center">
           <form onSubmit={onSubmit} className="flex flex-col w-[600px] p-6">
             <div className="grid grid-cols-3 gap-3 text-l">
+
               <label>Your Name:</label>
               <input
                 type="text"
@@ -124,6 +125,7 @@ export default function Page() {
                 onInput={handleInput}
                 className="border border-black bg-gray-200 rounded col-span-2">
               </input>
+
               <label>Username:</label>
               <input
                 type="text"
@@ -132,6 +134,7 @@ export default function Page() {
                 onInput={handleInput}
                 className="border border-black bg-gray-200 rounded col-span-2">
               </input>
+
               <label>Password:</label>
               <input
                 type="text"
@@ -140,6 +143,7 @@ export default function Page() {
                 onInput={handleInput}
                 className="border border-black bg-gray-200 rounded col-span-2">
               </input>
+
             </div>
             <p className={status.style}>{status.text}</p>
             <button

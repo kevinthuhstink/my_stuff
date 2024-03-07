@@ -7,15 +7,14 @@ import Catalog from './components/Catalog.js'
 
 
 /**
- * Gets all catalog items from the server.
+ * Gets all catalog items from the server,
+ * and user information if there was a successful login.
  */
 async function getData() {
   const res = await fetch('http://localhost:5000/catalog', { method: 'GET' })
-
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
-
   return res.json()
 }
 

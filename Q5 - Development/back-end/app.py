@@ -60,6 +60,8 @@ def make_user():
     return res
 
 
+# A request to login to a preexisting user account
+# Sends user information back to the client
 @app.route("/login", methods=["GET"])
 def check_login():
     user = request.get_json()

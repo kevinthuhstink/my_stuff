@@ -112,12 +112,12 @@ export default function Page() {
         return
       }
       setLoginStatus("SUCCESS")
+      window.sessionStorage.setItem('userid', res.body.id)
+      window.sessionStorage.setItem('username', res.body.id)
+
       window.location.href = "http://localhost:3000/catalog/"
       return
-    }).catch(res => {
-      setLoginStatus("UNKNOWN_ERROR")
     })
-    setLoginStatus("UNKNOWN_ERROR")
   }
 
   return (
