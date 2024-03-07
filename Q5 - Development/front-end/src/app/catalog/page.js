@@ -11,7 +11,7 @@ import Catalog from './components/Catalog.js'
  * and user information if there was a successful login.
  */
 async function getData() {
-  const res = await fetch('http://localhost:5000/catalog')
+  const res = await fetch('http://localhost:5000/catalog', { cache: 'no-store' })
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
@@ -33,8 +33,6 @@ export default function Page() {
   }, [])
 
   const [dropdown, setDropdown] = React.useState(false)
-  const mainStyle = "p-4 overflow-auto h-full "
-    + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
   if (data.length === 0)
     return (
@@ -54,9 +52,9 @@ export default function Page() {
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
       <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        <section className="flex flex-row h-full w-full fixed">
-          <Catalog data={data} setData={setData} />
-        </section>
+          <section className="flex flex-row h-full w-full fixed">
+            <Catalog data={data} setData={setData} />
+          </section>
         <Dropdown showWhen={dropdown} />
       </main>
     </>

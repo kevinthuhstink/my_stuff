@@ -25,8 +25,6 @@ export default function Page(params) {
 
   //State handler for the dropdown menu
   const [dropdown, setDropdown] = React.useState(false)
-  const mainStyle = "p-4 overflow-auto h-full "
-    + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
   //Item removal success/failure message
   const [status, setStatus] = React.useState({

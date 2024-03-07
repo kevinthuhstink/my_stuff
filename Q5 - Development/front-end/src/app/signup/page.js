@@ -8,8 +8,6 @@ export default function Page() {
 
   //React state handler for Dropdown
   const [dropdown, setDropdown] = React.useState(false)
-  const mainStyle = "p-4 overflow-auto h-full "
-    + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
   //React state handlers for form fields
   const [input, setInput] = React.useState({

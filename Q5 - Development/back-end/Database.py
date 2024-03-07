@@ -102,6 +102,7 @@ class Database:
             '''
         entry['id'] = self.gen_id()
         self.data.append(entry)
+        print(self.data)
         with open(self.file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=self.keys)
             writer.writerow(entry)

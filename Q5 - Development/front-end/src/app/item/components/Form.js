@@ -112,8 +112,8 @@ export default function Form() {
     const formData = {
       ...input,
       time: Date.now(),
-      owner: username,
-      status: 'incomplete'
+      owner: username.current,
+      status: 'none'
     }
 
     const response = await fetch(fetchLink, {
@@ -161,7 +161,7 @@ export default function Form() {
         </p>
       )
 
-    return <p>Account username: {window.sessionStorage.getItem('username')}</p>
+    return <p>Account username: {username.current}</p>
   }
 
   return (

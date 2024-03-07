@@ -1,11 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import Database
+from Database import Database
 
 app = Flask(__name__)
 CORS(app, resources=r'/*', supports_credentials=True)
-db = Database.Database(keys=['id', 'owner', 'price', 'name', 'description', 'time', 'status'])
-users = Database.Database(keys=['id', 'name', 'username', 'password'], fname="users.csv")
+db = Database(keys=['id', 'owner', 'price', 'name', 'description', 'time', 'status'])
+users = Database(keys=['id', 'name', 'username', 'password'], fname="users.csv")
 
 
 @app.route("/heartbeat")
