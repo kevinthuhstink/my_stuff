@@ -14,11 +14,19 @@ export default function Dropdown(props) {
 
   const linkStyle = "mb-4 text-xl m-6"
 
-  var profileOptions = <></>
+  //Removes account information from the current browser session.
+  function logout() {
+    window.sessionStorage.removeItem('userid')
+    window.sessionStorage.removeItem('username')
+    window.location.href = "/"
+  }
+
+  var accountOptions = <></>
   if (user.current) {
-    profileOptions = (
+    accountOptions = (
       <>
         <a href="/user" className={linkStyle}>See my items</a>
+        <p className={linkStyle} onClick={logout}>Logout</p>
       </>
     )
   }
@@ -33,7 +41,7 @@ export default function Dropdown(props) {
       <a href="/login" className={linkStyle}>Login Page</a>
       <a href="/catalog" className={linkStyle}>Catalog</a>
       <a href="/item" className={linkStyle}>List item for sale</a>
-      {profileOptions}
+      {accountOptions}
     </div>
   )
 }
