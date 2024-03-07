@@ -13,10 +13,10 @@ export default function Page() {
             THE<br/>CATALOG.
           </h1>
           <div className="flex flex-row w-full justify-around my-12">
-            <a href="./login">
+            <a href="./signup">
               <p className="border border-black bg-red-100 rounded text-center
                             p-3 w-[200px]">
-                Login
+                Create account
               </p>
             </a>
             <a href="./catalog">

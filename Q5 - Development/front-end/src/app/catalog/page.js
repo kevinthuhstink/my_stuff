@@ -36,6 +36,20 @@ export default function Page() {
   const mainStyle = "p-4 overflow-auto h-full "
     + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
+  if (data.length === 0)
+    return (
+      <>
+        <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
+        <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
+          <p className="text-4xl p-8">
+            No items currently in the catalog.<br/>Be the first to list an item
+            <a href='/item' className="text-blue-600 underline"> here.</a>
+          </p>
+          <Dropdown showWhen={dropdown} />
+        </main>
+      </>
+    )
+
   return (
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
@@ -46,5 +60,5 @@ export default function Page() {
         <Dropdown showWhen={dropdown} />
       </main>
     </>
-  );
+  )
 }

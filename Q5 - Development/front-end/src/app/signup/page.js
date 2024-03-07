@@ -102,7 +102,7 @@ export default function Page() {
       }
       setSignupStatus("SUCCESS")
       window.sessionStorage.setItem('userid', res.body.id)
-      window.sessionStorage.setItem('username', res.body.id)
+      window.sessionStorage.setItem('username', res.body.username)
 
       window.location.href = "http://localhost:3000/catalog/"
       return
@@ -111,7 +111,7 @@ export default function Page() {
 
   return (
     <>
-      <Topbar title="Login Form" dropdown={dropdown} setDropdown={setDropdown} />
+      <Topbar title="Signup Form" dropdown={dropdown} setDropdown={setDropdown} />
       <main className="w-full flex flex-row h-[calc(100%-6rem)] fixed bottom-0">
         <div className="w-full flex flex-col place-items-center">
           <form onSubmit={onSubmit} className="flex flex-col w-[600px] p-6">

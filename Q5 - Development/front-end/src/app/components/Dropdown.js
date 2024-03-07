@@ -14,10 +14,11 @@ export default function Dropdown(props) {
   if (!props.showWhen)
     return <></>
   return (
-    <div className="bg-red-100 h-full p-4 flex flex-col float-right
-                    md:w-[20%] md:static
-                    sm:fixed sm:w-full">
+    <div className="bg-red-100 h-full p-4 flex flex-col float-right overflow-y-auto
+                    md:w-[20%] md:static sm:absolute sm:w-full">
       <a href="/" className="mb-4 text-xl m-6">Home Page</a>
+      <a href="/signup" className="mb-4 text-xl m-6">Signup Page</a>
+      <a href="/login" className="mb-4 text-xl m-6">Login Page</a>
       <a href="/catalog" className="mb-4 text-xl m-6">Catalog</a>
       <a href="/item" className="text-xl m-6">List item for sale</a>
     </div>

@@ -113,7 +113,7 @@ export default function Page() {
       }
       setLoginStatus("SUCCESS")
       window.sessionStorage.setItem('userid', res.body.id)
-      window.sessionStorage.setItem('username', res.body.id)
+      window.sessionStorage.setItem('username', res.body.username)
 
       window.location.href = "http://localhost:3000/catalog/"
       return
