@@ -94,9 +94,9 @@ export default function Page() {
       }
     }
 
-    const fetchLink = 'http://localhost:5000/signup'
+    const fetchLink = 'http://localhost:5000/login'
     const response = await fetch(fetchLink, {
-      method: 'POST',
+      method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(input)
     })

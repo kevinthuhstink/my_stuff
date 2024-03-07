@@ -52,7 +52,7 @@ def make_user():
     user = request.get_json()
     username = user['username']
 
-    if users.match_values([('username', username)]):
+    if users.match_values({'username', username}):
         return jsonify({"body": None}), 200
 
     res = jsonify({"body": users.add(user)})
@@ -62,7 +62,7 @@ def make_user():
 
 # A request to login to a preexisting user account
 # Sends user information back to the client
-@app.route("/login", methods=["GET"])
+@app.route("/login", methods=["PUT"])
 def check_login():
     user = request.get_json()
     res = jsonify({"body": users.match_values(user)})

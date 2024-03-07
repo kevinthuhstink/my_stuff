@@ -169,7 +169,8 @@ class Database:
                     '''
         for entry in self.data:
             entry_found = True
-            for key, value in values:
+            for key in values.keys():
+                value = values[key]
                 if key not in entry.keys() or value != entry[key]:
                     entry_found = False
                     break
