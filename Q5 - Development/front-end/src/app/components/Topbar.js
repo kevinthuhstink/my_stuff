@@ -1,6 +1,5 @@
 import Image from 'next/image'
-import MenuHide from './MenuHide.js'
-import MenuShow from './MenuShow.js'
+import menuIcon from './menu.png'
 
 /**
  * props
@@ -11,8 +10,6 @@ import MenuShow from './MenuShow.js'
 export default function Topbar(props) {
 
   const toggleDropdown = () => props.setDropdown(prevDropdown => !prevDropdown)
-  const menuIcon = props.dropdown ?
-    <MenuHide onClick={toggleDropdown} /> : <MenuShow onClick={toggleDropdown} />
   const menuAlt = props.dropdown ? "HIDE" : "SHOW"
 
   return (

@@ -47,7 +47,7 @@ export default function Form() {
         return
       }
 
-      var errorMessage = "Unknown erorr occurred"
+      var errorMessage = "Unknown error occurred"
       switch (currStatus) {
         case "EMPTY_FIELDS":
           errorMessage = "Form fields must not be empty"
