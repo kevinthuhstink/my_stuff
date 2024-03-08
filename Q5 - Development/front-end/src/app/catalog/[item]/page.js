@@ -21,6 +21,7 @@ async function getItem(id) {
   return res.json()
 }
 
+
 export default function Page(params) {
 
   //State handler for dropdown menu
@@ -74,73 +75,63 @@ export default function Page(params) {
   }, [params.params.item])
 
 
-  /**
-   * Sets any success/failure messages if there are any errors
-   * with user input
-   */
+  //Displays a success/error message.
   function setRequestStatus(currStatus) {
-      switch (currStatus) {
-        case "SUCCESS":
-          setStatus(prevStatus => ({
-            text: "Removal successful",
-            style: "text-lime-600",
-          }))
-          break
+    if (currStatus === "REMOVE_SUCCESS") {
+      setStatus(prevStatus => ({
+        text: "Removal successful",
+        style: "text-lime-600",
+      }))
+      return
+    }
 
-        case "SALE_SUCCESS":
-          setStatus(prevStatus => ({
-            text: "Price update successful",
-            style: "text-lime-600",
-          }))
-          break
+    if (currStatus === "SALE_SUCCESS") {
+      setStatus(prevStatus => ({
+        text: "Price update successful",
+        style: "text-lime-600",
+      }))
+      return
+    }
 
-        case "FETCH_FAIL":
-          setStatus(prevStatus => ({
-            text: "Failed to send request to server, come back later",
-            style: "text-red-500",
-          }))
-          break
+    var errorMessage = "Unknown error occurred"
+    switch (currStatus) {
 
-        case "REMOVE_FAIL":
-          setStatus(prevStatus => ({
-            text: "Server error during item removal",
-            style: "text-red-500",
-          }))
-          break
+      case "EMPTY_FIELDS":
+        errorMessage = "Form fields must not be empty"
+        break
 
-        case "PRICE_INVALID":
-          setStatus(prevStatus => ({
-            text: "New price must be a positive integer less than current price",
-            style: "text-red-500",
-          }))
+      case "FETCH_FAIL":
+        errorMessage = "Failed to fetch data from server, come back later"
+        break
 
-        case "PRICE_FAIL":
-          setStatus(prevStatus => ({
-            text: "New price must be lower than previous price",
-            style: "text-red-500",
-          }))
-          break
+      case "REMOVE_FAIL":
+        errorMessage = "Server error during item removal"
+        break
 
-        case "NO_USER":
-          setStatus(prevStatus => ({
-            text:
-              <p>
-                You need to be logged in to purchase items. Sign up
-                  <a href="/signup" className="underline text-blue-600"> here </a>
-                or log in
-                  <a href="/login" className="underline text-blue-600"> here </a>
-                if you have an account.
-              </p>,
-            style: "text-red-500",
-          }))
-          break
+      case "PRICE_INVALID":
+        errorMessage = "New price must be a positive integer less than current price"
+        break
 
-        default:
-          setStatus(prevStatus => ({
-            text: "Unknown error occurred",
-            style: "text-red-500",
-          }))
-      }
+      case "PRICE_FAIL":
+        errorMessage = "New price must be lower than previous price"
+        break
+
+      case "NO_USER":
+        errorMessage = ( 
+          <p>
+            You need to be logged in to purchase items. Sign up
+            <a href="/signup" className="underline text-blue-600"> here </a>
+            or log in
+            <a href="/login" className="underline text-blue-600"> here </a>
+            if you have an account.
+          </p>
+        )
+    }
+
+    setStatus(prevStatus => ({
+      text: errorMessage,
+      style: "text-red-500",
+    }))
   }
 
   //React state updater for form (sale) field
@@ -176,7 +167,7 @@ export default function Page(params) {
         setRequestStatus("REMOVE_FAIL")
         return
       }
-      setRequestStatus("SUCCESS")
+      setRequestStatus("REMOVE_SUCCESS")
       window.location.href = "/catalog"
     })
   }
@@ -191,12 +182,9 @@ export default function Page(params) {
     event.preventDefault()
 
     //Checks if the new price has any non-numeric characters.
-    function priceIsNumber() {
-      for (const char of data.sale)
-        if (!'0123456789'.includes(char))
-          return false
-      return true
-    }
+    const priceIsNumber = () => data.sale.split('')
+      .reduce((bool, char) => bool && '0123456789'.includes(char))
+
     if (!priceIsNumber() || parseInt(data.sale) >= data.price) {
       setRequestStatus("PRICE_INVALID")
       return

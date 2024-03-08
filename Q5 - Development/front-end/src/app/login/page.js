@@ -36,53 +36,43 @@ export default function Page() {
    */
   async function onSubmit() {
 
-    /**
-     * Function to set the status.text and style fields
-     * that display success/errors with the form submission
-     */
-    function setLoginStatus(curr_status) {
-      switch (curr_status) {
-        case "SUCCESS":
-          setStatus(prevStatus => ({
-            text: "Successful login",
-            style: "text-lime-600",
-          }))
-          break
+    //Displays a success/error message.
+    function setRequestStatus(currStatus) {
+
+      if (currStatus === "SUCCESS") {
+        setStatus(prevStatus => ({
+          text: "Successful login",
+          style: "text-lime-600",
+        }))
+        return
+      }
+
+      var errorMessage = "Unknown error occurred"
+      switch (currStatus) {
 
         case "EMPTY_FIELDS":
-          setStatus(prevStatus => ({
-            text: "Form fields must not be empty",
-            style: "text-red-500",
-          }))
+          errorMessage = "Form fields must not be empty"
           break
 
         case "FETCH_FAIL":
-          setStatus(prevStatus => ({
-            text: "Failed to fetch data from server, come back later",
-            style: "text-red-500",
-          }))
+          errorMessage = "Failed to fetch data from server, come back later"
           break
 
         case "LOGIN_FAIL":
-          setStatus(prevStatus => ({
-            text: "Invalid login credentials, please try again",
-            style: "text-red-500",
-          }))
-          break
-
-        default:
-          setStatus(prevStatus => ({
-            text: "Unknown error occurred",
-            style: "text-red-500",
-          }))
+          errorMessage = "Invalid login credentials, please try again"
       }
+
+      setStatus(prevStatus => ({
+        text: errorMessage,
+        style: "text-red-500",
+      }))
     }
 
     event.preventDefault()
 
     for (var field in input) {
       if (input[field].trim().length < 1) {
-        setLoginStatus("EMPTY_FIELDS")
+        setRequestStatus("EMPTY_FIELDS")
         return
       }
     }
@@ -96,26 +86,26 @@ export default function Page() {
         body: JSON.stringify(input)
       })
     } catch(exception) {
-      setLoginStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     if (!response.ok) {
-      setLoginStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     response.json().then(res => {
       if (!res.body) {
-        setLoginStatus("LOGIN_FAIL")
+        setRequestStatus("LOGIN_FAIL")
         return
       }
-      setLoginStatus("SUCCESS")
+
+      setRequestStatus("SUCCESS")
       window.sessionStorage.setItem('userid', res.body.id)
       window.sessionStorage.setItem('username', res.body.username)
 
       window.location.href = "http://localhost:3000/catalog/"
-      return
     })
   }
 

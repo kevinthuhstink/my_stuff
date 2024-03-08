@@ -37,46 +37,41 @@ export default function Page() {
    */
   async function onSubmit() {
 
-    /**
-     * Function to set the signupStatus and style fields
-     * that display success/errors with the form submission
-     */
-    function setSignupStatus(curr_status) {
-      switch (curr_status) {
-        case "SUCCESS":
-          setStatus(prevStatus => ({
-            text: "Successful login",
-            style: "text-lime-600",
-          }))
-          break
+    //Displays a success/error message.
+    function setRequestStatus(currStatus) {
+      if (currStatus === "SUCCESS") {
+        setStatus(prevStatus => ({
+          text: "Successful login",
+          style: "text-lime-600",
+        }))
+        return
+      }
+
+      var errorMessage = "Unknown error occurred"
+      switch (currStatus) {
 
         case "EMPTY_FIELDS":
-          setStatus(prevStatus => ({
-            text: "Form fields must not be empty",
-            style: "text-red-500",
-          }))
+          errorMessage = "Form fields must not be empty"
           break
 
         case "FETCH_FAIL":
-          setStatus(prevStatus => ({
-            text: "Failed to fetch data from server, come back later",
-            style: "text-red-500",
-          }))
+          errorMessage = "Failed to send data to server, come back later"
           break
 
         case "SIGNUP_FAIL":
-          setStatus(prevStatus => ({
-            text: "Username already in use, please try a different username",
-            style: "text-red-500",
-          }))
-          break
+          errorMessage = "Username already in use, please try a different username"
       }
+
+      setStatus(prevStatus => ({
+        text: errorMessage,
+        style: "text-red-500",
+      }))
     }
 
     event.preventDefault()
     for (var field in input) {
       if (input[field].trim().length < 1) {
-        setSignupStatus("EMPTY_FIELDS")
+        setRequestStatus("EMPTY_FIELDS")
         return
       }
     }
@@ -95,16 +90,17 @@ export default function Page() {
     }
 
     if (!response.ok) {
-        setSignupStatus("FETCH_FAIL")
+        setRequestStatus("FETCH_FAIL")
         return
     }
 
     response.json().then(res => {
       if (!res.body) {
-        setSignupStatus("SIGNUP_FAIL")
+        setRequestStatus("SIGNUP_FAIL")
         return
       }
-      setSignupStatus("SUCCESS")
+
+      setRequestStatus("SUCCESS")
       window.sessionStorage.setItem('userid', res.body.id)
       window.sessionStorage.setItem('username', res.body.username)
 

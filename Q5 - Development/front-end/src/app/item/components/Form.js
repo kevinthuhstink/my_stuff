@@ -37,74 +37,67 @@ export default function Form() {
   async function onSubmit(event) {
     event.preventDefault()
 
-    function setFormStatus(currStatus) {
-      switch (currStatus) {
-        case "SUCCESS":
-          setStatus(prevStatus => ({
-            text: "Item listing success",
-            style: "text-lime-600",
-          }))
-          break
+    //Displays a success/error message.
+    function setRequestStatus(currStatus) {
+      if (currStatus === "SUCCESS") {
+        setStatus(prevStatus => ({
+          text: "Item listing success",
+          style: "text-lime-600",
+        }))
+        return
+      }
 
+      var errorMessage = "Unknown erorr occurred"
+      switch (currStatus) {
         case "EMPTY_FIELDS":
-          setStatus(prevStatus => ({
-            text: "Form fields must not be empty",
-            style: "text-red-500",
-          }))
+          errorMessage = "Form fields must not be empty"
           break
 
         case "PRICE_NAN":
-          setStatus(prevStatus => ({
-            text: "Price must be a positive integer",
-            style: "text-red-500",
-          }))
+          errorMessage = "Price must be a positive integer"
           break
 
         case "FETCH_FAIL":
-          setStatus(prevStatus => ({
-            text: "Failed to send data to server, come back later",
-            style: "text-red-500",
-          }))
+          errorMessage = "Failed to send data to server, come back later"
           break
 
         case "NO_USER":
-          setStatus(prevStatus => ({
-            text:
-              <p>
-                You need to be logged in to list items. Sign up
-                  <a href="/signup" className="underline text-blue-600"> here </a>
-                or log in
-                  <a href="/login" className="underline text-blue-600"> here </a>
-                if you have an account.
-              </p>,
-            style: "text-red-500",
-          }))
-          break
+          errorMessage = (
+            <p>
+              You need to be logged in to list items. Sign up
+              <a href="/signup" className="underline text-blue-600"> here </a>
+              or log in
+              <a href="/login" className="underline text-blue-600"> here </a>
+              if you have an account.
+            </p>
+          )
       }
+
+      setStatus(prevStatus => ({
+        text: errorMessage,
+        style: "text-red-500",
+      }))
     }
 
     if (user.current === null) {
-      setFormStatus("NO_USER")
+      setRequestStatus("NO_USER")
       return
     }
 
     for (var field in input) {
-      if (input[field].trim().length < 1) {
-        setFormStatus("EMPTY_FIELDS")
+      if (input[field].trim().length === 0) {
+        setRequestStatus("EMPTY_FIELDS")
         return
       }
     }
 
 
-    //Checks if all chars in the price input field is a number.
-    function priceIsNumber() {
-      for (const char of input.price)
-        if (!'0123456789'.includes(char))
-          return false
-      return true
-    }
+    //Checks if the new price has any non-numeric characters.
+    const priceIsNumber = () => input.price.split('')
+      .reduce((bool, char) => bool && '0123456789'.includes(char))
+
     if (!priceIsNumber()) {
-      setFormStatus("PRICE_NAN")
+      setRequestStatus("PRICE_NAN")
       return
     }
 
@@ -124,17 +117,17 @@ export default function Form() {
         body: JSON.stringify(formData)
       })
     } catch(exception) {
-      setFormStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     if (!response.ok) {
-      setFormStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     response.json().then(res => {
-      setFormStatus("SUCCESS")
+      setRequestStatus("SUCCESS")
       window.location.href = "http://localhost:3000/catalog/"
       return
     })
