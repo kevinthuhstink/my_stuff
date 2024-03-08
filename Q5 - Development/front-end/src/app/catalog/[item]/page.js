@@ -87,6 +87,13 @@ export default function Page(params) {
           }))
           break
 
+        case "SALE_SUCCESS":
+          setStatus(prevStatus => ({
+            text: "Price update successful",
+            style: "text-lime-600",
+          }))
+          break
+
         case "FETCH_FAIL":
           setStatus(prevStatus => ({
             text: "Failed to send request to server, come back later",
@@ -103,13 +110,13 @@ export default function Page(params) {
 
         case "PRICE_INVALID":
           setStatus(prevStatus => ({
-            text: "New price must be a number less than current price",
+            text: "New price must be a positive integer less than current price",
             style: "text-red-500",
           }))
 
         case "PRICE_FAIL":
           setStatus(prevStatus => ({
-            text: "Server error while changing item price",
+            text: "New price must be lower than previous price",
             style: "text-red-500",
           }))
           break
@@ -134,6 +141,15 @@ export default function Page(params) {
             style: "text-red-500",
           }))
       }
+  }
+
+  //React state updater for form (sale) field
+  function handleInput(event) {
+    const { name, value } = event.target
+    setData(prevData => ({
+      ...prevData,
+      [name]: value
+    }))
   }
 
   /**
@@ -199,7 +215,8 @@ export default function Page(params) {
     }
 
     response.json().then(res => {
-      setRequestStatus("SUCCESS")
+      setRequestStatus("SALE_SUCCESS")
+      console.log(res.body.price)
       setData(prevData => ({
         ...res.body,
         sale: ""
@@ -223,9 +240,10 @@ export default function Page(params) {
           <label className="mr-4">Put on sale</label>
           <input
             type="text"
-            name="newPrice"
+            name="sale"
             placeholder="New price"
             value={data.sale}
+            onInput={handleInput}
             className="bg-gray-100 rounded mr-4 w-[120px]"/>
           <button className="bg-red-300 rounded border border-black p-2">Submit</button>
         </form>

@@ -52,7 +52,9 @@ def set_item():
     entry = request.get_json()
     print(entry)
 
-    new_item = db.set_fields(entry['id'], {'price': entry['sale']})
+    new_item = db.set_fields(
+            entry['id'],
+            {'price': entry['sale'], 'status': 'sale'})
     res = jsonify({"body": new_item})
     res.status_code = 200
     return res
