@@ -21,7 +21,7 @@ export default function Catalog(props) {
         header: "Recent Additions",
         filter: item => true,
         sort: (a, b) => b.time - a.time,
-        capacity: 8,
+        capacity: 5,
       },
       {
         id: 1,

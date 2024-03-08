@@ -33,7 +33,9 @@ export default function Page(params) {
     style: "",
   })
 
-  const [data, setData] = React.useState({})
+  const [data, setData] = React.useState({
+    sale: ""
+  })
   const user = React.useRef()
   const username = React.useRef()
 
@@ -68,7 +70,6 @@ export default function Page(params) {
       setData({
         ...res.body,
         time: formatTime(),
-        sale: ""
       })
 
     })

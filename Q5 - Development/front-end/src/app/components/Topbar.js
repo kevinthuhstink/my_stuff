@@ -15,7 +15,7 @@ export default function Topbar(props) {
   return (
     <div className="fixed top-0 w-full h-24 p-4 flex justify-between items-center bg-red-300">
       <h1 className="text-4xl ml-4">{props.title}</h1>
-      <Image {...menuIcon} width={64} height={64} onClick={toggleDropdown} alt={menuAlt} className="cursor-pointer" />
+      <Image src={menuIcon.src} width={64} height={64} onClick={toggleDropdown} alt={menuAlt} className="cursor-pointer" />
     </div>
   )
 }
