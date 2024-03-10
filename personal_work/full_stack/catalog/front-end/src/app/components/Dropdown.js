@@ -1,6 +1,28 @@
 import React from 'react'
 
 /**
+ * Fills the database with random items.
+ * Only executable with the admin (root) account
+ */
+async function fillDB() {
+  var response
+  const fetchLink = 'http://localhost:5000/filldb'
+  try {
+    response = await fetch(fetchLink, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: null
+    })
+  } catch(exception) {
+    setRequestStatus("FETCH_FAIL")
+    return
+  }
+
+  if (!response.ok)
+    console.log("server error: db fill failed")
+}
+
+/**
  * props
  *   showWhen: determines when the component should be displayed.
  */
@@ -8,8 +30,10 @@ export default function Dropdown(props) {
 
   //Grab user id
   const user = React.useRef()
+  const username = React.useRef()
   React.useEffect(() => {
     user.current = window.sessionStorage.getItem('userid')
+    user.current = window.sessionStorage.getItem('username')
   }, [])
 
   const linkStyle = "mb-4 text-xl m-6"
@@ -21,8 +45,17 @@ export default function Dropdown(props) {
     window.location.href = "/"
   }
 
-  var accountOptions = <></>
-  if (user.current) {
+
+  var accountOptions
+  if (username.current === "root")
+    accountOptions = (
+      <>
+        <a href="/user" className={linkStyle}>See my items</a>
+        <p className={linkStyle + " cursor-pointer"} onClick={logout}>Logout</p>
+        <p className={linkStyle + " cursor-pointer"} onClick={fillDB}>fill db</p>
+      </>
+    )
+  else if (user.current) {
     accountOptions = (
       <>
         <a href="/user" className={linkStyle}>See my items</a>
@@ -30,6 +63,8 @@ export default function Dropdown(props) {
       </>
     )
   }
+  else
+    accountOptions = <></>
 
   if (!props.showWhen)
     return <></>

@@ -104,7 +104,6 @@ export default function Form() {
     const fetchLink = 'http://localhost:5000/catalog/item'
     const formData = {
       ...input,
-      time: Date.now(),
       owner: username.current,
       status: 'none'
     }
