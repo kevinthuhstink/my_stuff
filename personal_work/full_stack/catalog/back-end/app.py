@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from time import time
 from Database import Database
 
 app = Flask(__name__)
@@ -81,6 +82,40 @@ def make_user():
 def check_login():
     user = request.get_json()
     res = jsonify({"body": users.match_values(user)})
+    res.status_code = 200
+    return res
+
+
+# Fills the database with random information
+# Only callable with the root user account
+@app.route("/filldb", methods=["PUT"])
+def fill_db():
+    def gen_db_entries(entries=8):
+        ''' Generates some random data entries to mess around with.
+
+            entries: The number of entries to generate.
+            '''
+
+        def gen_rand_str(len_bounds=(8,16)):
+            ''' Creates a random string of lowercase letters with random length.
+                len_bounds: The min/max length of generated strings.
+                '''
+            rand_str = ""
+            for i in range(randint(len_bounds[0], len_bounds[1])):
+                rand_str += chr(randint(97, 122))
+            return rand_str
+
+        for i in range(entries):
+            entry = {
+                    "owner": "root"
+                    "price": randint(1, 500)
+                    "name": gen_rand_str()
+                    "description": "root randomly generated catalog item"
+                    "status": ""
+            }
+            db.add(entry)
+
+    res = jsonify({"body": None})
     res.status_code = 200
     return res
 

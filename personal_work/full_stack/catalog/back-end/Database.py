@@ -63,28 +63,6 @@ class Database:
         return
 
 
-    def gen_db_entries(self, entries=8):
-        ''' Generates some random data entries to mess around with.
-
-            entries: The number of entries to generate.
-            '''
-
-        def gen_rand_str(len_bounds=(8,16)):
-            ''' Creates a random string of lowercase letters with random length.
-                len_bounds: The min/max length of generated strings.
-                '''
-            rand_str = ""
-            for i in range(randint(len_bounds[0], len_bounds[1])):
-                rand_str += chr(randint(97, 122))
-            return rand_str
-
-        for i in range(entries):
-            entry = {}
-            for field in self.keys:
-                entry[field] = gen_rand_str()
-            self.data.append(entry)
-
-
     def gen_id(self):
         ''' Function that generates ids for unique data entries.
             The first entry is given id 0, the second gets id 1, etc.
@@ -101,8 +79,8 @@ class Database:
             return: The newly created database entry.
             '''
         entry['id'] = self.gen_id()
+        entry['time'] = time()
         self.data.append(entry)
-        print(self.data)
         with open(self.file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=self.keys)
             writer.writerow(entry)
