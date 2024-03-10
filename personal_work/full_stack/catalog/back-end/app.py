@@ -51,7 +51,6 @@ def get_item(item_id):
 @app.route("/item/", methods=["PUT"])
 def set_item():
     entry = request.get_json()
-    print(entry)
 
     new_item = db.set_fields(
             entry['id'],
@@ -107,10 +106,10 @@ def fill_db():
 
         for i in range(entries):
             entry = {
-                    "owner": "root"
-                    "price": randint(1, 500)
-                    "name": gen_rand_str()
-                    "description": "root randomly generated catalog item"
+                    "owner": "root",
+                    "price": randint(1, 500),
+                    "name": gen_rand_str(),
+                    "description": "root randomly generated catalog item",
                     "status": ""
             }
             db.add(entry)

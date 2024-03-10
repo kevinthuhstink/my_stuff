@@ -118,7 +118,7 @@ export default function Page(params) {
         break
 
       case "NO_USER":
-        errorMessage = ( 
+        errorMessage = (
           <p>
             You need to be logged in to purchase items. Sign up
             <a href="/signup" className="underline text-blue-600"> here </a>
@@ -253,26 +253,24 @@ export default function Page(params) {
   return (
     <>
       <Topbar title={data.name} dropdown={dropdown} setDropdown={setDropdown} />
-      <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        <section className="flex flex-col h-full w-full justify-between p-8 overflow-y-auto">
+      <section className="flex flex-col h-full w-full justify-between p-8 overflow-y-auto">
 
-          <div className="mb-12">
-            <p className="mb-6 text-2xl">Seller: {data.owner}</p>
-            <p>Description:<br/>{data.description}</p>
+        <div className="mb-12">
+          <p className="mb-6 text-2xl">Seller: {data.owner}</p>
+          <p>Description:<br/>{data.description}</p>
+        </div>
+
+        <div className="md:w-full sm:w-[350px]">
+          <p className={status.style}>{status.text}</p>
+          <div className="flex flex-col md:flex-row">
+            <p className="text-6xl mr-6">${data.price}</p>
+            {itemOptions}
           </div>
+          <p className="mt-4">Time created: {data.time}</p>
+        </div>
 
-          <div className="md:w-full sm:w-[350px]">
-            <p className={status.style}>{status.text}</p>
-            <div className="flex flex-col md:flex-row">
-              <p className="text-6xl mr-6">${data.price}</p>
-              {itemOptions}
-            </div>
-            <p className="mt-4">Time created: {data.time}</p>
-          </div>
-
-        </section>
-        <Dropdown showWhen={dropdown} />
-      </main>
+      </section>
+      <Dropdown showWhen={dropdown} />
     </>
   )
 }

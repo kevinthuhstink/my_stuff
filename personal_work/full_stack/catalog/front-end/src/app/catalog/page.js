@@ -69,10 +69,8 @@ export default function Page() {
   return (
     <>
       <Topbar title="Catalog" dropdown={dropdown} setDropdown={setDropdown} />
-      <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
-        {main}
-        <Dropdown showWhen={dropdown} />
-      </main>
+      {main}
+      <Dropdown showWhen={dropdown} />
     </>
   )
 }
