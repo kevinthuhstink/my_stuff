@@ -33,10 +33,8 @@ export default function Dropdown(props) {
   const username = React.useRef()
   React.useEffect(() => {
     user.current = window.sessionStorage.getItem('userid')
-    user.current = window.sessionStorage.getItem('username')
+    username.current = window.sessionStorage.getItem('username')
   }, [])
-
-  const linkStyle = "mb-4 text-xl m-6"
 
   //Removes account information from the current browser session.
   function logout() {
@@ -47,6 +45,7 @@ export default function Dropdown(props) {
 
 
   var accountOptions
+  const linkStyle = "mb-4 text-xl m-6"
   if (username.current === "root")
     accountOptions = (
       <>
@@ -55,6 +54,7 @@ export default function Dropdown(props) {
         <p className={linkStyle + " cursor-pointer"} onClick={fillDB}>fill db</p>
       </>
     )
+
   else if (user.current) {
     accountOptions = (
       <>
@@ -63,6 +63,7 @@ export default function Dropdown(props) {
       </>
     )
   }
+
   else
     accountOptions = <></>
 

@@ -105,7 +105,7 @@ export default function Form() {
     const formData = {
       ...input,
       owner: username.current,
-      status: 'none'
+      status: ''
     }
 
     var response

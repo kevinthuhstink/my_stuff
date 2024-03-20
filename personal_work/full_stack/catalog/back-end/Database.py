@@ -79,8 +79,10 @@ class Database:
             return: The newly created database entry.
             '''
         entry['id'] = self.gen_id()
-        entry['time'] = time()
+        if 'time' in self.keys:
+            entry['time'] = time()
         self.data.append(entry)
+
         with open(self.file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=self.keys)
             writer.writerow(entry)

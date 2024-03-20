@@ -85,13 +85,13 @@ export default function Page() {
         body: JSON.stringify(input)
       })
     } catch(exception) {
-      setLoginStatus("FETCH_FAIL")
+      setRequestStatus("FETCH_FAIL")
       return
     }
 
     if (!response.ok) {
-        setRequestStatus("FETCH_FAIL")
-        return
+      setRequestStatus("FETCH_FAIL")
+      return
     }
 
     response.json().then(res => {
