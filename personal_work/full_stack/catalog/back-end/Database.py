@@ -79,8 +79,8 @@ class Database:
             return: The newly created database entry.
             '''
         entry['id'] = self.gen_id()
-        if 'time' in self.keys:
-            entry['time'] = time()
+        if 'time' not in entry.keys():
+            entry['time'] = int(time()) * 1000
         self.data.append(entry)
 
         with open(self.file, 'a') as file:
