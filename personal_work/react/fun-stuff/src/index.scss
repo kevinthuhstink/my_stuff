@@ -1,6 +1,6 @@
 $black-700: #313638;
 $gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
-$gradient-background: linear-gradient(280deg, lavender, lavenderBlush);
+$gradient-light: linear-gradient(280deg, lavender, lavenderBlush);
 
 * {
   color: $black-700;
@@ -9,7 +9,7 @@ $gradient-background: linear-gradient(280deg, lavender, lavenderBlush);
 }
 
 body {
-  background: $gradient-background;
+  background: $gradient-light;
 }
 
 #front-page-main {
