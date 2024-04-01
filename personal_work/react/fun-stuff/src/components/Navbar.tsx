@@ -1,5 +1,5 @@
 import React from 'react';
-import data from '../data.js';
+//import data from '../data.js';
 import { NavbarDropdown } from './NavbarDropdown'
 
 export function Navbar(props) {
@@ -8,6 +8,7 @@ export function Navbar(props) {
   const cycleIcon = () => setIcon(prevIcon => prevIcon + 1);
   const activeIcon = headerIcons[icon % headerIcons.length]._src
 
+    /*
   const headerStyle = {
     background: props.taro ?
       data.colors.header.taro :
@@ -24,6 +25,7 @@ export function Navbar(props) {
       data.colors.main.default,
   }
 
+     */
   const [dropdown, setDropdown] = React.useState(false);
   const toggleDropdown = () => setDropdown(prevDropdown => !prevDropdown);
 
