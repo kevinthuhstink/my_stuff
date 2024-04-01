@@ -2,10 +2,12 @@ import { PageLayout } from '@/layout/PageLayout'
 
 export function TodoList() {
   return (
-    <PageLayout title="Todo List">
+    <PageLayout
+      title="Todo List"
+      navDescription="Main 1: Static Page">
       <div>
-        <h1 className="todolist--title">TODO:</h1>
-        <ol className="todolist">
+        <h1>TODO:</h1>
+        <ol>
           <li>React JS</li>
           <li>TailwindCSS</li>
           <li>NodeJS</li>
