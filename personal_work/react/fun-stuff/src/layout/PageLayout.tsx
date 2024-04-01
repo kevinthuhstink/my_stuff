@@ -6,7 +6,7 @@ export type PageLayoutProps = {
 
 export function PageLayout({ bare = false }: PageLayoutProps) {
   return (
-    <div>
+    <div className="base">
       { !bare &&
         <>
           <Navbar />

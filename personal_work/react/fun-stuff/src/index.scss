@@ -1,0 +1,16 @@
+$gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
+$gradient-background: linear-gradient(280deg, lavender, lavenderBlush);
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  background: $gradient-background;
+}
