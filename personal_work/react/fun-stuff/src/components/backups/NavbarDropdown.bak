@@ -1,6 +1,7 @@
 type NavbarDropdownProps = {
   active: boolean;
   colors: object;
+  selectMainVersion: () => React.ReactNode;
 }
 
 export function NavbarDropdown(props: NavbarDropdownProps) {

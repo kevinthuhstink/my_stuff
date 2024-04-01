@@ -1,14 +1,19 @@
 import React from 'react';
-//import data from '../data.js';
+import { data } from '@/lib/data';
 import { NavbarDropdown } from './NavbarDropdown'
 
-export function Navbar(props) {
+type NavbarProps = {
+  title: string,
+  taro: boolean,
+  selectMainVersion: () => React.ReactNode;
+}
+
+export function Navbar(props: NavbarProps) {
   const headerIcons = props.title ? data.icons.stinky : data.icons.default;
   const [icon, setIcon] = React.useState(0);
   const cycleIcon = () => setIcon(prevIcon => prevIcon + 1);
   const activeIcon = headerIcons[icon % headerIcons.length]._src
 
-    /*
   const headerStyle = {
     background: props.taro ?
       data.colors.header.taro :
@@ -25,7 +30,6 @@ export function Navbar(props) {
       data.colors.main.default,
   }
 
-     */
   const [dropdown, setDropdown] = React.useState(false);
   const toggleDropdown = () => setDropdown(prevDropdown => !prevDropdown);
 
