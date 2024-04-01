@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { data } from '@/lib/data'
 import './Navbar.scss'
 
 export type NavbarProps = {
@@ -5,9 +7,19 @@ export type NavbarProps = {
 }
 
 export function Navbar({ title }: NavbarProps) {
+  const { icons } = data;
+  const [iconNum, setIconNum] = useState(0);
+
   return (
     <nav>
-      {title}
+      <section id="nav-left">
+        <img
+          id="nav-icon"
+          src={icons.stinky[iconNum % 6]}
+          onClick={() => setIconNum(iconNum + 1)}
+          alt="" />
+        {title}
+      </section>
     </nav>
   )
 }

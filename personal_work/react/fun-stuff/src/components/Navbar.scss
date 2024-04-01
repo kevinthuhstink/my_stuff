@@ -4,6 +4,29 @@ nav {
   top: 0;
   position: fixed;
   width: 100vw;
+
+  padding: 18px;
+  font-size: 2.2em;
   background: $gradient-accent;
+
+  display: flex;
+  flex-direction: row;
+  justify-items: space-between;
+}
+
+nav * {
   color: lavender;
+}
+
+nav > section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#nav-icon {
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+  margin-right: 20px;
 }

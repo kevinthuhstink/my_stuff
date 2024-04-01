@@ -2,7 +2,7 @@ import { PageLayout } from '@/layout/PageLayout'
 
 export function TodoList() {
   return (
-    <PageLayout title="Main 1: Todo List">
+    <PageLayout title="Todo List">
       <div>
         <h1 className="todolist--title">TODO:</h1>
         <ol className="todolist">
