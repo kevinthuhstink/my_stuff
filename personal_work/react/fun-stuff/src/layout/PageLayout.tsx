@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/Navbar'
 import { Sidebar } from '@/components/Sidebar'
+import { Resizer } from '@/components/Resizer'
 
 export type PageLayoutProps = {
   bare?: boolean,
@@ -25,6 +26,7 @@ export function PageLayout({
             <main id="main">
               {children}
             </main>
+            <Resizer />
             <Sidebar title={sidebarTitle} description={description} />
           </div>
         </> :

@@ -1,4 +1,4 @@
-$black-700: #313638;
+$charcoal: #313638;
 $gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
 $gradient-light: linear-gradient(280deg, lavender, lavenderBlush);
 $gradient-sidebar: linear-gradient(30deg, #fdcbf1, #e6dee9);
@@ -9,7 +9,7 @@ $nav-h: 146px;
 $sidebar-w: 300px;
 
 * {
-  color: $black-700;
+  color: $charcoal;
   margin: 0;
   box-sizing: border-box;
   font-family: $text;
@@ -71,4 +71,13 @@ nav {
 
   padding: 10px;
   background: $gradient-sidebar;
+}
+
+.resizer {
+  position: fixed;
+  background: $charcoal;
+  height: 100%;
+  width: 4px;
+  cursor: col-resize;
+  right: 300px;
 }
