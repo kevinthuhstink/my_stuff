@@ -1,6 +1,7 @@
 $black-700: #313638;
 $gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
 $gradient-light: linear-gradient(280deg, lavender, lavenderBlush);
+$gradient-sidebar: linear-gradient(30deg, #fdcbf1, #e6dee9);
 $title: "Bebas Neue", sans-serif;
 $text: "Mukta", sans-serif;
 
@@ -67,4 +68,6 @@ nav {
   right: 0;
   height: 100%;
   width: 300px;
+
+  background: $gradient-sidebar;
 }

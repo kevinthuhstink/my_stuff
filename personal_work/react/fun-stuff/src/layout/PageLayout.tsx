@@ -4,26 +4,26 @@ import { Sidebar } from '@/components/Sidebar'
 export type PageLayoutProps = {
   bare?: boolean,
   title?: string,
-  navDescription?: string,
+  description?: string,
   children?: React.ReactNode,
 }
 
 export function PageLayout({
   bare = false,
   title,
-  navDescription,
+  description,
   children
 }: PageLayoutProps) {
   return (
     <div>
       { !bare ?
         <>
-          <Navbar title={title} description={navDescription} />
+          <Navbar title={title} />
           <div id="under-nav">
             <main id="main">
               {children}
             </main>
-            <Sidebar />
+            <Sidebar description={description} />
           </div>
         </> :
         <main id="page-main">

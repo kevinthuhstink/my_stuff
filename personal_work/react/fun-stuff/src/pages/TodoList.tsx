@@ -1,11 +1,15 @@
-import { PageLayout } from '@/layout/PageLayout'
+import { PageLayoutProps, PageLayout } from '@/layout/PageLayout'
 import './styles/TodoList.scss'
 
 export function TodoList() {
+
+  const pageSetup: PageLayoutProps = {
+    title: "Todo List",
+    description: "Main 1: Static Page",
+  }
+
   return (
-    <PageLayout
-      title="Todo List"
-      navDescription="Main 1: Static Page">
+    <PageLayout {...pageSetup}>
       <div>
         <h1 id="todolist-title">TODO:</h1>
         <ol id="todolist-items">

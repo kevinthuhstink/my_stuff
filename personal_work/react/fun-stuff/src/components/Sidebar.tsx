@@ -1,9 +1,13 @@
 import "./styles/Sidebar.scss"
 
-export function Sidebar() {
+export type SidebarProps = {
+  description?: string,
+}
+
+export function Sidebar({ description }: SidebarProps) {
   return (
     <section id="sidebar">
-      make this thing resizeable and hideable
+      {description}
     </section>
   )
 }
