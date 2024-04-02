@@ -19,9 +19,9 @@ export function Navbar({ title, description }: NavbarProps) {
           src={icons.stinky[iconNum % 6]}
           onClick={() => setIconNum(iconNum + 1)}
           alt="" />
-        <p id="nav-title">
+        <h1 id="nav-title">
           {title}
-        </p>
+        </h1>
       </section>
       <section id="nav-right">
         <p id="nav-description">

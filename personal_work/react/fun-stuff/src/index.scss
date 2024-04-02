@@ -36,6 +36,19 @@ body {
   margin-bottom: 40px;
 }
 
+nav {
+  top: 0;
+  position: fixed;
+  width: 100vw;
+
+  padding: 18px;
+  background: $gradient-accent;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 #under-nav {
   position: fixed;
   bottom: 0;
@@ -47,4 +60,11 @@ body {
   left: 0;
   width: calc(100% - $sidebar-w);
   padding: 20px;
+}
+
+#sidebar {
+  position: fixed;
+  right: 0;
+  height: 100%;
+  width: 300px;
 }
