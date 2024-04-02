@@ -11,15 +11,24 @@ $text: "Mukta", sans-serif;
   font-family: $text;
 }
 
+h1 {
+  font-family: $title;
+}
+
 body {
   background: $gradient-light;
 }
 
-#page-title {
-  font-family: $title;
-  font-size: 6em;
+#titlepage {
   margin: 0 10px;
 }
 
-#main {
+#titlepage-title {
+  font-family: $title;
+  font-size: 6em;
+}
+
+#titlepage-description {
+  font-size: 3em;
+  margin-bottom: 40px;
 }
