@@ -1,4 +1,5 @@
 import { PageLayout } from '@/layout/PageLayout'
+import './TodoList.scss'
 
 export function TodoList() {
   return (
@@ -6,8 +7,8 @@ export function TodoList() {
       title="Todo List"
       navDescription="Main 1: Static Page">
       <div>
-        <h1>TODO:</h1>
-        <ol>
+        <h1 id="todolist-title">TODO:</h1>
+        <ol id="todolist-items">
           <li>React JS</li>
           <li>TailwindCSS</li>
           <li>NodeJS</li>

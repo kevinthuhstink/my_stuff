@@ -32,3 +32,11 @@ body {
   font-size: 3em;
   margin-bottom: 40px;
 }
+
+#main {
+  position: fixed;
+  bottom: 0;
+  height: calc(100vh - 146px);
+
+  padding: 20px;
+}
