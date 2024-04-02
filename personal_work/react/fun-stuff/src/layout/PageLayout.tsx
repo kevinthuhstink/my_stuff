@@ -3,14 +3,16 @@ import { Sidebar } from '@/components/Sidebar'
 
 export type PageLayoutProps = {
   bare?: boolean,
-  title?: string,
-  description?: string,
+  title: string,
+  sidebarTitle?: string
+  description: string,
   children?: React.ReactNode,
 }
 
 export function PageLayout({
   bare = false,
   title,
+  sidebarTitle,
   description,
   children
 }: PageLayoutProps) {
@@ -23,7 +25,7 @@ export function PageLayout({
             <main id="main">
               {children}
             </main>
-            <Sidebar description={description} />
+            <Sidebar title={sidebarTitle} description={description} />
           </div>
         </> :
         <main id="page-main">

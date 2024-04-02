@@ -1,13 +1,15 @@
 import "./styles/Sidebar.scss"
 
 export type SidebarProps = {
-  description?: string,
+  title?: string,
+  description: string,
 }
 
-export function Sidebar({ description }: SidebarProps) {
+export function Sidebar({ title, description }: SidebarProps) {
   return (
     <section id="sidebar">
-      {description}
+      <h1 id="sidebar-title">{title}</h1>
+      <p id="sidebar-description">{description}</p>
     </section>
   )
 }

@@ -5,7 +5,11 @@ export function TodoList() {
 
   const pageSetup: PageLayoutProps = {
     title: "Todo List",
-    description: "Main 1: Static Page",
+    sidebarTitle: "1: Static Page",
+    description: `This was one of my first web development projects in forever.
+                  I used this page to relearn a lot of CSS that I've long forgotten,
+                  and learned some new CSS stuff along the way,
+                  namely flexbox and gradients.`,
   }
 
   return (
