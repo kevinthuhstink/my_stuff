@@ -1,4 +1,4 @@
-import "./Sidebar.scss"
+import "./styles/Sidebar.scss"
 
 export function Sidebar() {
   return (

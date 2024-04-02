@@ -1,5 +1,5 @@
 import { PageLayout } from '@/layout/PageLayout'
-import './TodoList.scss'
+import './styles/TodoList.scss'
 
 export function TodoList() {
   return (

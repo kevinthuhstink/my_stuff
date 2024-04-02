@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { data } from '@/lib/data'
-import './Navbar.scss'
+import './styles/Navbar.scss'
 
 export type NavbarProps = {
   title?: string,
