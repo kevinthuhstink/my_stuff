@@ -1,4 +1,5 @@
 $gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
+$title: "Bebas Neue", sans-serif;
 
 nav {
   top: 0;
@@ -33,6 +34,7 @@ nav > section {
 }
 
 #nav-title {
+  font-family: $title;
   font-size: 3.5em;
 }
 

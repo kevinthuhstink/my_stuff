@@ -1,19 +1,23 @@
 $black-700: #313638;
 $gradient-accent: linear-gradient(120deg, indigo 40%, navy 100%);
 $gradient-light: linear-gradient(280deg, lavender, lavenderBlush);
+$title: "Bebas Neue", sans-serif;
+$text: "Mukta", sans-serif;
 
 * {
   color: $black-700;
   margin: 0;
   box-sizing: border-box;
+  font-family: $text;
 }
 
 body {
   background: $gradient-light;
 }
 
-#page-main {
-  font-size: 2em;
+#page-title {
+  font-family: $title;
+  font-size: 6em;
   margin: 0 10px;
 }
 

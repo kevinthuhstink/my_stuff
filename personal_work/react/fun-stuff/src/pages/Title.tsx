@@ -1,5 +1,5 @@
 export function Title() {
   return (
-    <h1>kevinthuhstink.</h1>
+    <h1 id="page-title">kevinthuhstink.</h1>
   )
 }
