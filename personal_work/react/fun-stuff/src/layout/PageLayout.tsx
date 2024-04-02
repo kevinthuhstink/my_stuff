@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/Navbar'
+import { Sidebar } from '@/components/Sidebar'
 
 export type PageLayoutProps = {
   bare?: boolean,
@@ -18,9 +19,12 @@ export function PageLayout({
       { !bare ?
         <>
           <Navbar title={title} description={navDescription} />
-          <main id="main">
-            {children}
-          </main>
+          <div id="under-nav">
+            <main id="main">
+              {children}
+            </main>
+            <Sidebar />
+          </div>
         </> :
         <main id="page-main">
           {children}
