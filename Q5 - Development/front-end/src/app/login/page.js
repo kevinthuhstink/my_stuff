@@ -46,7 +46,6 @@ export default function Page() {
       switch (curr_status) {
         case "SUCCESS":
           setStatus(prevStatus => ({
-            ...input,
             text: "Successful login",
             style: "text-lime-600",
           }))
@@ -54,7 +53,6 @@ export default function Page() {
 
         case "EMPTY_FIELDS":
           setStatus(prevStatus => ({
-            ...input,
             text: "Form fields must not be empty",
             style: "text-red-500",
           }))
@@ -62,7 +60,6 @@ export default function Page() {
 
         case "FETCH_FAIL":
           setStatus(prevStatus => ({
-            ...input,
             text: "Failed to fetch data from server, come back later",
             style: "text-red-500",
           }))
@@ -70,7 +67,6 @@ export default function Page() {
 
         case "LOGIN_FAIL":
           setStatus(prevStatus => ({
-            ...input,
             text: "Invalid login credentials, please try again",
             style: "text-red-500",
           }))
@@ -78,7 +74,6 @@ export default function Page() {
 
         default:
           setStatus(prevStatus => ({
-            ...input,
             text: "Unknown error occurred",
             style: "text-red-500",
           }))

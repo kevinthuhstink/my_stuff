@@ -56,7 +56,6 @@ export default function ItemListing(props) {
       <div className="w-full">
         <p className="block text-4xl">${props.price}</p>
         <button
-          onClick={redirect}
           className="inline-block rounded border-2 border-black
                      bg-gray-400 justify-self-end w-full p-2">
           Purchase

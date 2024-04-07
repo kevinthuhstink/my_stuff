@@ -23,15 +23,19 @@ async function getItem(id) {
 
 export default function Page(params) {
 
+  //State handler for the dropdown menu
   const [dropdown, setDropdown] = React.useState(false)
   const mainStyle = "p-4 overflow-auto h-full "
     + (dropdown ? "w-[calc(100%-200px)]" : "w-full")
 
-  const [data, setData] = React.useState({})
+  //Item removal success/failure message
+  const [status, setStatus] = React.useState({
+    text: "",
+    style: "",
+  })
 
-  /**
-   * Initializes item data for display.
-   */
+  const [data, setData] = React.useState({})
+  //Initializes item data for display.
   React.useEffect(() => {
     getItem(params.params.item).then(res => {
 
@@ -63,6 +67,79 @@ export default function Page(params) {
     })
   }, [params.params.item])
 
+  /**
+   * Handles removal of this item, whether by another user purchasing it
+   * or from the seller removing it from the catalog.
+   */
+  async function handleRemove() {
+    event.preventDefault()
+
+    function setRemoveStatus(currStatus) {
+      switch (currStatus) {
+        case "SUCCESS":
+          setStatus(prevStatus => ({
+            text: "Removal successful",
+            style: "text-lime-600",
+          }))
+          break
+
+        case "FETCH_FAIL":
+          setStatus(prevStatus => ({
+            text: "Failed to send request to server, come back later",
+            style: "text-red-500",
+          }))
+          break
+
+        case "REMOVE_FAIL":
+          setStatus(prevStatus => ({
+            text: "Server error during item removal",
+            style: "text-red-500",
+          }))
+          break
+
+        case "NO_USER":
+          setStatus(prevStatus => ({
+            text:
+              <p>
+                You need to be logged in to list items. Sign up
+                  <a href="/signup" className="underline text-blue-600"> here </a>
+                or log in
+                  <a href="/login" className="underline text-blue-600"> here </a>
+                if you have an account.
+              </p>,
+            style: "text-red-500",
+          }))
+          break
+
+        default:
+          setStatus(prevStatus => ({
+            text: "Unknown error occurred",
+            style: "text-red-500",
+          }))
+      }
+    }
+
+    const fetchLink = 'http://localhost:5000/catalog/item/' + data.id
+    const response = await fetch(fetchLink, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: null
+    })
+
+    if (!response.ok) {
+      setRemoveStatus("FETCH_FAIL")
+      return
+    }
+
+    response.json().then(res => {
+      if (res.body.id !== data.id) {
+        setRemoveStatus("REMOVE_FAIL")
+        return
+      }
+      setRemoveStatus("SUCCESS")
+      window.location.href = "/catalog"
+    })
+  }
 
   return (
     <>
@@ -74,9 +151,12 @@ export default function Page(params) {
             <p>Description:<br/>{data.description}</p>
           </div>
           <div className="w-full">
+            <p className={status.style}>{status.text}</p>
             <div className="flex flex-row">
               <p className="text-6xl mr-6">${data.price}</p>
-              <button className="p-4 bg-red-100 rounded border border-black">
+              <button
+                onClick={handleRemove}
+                className="p-4 bg-red-100 rounded border border-black">
                 Purchase
               </button>
             </div>
