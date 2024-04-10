@@ -5,8 +5,6 @@ import Dropdown from './components/Dropdown.js'
 export default function Page() {
   return (
     <>
-      <div className="w-full h-[120px] bg-red-300">
-      </div>
       <main className="flex flex-row h-[calc(100vh-6rem)] w-full fixed bottom-0">
         <div className="flex flex-col w-full overflow-y-auto">
           <h1 className="px-4 pt-20 text-9xl bg-red-100 border-b-8 border-black">

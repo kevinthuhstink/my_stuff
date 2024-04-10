@@ -4,10 +4,17 @@ import menuIcon from './menu.png'
 /**
  * props
  *   dropdown: React state for displaying the dropdown menu
- *   setDropdown: Sets whether the Dropdown is displayed or not.
+ *   setDropdown: Sets whether the dropdown menu is displayed or not.
  *   title: Title for the page
  */
 export default function Topbar(props) {
+
+  if (props.NO_MENU)
+    return (
+      <div className="w-full h-24 bg-red-300">
+        <h1 className="text-4xl ml-4">{props.title}</h1>
+      </div>
+    )
 
   const toggleDropdown = () => props.setDropdown(prevDropdown => !prevDropdown)
   const menuAlt = props.dropdown ? "HIDE" : "SHOW"
