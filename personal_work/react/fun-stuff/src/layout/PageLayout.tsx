@@ -1,7 +1,7 @@
 import { Navbar } from '@/components/Navbar'
 import { Sidebar } from '@/components/Sidebar'
 
-export type PageLayoutProps = {
+interface PageLayoutProps {
   bare?: boolean,
   title: string,
   sidebarTitle?: string

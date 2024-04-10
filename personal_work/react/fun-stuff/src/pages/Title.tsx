@@ -1,8 +1,8 @@
-import { Links, LinksProps } from '@/components/Links'
+import { Links } from '@/components/Links'
 
 export function Title() {
 
-  const linksStyle: LinksProps = {
+  const linksStyle = {
     title: "See my work!",
     style: {
       titleStyle: {

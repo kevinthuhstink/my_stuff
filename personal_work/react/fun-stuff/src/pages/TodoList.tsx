@@ -1,9 +1,9 @@
-import { PageLayoutProps, PageLayout } from '@/layout/PageLayout'
+import { PageLayout } from '@/layout/PageLayout'
 import './styles/TodoList.scss'
 
 export function TodoList() {
 
-  const pageSetup: PageLayoutProps = {
+  const pageSetup = {
     title: "Todo List",
     sidebarTitle: "1: Static Page",
     description: `This was one of my first web development projects in forever.
