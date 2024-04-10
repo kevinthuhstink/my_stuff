@@ -1,3 +1,5 @@
+import { useContext } from "react"
+import { DisplayContext } from "@/contexts/DisplayContext"
 import { Navbar } from '@/components/Navbar'
 import { Sidebar } from '@/components/Sidebar'
 
@@ -16,6 +18,8 @@ export function PageLayout({
   description,
   children
 }: PageLayoutProps) {
+  const { display } = useContext(DisplayContext)
+
   return (
     <div>
       { !bare ?
@@ -25,7 +29,7 @@ export function PageLayout({
             <main id="main">
               {children}
             </main>
-            <Sidebar title={sidebarTitle} description={description} />
+            <Sidebar hide={display.hideSidebar} title={sidebarTitle} description={description} />
           </div>
         </> :
         <main id="page-main">
