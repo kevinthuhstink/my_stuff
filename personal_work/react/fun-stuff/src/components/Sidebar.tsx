@@ -1,3 +1,5 @@
+import { useContext } from "react"
+import { DisplayContext } from "@/contexts/DisplayContext"
 import { Divider } from "./Divider"
 import "./styles/Sidebar.scss"
 
@@ -7,8 +9,10 @@ export type SidebarProps = {
   hide?: boolean
 }
 
-export function Sidebar({ hide=false, title, description }: SidebarProps) {
-  if (hide)
+export function Sidebar({ title, description }: SidebarProps) {
+  const { display } = useContext(DisplayContext)
+
+  if (display.hideSidebar)
     return (
       <Divider hide={true} />
     )
