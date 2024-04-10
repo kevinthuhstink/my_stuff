@@ -3,9 +3,9 @@ import "./styles/Divider.scss"
 
 export function Divider({ hide=false }) {
   return (
-    <div id="divider-container">
-      { hide ? <FaChevronRight /> : <FaChevronLeft /> }
-      <div id="divider" style={ hide ? {} : { right: 0 } }>
+    <div id="divider-container" style={ hide ? { right: 0 } : {} }>
+      { hide ? <FaChevronLeft /> : <FaChevronRight /> }
+      <div id="divider">
       </div>
     </div>
   )

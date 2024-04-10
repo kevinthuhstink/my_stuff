@@ -1,8 +1,16 @@
-#divider {
+$charcoal: #313638;
+
+#divider-container {
   position: fixed;
+  height: 100%;
+  right: 300px;
+
+  display: flex;
+}
+
+#divider {
   background: $charcoal;
   height: 100%;
   width: 4px;
   cursor: col-resize;
-  right: 300px;
 }
