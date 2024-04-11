@@ -1,4 +1,5 @@
 import { PageLayout } from '@/layout/PageLayout'
+import { Card } from "@/features/spotify_cards/components"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
@@ -15,7 +16,9 @@ export function SpotifyCards() {
 
   return (
     <PageLayout {...pageSetup}>
-      HURR
+      <h1>Grab a random song from my playlist!</h1>
+      <button />
+      <Card title="test" image="test" explicit={true} />
     </PageLayout>
   )
 }
