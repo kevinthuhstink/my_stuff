@@ -1,8 +1,12 @@
+import { useState, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import { Card } from "@/features/spotify_cards/components"
+import { AccessToken, getAccessToken } from "@/features/spotify_cards/api"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
+
+  const [accessToken, setAccessToken] = useState<string>(null!)
 
   const pageSetup = {
     title: "Spotify Cards",
@@ -13,6 +17,13 @@ export function SpotifyCards() {
                   now that I'm redoing these pages, I'll step up my game and do a
                   little more than basic cards.`
   }
+
+  useEffect(() => {
+    getAccessToken()
+      .then((res: AccessToken) => {
+        setAccessToken(res.access_token)
+      })
+  }, [])
 
   return (
     <PageLayout {...pageSetup}>
