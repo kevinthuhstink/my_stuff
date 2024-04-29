@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import { Card } from "@/features/spotify_cards/components"
-import { AccessToken, getAccessToken } from "@/features/spotify_cards/api"
+import { SpotifyAccessToken, getAccessToken } from "@/features/spotify_cards/api"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
 
-  const [accessToken, setAccessToken] = useState<string>(null!)
+  const [accessToken, setAccessToken] = useState<SpotifyAccessToken>(null!)
 
   const pageSetup = {
     title: "Spotify Cards",
@@ -20,8 +20,9 @@ export function SpotifyCards() {
 
   useEffect(() => {
     getAccessToken()
-      .then((res: AccessToken) => {
-        setAccessToken(res.access_token)
+      .then((res: SpotifyAccessToken) => {
+        setAccessToken(res)
+        console.log(res)
       })
   }, [])
 
