@@ -1,7 +1,19 @@
+import { useState, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import './styles/TodoList.scss'
 
 export function TodoList() {
+
+  const [crossed, setCrossed] = useState<number[]>([])
+
+  useEffect(() => {
+    setCrossed(() => {
+      const storageCrossed = localStorage.getData("todoCrossed")
+      return storageCrossed ? JSON.parse(storageCrossed) : []
+    })
+
+    return localStorage.setData("todoCrossed", JSON.stringify(crossed))
+  }, [])
 
   const pageSetup = {
     title: "Todo List",
