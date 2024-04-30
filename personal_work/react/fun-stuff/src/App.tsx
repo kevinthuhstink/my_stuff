@@ -1,16 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Title, TodoList, SpotifyCards } from './pages'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { Providers } from "./contexts/Providers"
+import { AppRoutes } from "./Routes"
 
 export function App() {
   return (
     <Providers>
       <Router>
-          <Routes>
-            <Route path="todolist-1" element={<TodoList />} />
-            <Route path="reusable-components-2" element={<SpotifyCards />} />
-            <Route path="*" element={<Title />} />
-          </Routes>
+          <AppRoutes />
       </Router>
     </Providers>
   )

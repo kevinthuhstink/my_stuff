@@ -14,7 +14,7 @@ export function Sidebar({ title, description }: SidebarProps) {
 
   if (display.hideSidebar)
     return (
-      <Divider hide={true} />
+      <Divider />
     )
 
   return (
