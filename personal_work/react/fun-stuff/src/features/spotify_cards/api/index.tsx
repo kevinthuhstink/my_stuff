@@ -1,3 +1,5 @@
+import { CLIENT_SECRET } from "./env"
+
 export const SPOTIFY_API_URL = (endpoint: string) => `https://api.spotify.com/v1/${endpoint}`
 export const PLAYLIST_ID = "0KyB05fPXuBrPLk9qYEd9k"
 const API_TOKEN_URL = "https://accounts.spotify.com/api/token"
@@ -33,7 +35,7 @@ export async function getAccessToken(): Promise<SpotifyAccessToken> {
     body: JSON.stringify({
       grant_type: "client_credentials",
       client_id: "4f80712bc2f0455ebe7a607270924642",
-      client_secret: "54029521b4a94e14a26b1d90efa9706f"
+      client_secret: CLIENT_SECRET
       })
   })
 
