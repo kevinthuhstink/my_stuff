@@ -1,12 +1,14 @@
 import { Links } from '@/components/Links'
+import "./styles/Title.scss"
 
 export function Title() {
 
   const linksStyle = {
-    title: "See my work!",
+    title: "See my (React) work!",
     style: {
       titleStyle: {
-        fontSize: "5em",
+        fontSize: "3em",
+        fontFamily: "Mukta, sans-serif"
       },
       listStyle: {
       },
@@ -18,10 +20,10 @@ export function Title() {
 
   return (
     <main id="titlepage">
-      <h1 id="titlepage-title">kevinthuhstink</h1>
-      <p id="titlepage-description">
-        I'm a college freshman, looking to make some projects and get work done.
+      <p className="titlepage-description">
+        Good evening, my name is
       </p>
+      <span id="titlepage-title">kevin cheng</span>
       <Links {...linksStyle} />
     </main>
   )

@@ -23,20 +23,6 @@ body {
   background: $gradient-light;
 }
 
-#titlepage {
-  margin: 0 10px;
-}
-
-#titlepage-title {
-  font-family: $title;
-  font-size: 6em;
-}
-
-#titlepage-description {
-  font-size: 3em;
-  margin-bottom: 40px;
-}
-
 nav {
   top: 0;
   position: fixed;

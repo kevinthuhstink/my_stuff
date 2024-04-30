@@ -16,7 +16,7 @@ export type SpotifyAccessToken = {
 export type SpotifyTrack = {
   album: {
     release_date: string,
-    images: string[]
+    images: { url: string }[]
   },
   duration_ms: number,
   explicit: boolean,
@@ -44,7 +44,23 @@ export async function getAccessToken(): Promise<SpotifyAccessToken> {
   return data
 }
 
-export async function refreshAccessToken() {
+export async function refreshAccessToken(expiredToken: SpotifyAccessToken): Promise<SpotifyAccessToken> {
+  const res = await fetch(API_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: JSON.stringify({
+      grant_type: "client_credentials",
+      refresh_token: expiredToken.access_token
+      })
+  })
+
+  if (res.status !== 200)
+    throw res
+
+  const data = await res.json()
+  return data
 }
 
 export async function getPlaylistItems(accessToken: SpotifyAccessToken) {
