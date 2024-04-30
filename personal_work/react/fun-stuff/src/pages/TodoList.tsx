@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
+import { ListItem } from '@/components/ListItem'
 import './styles/TodoList.scss'
 
 export function TodoList() {
@@ -8,12 +9,19 @@ export function TodoList() {
 
   useEffect(() => {
     setCrossed(() => {
-      const storageCrossed = localStorage.getData("todoCrossed")
+      const storageCrossed = localStorage.getItem("todoCrossed")
       return storageCrossed ? JSON.parse(storageCrossed) : []
     })
 
-    return localStorage.setData("todoCrossed", JSON.stringify(crossed))
+    return localStorage.setItem("todoCrossed", JSON.stringify(crossed))
   }, [])
+
+  function toggleCrossed(id: number) {
+    if (crossed.some(elem => elem === id))
+      setCrossed(prevCrossed => prevCrossed.filter(elem => elem !== id))
+    else
+      setCrossed(prevCrossed => prevCrossed.concat([id]))
+  }
 
   const pageSetup = {
     title: "Todo List",
@@ -24,20 +32,33 @@ export function TodoList() {
                   namely flexbox and gradients.`,
   }
 
+  const listText = [
+    "Git",
+    "ReactJS",
+    "CSS Frameworks",
+    "JSON API",
+    "NodeJS",
+    "MySQL/MongoDB",
+    "AWS/Google Cloud",
+    "Self Study Projects",
+    "Freelance Work"
+  ]
+
+  const listItems = listText.map((elem, index) =>
+    <ListItem
+      key={index}
+      text={elem}
+      crossed={crossed.some(elem => elem === index)}
+      toggleCrossed={() => toggleCrossed(index)}
+    />
+  )
+
   return (
     <PageLayout {...pageSetup}>
       <div>
         <h1 id="todolist-title">TODO:</h1>
         <ol id="todolist-items">
-          <li>React JS</li>
-          <li>TailwindCSS</li>
-          <li>NodeJS</li>
-          <li>MySQL</li>
-          <li>Git</li>
-          <li>JSON API</li>
-          <li>AWS/Google Cloud</li>
-          <li>Self-Study Projects</li>
-          <li>Freelance Work</li>
+          {listItems}
         </ol>
       </div>
     </PageLayout>
