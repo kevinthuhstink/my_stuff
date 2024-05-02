@@ -19,11 +19,40 @@ export function SpotifyCards() {
   }
 
   useEffect(() => {
-    getAccessToken()
-      .then((res: SpotifyAccessToken) => {
-        setAccessToken(res)
-        console.log(res)
-      })
+    const storedToken = localStorage.getItem("accessToken")
+    const tokenExpiration = localStorage.getItem("accessTokenExpiration")
+    const currentTime = new Date().getTime()
+
+    if (!storedToken || !tokenExpiration) {
+      getAccessToken()
+        .then((res: SpotifyAccessToken) => {
+          setAccessToken({
+            ...res,
+            expires_in: 1000 * res.expires_in
+          })
+          console.log(res)
+
+          localStorage.setItem("accessToken", res.access_token)
+          localStorage.setItem("accessTokenExpiration", (currentTime + 1000 * res.expires_in).toString())
+        })
+        .catch((error: Error) => console.log(error.message))
+      return
+    }
+
+    const tokenExpiresIn = Number.parseInt(tokenExpiration) - currentTime
+
+    if (tokenExpiresIn < 600) {
+      //refresh token
+    }
+
+    else {
+      setAccessToken(() => ({
+        access_token: storedToken,
+        token_type: "Bearer",
+        expires_in: tokenExpiresIn
+      }))
+      console.log(accessToken)
+    }
   }, [])
 
   return (
