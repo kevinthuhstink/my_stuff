@@ -27,16 +27,13 @@ export type SpotifyTrack = {
 }
 
 export async function getAccessToken(): Promise<SpotifyAccessToken> {
+  const clientId = "4f80712bc2f0455ebe7a607270924642"
   const res = await fetch(API_TOKEN_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     },
-    body: JSON.stringify({
-      grant_type: "client_credentials",
-      client_id: "4f80712bc2f0455ebe7a607270924642",
-      client_secret: CLIENT_SECRET
-      })
+    body: `grant_type=client_credentials&client_id=${clientId}&client_secret=${CLIENT_SECRET}`
   })
 
   if (res.status !== 200)
