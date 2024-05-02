@@ -21,27 +21,41 @@ export function SpotifyCards() {
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken")
     const tokenExpiration = localStorage.getItem("accessTokenExpiration")
-    const currentTime = new Date().getTime()
+    const currentTime = new Date().getTime() / 1000
+
+    const tokenTimerInterval = setInterval(() => {
+      setAccessToken(prevToken => {
+        console.log(prevToken.expires_in)
+        if (!prevToken.expires_in)
+          return null!
+        else
+          return {
+            ...prevToken,
+            expires_in: prevToken.expires_in - 10
+          }
+      })
+    }, 10000)
 
     if (!storedToken || !tokenExpiration) {
       getAccessToken()
         .then((res: SpotifyAccessToken) => {
-          setAccessToken({
-            ...res,
-            expires_in: 1000 * res.expires_in
-          })
+          setAccessToken(res)
           console.log(res)
 
           localStorage.setItem("accessToken", res.access_token)
-          localStorage.setItem("accessTokenExpiration", (currentTime + 1000 * res.expires_in).toString())
+          localStorage.setItem("accessTokenExpiration", (currentTime + res.expires_in).toString())
         })
         .catch((error: Error) => console.log(error.message))
-      return
+
+      return () => {
+        clearInterval(tokenTimerInterval)
+        console.log("endif getAccessToken()")
+      }
     }
 
-    const tokenExpiresIn = Number.parseInt(tokenExpiration) - currentTime
+    const tokenExpiresAt = Number.parseInt(tokenExpiration) - currentTime
 
-    if (tokenExpiresIn < 600) {
+    if (tokenExpiresAt < 600) {
       //refresh token
     }
 
@@ -49,10 +63,12 @@ export function SpotifyCards() {
       setAccessToken(() => ({
         access_token: storedToken,
         token_type: "Bearer",
-        expires_in: tokenExpiresIn
+        expires_in: tokenExpiresAt
       }))
-      console.log(accessToken)
+      console.log("no action on accessToken\n\n" + storedToken + "\n\nexpires in " + tokenExpiresAt + " seconds")
     }
+
+    return () => clearInterval(tokenTimerInterval)
   }, [])
 
   return (
