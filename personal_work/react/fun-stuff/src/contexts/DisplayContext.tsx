@@ -1,31 +1,31 @@
-import { useState, createContext } from 'react'
+import { useState, createContext, Dispatch, SetStateAction } from 'react'
 
 export interface Display {
-  dark: boolean
-  hideSidebar: boolean
+  dark: boolean;
+  hideSidebar: boolean;
 }
 
 type DisplayContextType = {
   display: Display
-  setDisplay: (display: Display) => void
-}
+  setDisplay: Dispatch<SetStateAction<Display>>
+};
 
 const defaultDisplay = {
   display: {
     dark: false,
-    hideSidebar: false
+    hideSidebar: false,
   },
-  setDisplay: null!
-}
+  setDisplay: null!,
+};
 
 export const DisplayContext = createContext<DisplayContextType>(defaultDisplay);
 
 export function DisplayProvider({ children }: React.PropsWithChildren) {
-  const [display, setDisplay] = useState<Display>(defaultDisplay.display)
+  const [display, setDisplay] = useState<Display>(defaultDisplay.display);
 
   return (
     <DisplayContext.Provider value={{ display, setDisplay }}>
       {children}
     </DisplayContext.Provider>
-  )
+  );
 }
