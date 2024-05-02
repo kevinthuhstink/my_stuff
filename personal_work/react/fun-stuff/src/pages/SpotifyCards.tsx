@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import { Card } from "@/features/spotify_cards/components"
-import { SpotifyAccessToken, getAccessToken } from "@/features/spotify_cards/api"
+import { getAccessToken } from "@/features/spotify_cards/api"
+import { SpotifyAccessToken, SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
 
-  const [accessToken, setAccessToken] = useState<SpotifyAccessToken>(null!)
+  const { accessToken, setAccessToken } = useContext(SpotifyAuthContext)
 
   const pageSetup = {
     title: "Spotify Cards",
@@ -26,7 +27,7 @@ export function SpotifyCards() {
     const tokenExpiresIn = tokenExpiration ? Number.parseInt(tokenExpiration) - currentTime : 0
 
     const tokenTimerInterval = setInterval(() => {
-      setAccessToken(prevToken => {
+      setAccessToken((prevToken: SpotifyAccessToken): SpotifyAccessToken => {
         if (!prevToken || !prevToken.expires_in)
           return null!
         console.log(prevToken.expires_in)
@@ -37,7 +38,7 @@ export function SpotifyCards() {
       })
     }, 10000)
 
-    if (!storedToken || tokenExpiresIn < 3600) {
+    if (!storedToken || tokenExpiresIn < 300) {
       getAccessToken()
         .then((res: SpotifyAccessToken) => {
           setAccessToken(res)
@@ -54,15 +55,15 @@ export function SpotifyCards() {
       }
     }
 
-    setAccessToken(() => ({
+    setAccessToken({
       access_token: storedToken,
       token_type: "Bearer",
       expires_in: tokenExpiresIn
-    }))
+    })
     console.log("no action on accessToken\n\n" + storedToken + "\n\nexpires in " + tokenExpiresIn + " seconds")
 
     return () => clearInterval(tokenTimerInterval)
-  }, [])
+  }, [setAccessToken])
 
   return (
     <PageLayout {...pageSetup}>
