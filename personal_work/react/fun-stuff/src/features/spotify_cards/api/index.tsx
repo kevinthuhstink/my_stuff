@@ -2,6 +2,7 @@ import { CLIENT_SECRET } from "./env"
 
 export const SPOTIFY_API_URL = (endpoint: string) => `https://api.spotify.com/v1/${endpoint}`
 export const PLAYLIST_ID = "0KyB05fPXuBrPLk9qYEd9k"
+const CLIENT_ID = "4f80712bc2f0455ebe7a607270924642"
 const API_TOKEN_URL = "https://accounts.spotify.com/api/token"
 
 export const DEFAULT_REQUEST = {
@@ -27,32 +28,16 @@ export type SpotifyTrack = {
 }
 
 export async function getAccessToken(): Promise<SpotifyAccessToken> {
-  const clientId = "4f80712bc2f0455ebe7a607270924642"
   const res = await fetch(API_TOKEN_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     },
-    body: `grant_type=client_credentials&client_id=${clientId}&client_secret=${CLIENT_SECRET}`
-  })
-
-  if (res.status !== 200)
-    throw res
-
-  const data = await res.json()
-  return data
-}
-
-export async function refreshAccessToken(expiredToken: SpotifyAccessToken): Promise<SpotifyAccessToken> {
-  const res = await fetch(API_TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: JSON.stringify({
+    body: new URLSearchParams({
       grant_type: "client_credentials",
-      refresh_token: expiredToken.access_token
-      })
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET
+    })
   })
 
   if (res.status !== 200)
