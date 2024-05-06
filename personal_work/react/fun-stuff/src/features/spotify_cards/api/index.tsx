@@ -47,13 +47,13 @@ export async function getAccessToken(): Promise<SpotifyAccessToken> {
   return data
 }
 
-export async function getPlaylistItems(accessToken: SpotifyAccessToken) {
-  const API_LINK = SPOTIFY_API_URL(`playlists/${PLAYLIST_ID}/tracks/`)
+export async function getPlaylistItems(accessToken: string): Promise<SpotifyTrack[]> {
+  const API_LINK = SPOTIFY_API_URL(`playlists/${PLAYLIST_ID}/tracks`)
 
   const getNumTracks = await fetch(API_LINK, {
     method: "GET",
     headers: {
-      Authorization: 'Bearer ' + accessToken.access_token
+      Authorization: 'Bearer ' + accessToken
     }
   })
 
@@ -63,14 +63,25 @@ export async function getPlaylistItems(accessToken: SpotifyAccessToken) {
 
   const tracks: SpotifyTrack[] = []
   for (let i = 0; i <= numTracks / 100; i++) {
-    const query = `?limit=100&offset=${i * 100}&fields=items(track(album(release_date,images(url)),duration_ms,explicit,id,name))`
+    const query = new URLSearchParams({
+      limit: "100",
+      offset: `${i * 100}`,
+      fields: "items(track(album(release_date,images(url)),duration_ms,explicit,id,name))"
+    })
 
-    const trackBatch = await fetch(API_LINK + query, {
+    const trackBatch = await fetch(API_LINK + '?' + query, {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + accessToken.access_token
+        Authorization: "Bearer " + accessToken
       }
     })
-    tracks.concat((await trackBatch.json()).track)
+
+    if (trackBatch.status !== 200)
+      throw trackBatch
+
+    const trackData = (await trackBatch.json()).items
+    trackData.forEach((track: SpotifyTrack) => tracks.push(track))
   }
+
+  return tracks
 }
