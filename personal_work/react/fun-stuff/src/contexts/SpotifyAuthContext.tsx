@@ -1,28 +1,23 @@
-import { useState, createContext, Dispatch, SetStateAction } from 'react'
+import { useRef, createContext } from 'react'
 
 export interface Display {
   dark: boolean
   hideSidebar: boolean
 }
 
-export type SpotifyAccessToken = {
-  access_token: string,
-  token_type: string,
-  expires_in: number
-}
-
 interface SpotifyAuthContextType {
-  accessToken: SpotifyAccessToken
-  setAccessToken: Dispatch<SetStateAction<SpotifyAccessToken>>
+  accessToken: React.MutableRefObject<string>
+  tokenExpiresIn: React.MutableRefObject<number>
 }
 
 export const SpotifyAuthContext = createContext<SpotifyAuthContextType>(null!);
 
 export function SpotifyAuthProvider({ children }: React.PropsWithChildren) {
-  const [accessToken, setAccessToken] = useState<SpotifyAccessToken>(null!)
+  const accessToken = useRef<string>(null!)
+  const tokenExpiresIn = useRef<number>(null!)
 
   return (
-    <SpotifyAuthContext.Provider value={{ accessToken, setAccessToken }}>
+    <SpotifyAuthContext.Provider value={{ accessToken, tokenExpiresIn }}>
       {children}
     </SpotifyAuthContext.Provider>
   )
