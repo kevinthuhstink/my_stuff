@@ -75,7 +75,7 @@ export function SpotifyCards() {
   }
 
   const trackShelf = selectedTracks
-    .map((trackNum: number) => tracks[trackNum])
+    .map((trackNum: number) => ({ ...tracks[trackNum], key: trackNum }))
     .map((track: SpotifyTrack) => <Card {...track} />)
 
   if (!tracks)
