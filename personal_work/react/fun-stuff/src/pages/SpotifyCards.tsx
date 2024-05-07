@@ -25,14 +25,7 @@ export function SpotifyCards() {
     const tokenExpiration = localStorage.getItem("accessTokenExpiration")
     tokenExpiresIn.current = tokenExpiration ? Number.parseInt(tokenExpiration) - currentTime : 0
 
-    const tokenTimerInterval = setInterval(() => {
-      if (!accessToken || !tokenExpiration)
-          return null!
-      tokenExpiresIn.current = tokenExpiresIn.current - 60
-      console.log(`token expires in:\n${tokenExpiresIn.current} seconds`)
-    }, 60000)
-
-    if (!storedToken || tokenExpiresIn.current < 300) {
+    async function fetchAccessToken() {
       getAccessToken()
         .then((res: SpotifyAccessToken) => {
           accessToken.current = res.access_token
@@ -44,6 +37,19 @@ export function SpotifyCards() {
         })
         .catch((error: Error) => console.log(error.message))
     }
+
+    const tokenTimerInterval = setInterval(() => {
+      if (!accessToken || !tokenExpiration)
+          return null!
+      tokenExpiresIn.current = tokenExpiresIn.current - 60
+      console.log(`token expires in:\n${tokenExpiresIn.current} seconds`)
+
+      if (tokenExpiresIn.current < 300)
+        fetchAccessToken()
+    }, 60000)
+
+    if (!storedToken || tokenExpiresIn.current < 300)
+      fetchAccessToken()
 
     else {
       accessToken.current = storedToken,
