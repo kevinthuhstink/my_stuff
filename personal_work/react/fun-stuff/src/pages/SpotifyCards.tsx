@@ -1,22 +1,15 @@
 import { useState, useContext, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import { Card } from "@/features/spotify_cards/components"
-import { SpotifyAccessToken, getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
+import { getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
 import { SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
 
   const { accessToken, tokenExpiresIn } = useContext(SpotifyAuthContext)
-  const [tracks, setTracks] = useState<SpotifyTrack[]>(null!)
-
-  const pageSetup = {
-    title: "Spotify Cards",
-    sidebarTitle: "2: Reusable Components",
-    description: `In the process of making my first interactive page, this was my
-                  real first challenge in React. I had to figure out what a prop
-                  was and how to pass them into reusable components.`
-  }
+  const [tracks, setTracks] = useState<SpotifyTrack[]>([])
+  const [selectedTracks, setSelectedTracks] = useState<number[]>([])
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken")
@@ -66,10 +59,25 @@ export function SpotifyCards() {
     }
   }, [accessToken, tokenExpiresIn])
 
+  const pageSetup = {
+    title: "Spotify Cards",
+    sidebarTitle: "2: Reusable Components",
+    description: `In the process of making my first interactive page, this was my
+                  real first challenge in React. I had to figure out what a prop
+                  was and how to pass them into reusable components.`
+  }
+
+  const randint = (max: number) => Math.floor(Math.random() * max)
+  function addTrack() {
+    const trackNum = randint(tracks.length)
+    setSelectedTracks([trackNum].concat(selectedTracks))
+    console.log(selectedTracks)
+  }
+
   return (
     <PageLayout {...pageSetup}>
       <h1>Grab a random song from my playlist!</h1>
-      <button />
+      <button onClick={addTrack}>Add a track!</button>
       <Card title="test" image="test" explicit={true} />
     </PageLayout>
   )
