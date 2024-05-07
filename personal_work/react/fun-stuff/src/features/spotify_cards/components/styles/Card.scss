@@ -29,4 +29,15 @@ $charcoal: #313638;
   border: 4px solid $charcoal;
   border-radius: 6px;
   line-height: 0.9;
+  text-decoration: none;
+}
+
+.explicit:link {
+  text-decoration: none;
+}
+.explicit:visited {
+  text-decoration: none;
+}
+.explicit:hover {
+  text-decoration: none;
 }
