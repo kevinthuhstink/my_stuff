@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
+import { LoadingPage } from '@/pages'
 import { Card } from "@/features/spotify_cards/components"
 import { getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
 import { SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
@@ -8,7 +9,7 @@ import './styles/TodoList.scss'
 export function SpotifyCards() {
 
   const { accessToken, tokenExpiresIn } = useContext(SpotifyAuthContext)
-  const [tracks, setTracks] = useState<SpotifyTrack[]>([])
+  const [tracks, setTracks] = useState<SpotifyTrack[]>(null!)
   const [selectedTracks, setSelectedTracks] = useState<number[]>([])
 
   useEffect(() => {
@@ -79,11 +80,7 @@ export function SpotifyCards() {
     .map((track: SpotifyTrack) => <Card {...track} />)
 
   if (!tracks)
-    return (
-      <PageLayout {...pageSetup} bare={true}>
-        loading...
-      </PageLayout>
-    )
+    return <LoadingPage message="Loading Spotify Tracks..." />
 
   return (
     <PageLayout {...pageSetup}>

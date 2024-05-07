@@ -1,17 +1,6 @@
 import { SpotifyTrack } from "@/features/spotify_cards/api"
 import "./styles/Card.scss"
 
-    /*
-  album: {
-    release_date: string,
-    images: { url: string }[]
-  },
-  duration_ms: number,
-  explicit: boolean,
-  id: string,
-  name: string
-     */
-
 export function Card({
     album,
     duration_ms,
