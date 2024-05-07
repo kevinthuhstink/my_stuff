@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react"
 import { PageLayout } from '@/layout/PageLayout'
 import { Card } from "@/features/spotify_cards/components"
-import { getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
-import { SpotifyAccessToken, SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
+import { SpotifyAccessToken, getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
+import { SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
 
-  const { accessToken, setAccessToken } = useContext(SpotifyAuthContext)
+  const { accessToken, tokenExpiresIn } = useContext(SpotifyAuthContext)
 
   const pageSetup = {
     title: "Spotify Cards",
@@ -24,24 +24,19 @@ export function SpotifyCards() {
     const currentTime = new Date().getTime() / 1000
 
     const tokenExpiration = localStorage.getItem("accessTokenExpiration")
-    const tokenExpiresIn = tokenExpiration ? Number.parseInt(tokenExpiration) - currentTime : 0
+    tokenExpiresIn.current = tokenExpiration ? Number.parseInt(tokenExpiration) - currentTime : 0
 
     const tokenTimerInterval = setInterval(() => {
-      setAccessToken((prevToken: SpotifyAccessToken): SpotifyAccessToken => {
-        if (!prevToken || !prevToken.expires_in)
+      if (!accessToken || !tokenExpiration)
           return null!
-        console.log(prevToken.expires_in)
-        return {
-          ...prevToken,
-          expires_in: prevToken.expires_in - 10
-        }
-      })
-    }, 10000)
+      tokenExpiresIn.current = tokenExpiresIn.current - 60
+      console.log(`token expires in:\n${tokenExpiresIn.current} seconds`)
+    }, 60000)
 
-    if (!storedToken || tokenExpiresIn < 300) {
+    if (!storedToken || tokenExpiresIn.current < 300) {
       getAccessToken()
         .then((res: SpotifyAccessToken) => {
-          setAccessToken(res)
+          accessToken.current = res.access_token
           console.log(res)
 
           localStorage.setItem("accessToken", res.access_token)
@@ -51,21 +46,18 @@ export function SpotifyCards() {
     }
 
     else {
-      setAccessToken({
-        access_token: storedToken,
-        token_type: "Bearer",
-        expires_in: tokenExpiresIn
-      })
-      console.log("no action on accessToken\n\n" + storedToken + "\n\nexpires in " + tokenExpiresIn + " seconds")
+      accessToken.current = storedToken,
+      console.log(`no action on accessToken\n\n${storedToken}\n\nexpires in ${tokenExpiresIn.current} seconds`)
     }
 
     return () => clearInterval(tokenTimerInterval)
-  }, [setAccessToken])
+  }, [accessToken, tokenExpiresIn])
 
   useEffect(() => {
-    getPlaylistItems(accessToken.access_token)
+    getPlaylistItems(accessToken.current)
       .then((res: SpotifyTrack[]) => console.log(res))
-  }, [accessToken.access_token])
+      .catch((error: Error) => console.log(error.message))
+  }, [accessToken])
 
   return (
     <PageLayout {...pageSetup}>
