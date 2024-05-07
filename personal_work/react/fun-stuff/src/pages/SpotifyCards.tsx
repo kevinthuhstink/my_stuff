@@ -74,11 +74,22 @@ export function SpotifyCards() {
     console.log(selectedTracks)
   }
 
+  const trackShelf = selectedTracks
+    .map((trackNum: number) => tracks[trackNum])
+    .map((track: SpotifyTrack) => <Card {...track} />)
+
+  if (!tracks)
+    return (
+      <PageLayout {...pageSetup} bare={true}>
+        loading...
+      </PageLayout>
+    )
+
   return (
     <PageLayout {...pageSetup}>
       <h1>Grab a random song from my playlist!</h1>
       <button onClick={addTrack}>Add a track!</button>
-      <Card title="test" image="test" explicit={true} />
+      {trackShelf}
     </PageLayout>
   )
 }
