@@ -26,16 +26,16 @@ export function SpotifyCards() {
     tokenExpiresIn.current = tokenExpiration ? Number.parseInt(tokenExpiration) - currentTime : 0
 
     async function fetchAccessToken() {
-      getAccessToken()
-        .then((res: SpotifyAccessToken) => {
-          accessToken.current = res.access_token
-          tokenExpiresIn.current = res.expires_in
-          console.log(res)
+      const token = await getAccessToken()
+      accessToken.current = token.access_token
+      tokenExpiresIn.current = token.expires_in
+      console.log(token)
+    }
 
-          localStorage.setItem("accessToken", res.access_token)
-          localStorage.setItem("accessTokenExpiration", `${currentTime + res.expires_in}`)
-        })
-        .catch((error: Error) => console.log(error.message))
+    async function fetchPlaylistItems() {
+      const tracks = await getPlaylistItems(accessToken.current)
+      setTracks(tracks)
+      console.log(tracks)
     }
 
     const tokenTimerInterval = setInterval(() => {
@@ -48,22 +48,22 @@ export function SpotifyCards() {
         fetchAccessToken()
     }, 60000)
 
-    if (!storedToken || tokenExpiresIn.current < 300)
-      fetchAccessToken()
+    if (!storedToken || tokenExpiresIn.current < 300) {
+      fetchAccessToken().then(fetchPlaylistItems)
+    }
 
     else {
       accessToken.current = storedToken,
       console.log(`no action on accessToken\n\n${storedToken}\n\nexpires in ${tokenExpiresIn.current} seconds`)
+      fetchPlaylistItems()
     }
 
-    getPlaylistItems(accessToken.current)
-      .then((res: SpotifyTrack[]) => {
-        setTracks(res)
-        console.log(res)
-      })
-      .catch((err: Error) => console.log(err.message))
-
-    return () => clearInterval(tokenTimerInterval)
+    return () => {
+      clearInterval(tokenTimerInterval)
+      localStorage.setItem("accessToken", accessToken.current)
+      const currentTime = new Date().getTime() / 1000
+      localStorage.setItem("accessTokenExpiration", `${currentTime + tokenExpiresIn.current}`)
+    }
   }, [accessToken, tokenExpiresIn])
 
   return (
