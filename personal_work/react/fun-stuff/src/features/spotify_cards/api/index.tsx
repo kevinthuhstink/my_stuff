@@ -80,7 +80,7 @@ export async function getPlaylistItems(accessToken: string): Promise<SpotifyTrac
       throw trackBatch
 
     const trackData = (await trackBatch.json()).items
-    trackData.forEach((track: SpotifyTrack) => tracks.push(track))
+    trackData.forEach((track: { track: SpotifyTrack }) => tracks.push(track.track))
   }
 
   return tracks
