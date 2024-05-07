@@ -10,7 +10,7 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({
-  bare = false,
+  bare=false,
   title,
   sidebarTitle,
   description,
@@ -28,7 +28,7 @@ export function PageLayout({
             <Sidebar title={sidebarTitle} description={description} />
           </div>
         </> :
-        <main id="page-main">
+        <main id="page-main" style={{ width: "100vw", height: "100vh" }}>
           {children}
         </main>
       }
