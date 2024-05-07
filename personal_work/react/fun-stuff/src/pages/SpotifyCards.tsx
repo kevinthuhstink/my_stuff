@@ -83,10 +83,12 @@ export function SpotifyCards() {
     return <LoadingPage message="Loading Spotify Tracks..." />
 
   return (
-    <PageLayout {...pageSetup}>
+    <PageLayout {...pageSetup} bare={true}>
       <h1>Grab a random song from my playlist!</h1>
       <button onClick={addTrack}>Add a track!</button>
-      {trackShelf}
+      <div id="track-shelf">
+        {trackShelf}
+      </div>
     </PageLayout>
   )
 }

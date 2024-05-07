@@ -1,7 +1,32 @@
 $charcoal: #313638;
 
-.card {
+.card-wrapper {
+  margin: 30px;
   width: 300px;
+}
+
+.card {
+  width: 100%;
   height: 300px;
+
+  background-size: contain;
   box-shadow: 5px 10px $charcoal;
+}
+
+.card-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.explicit {
+  position: relative;
+  width: fit-content;
+  top: 240px;
+  left: 180px;
+  padding: 4px;
+  background: white;
+  border: 4px solid $charcoal;
+  border-radius: 6px;
+  line-height: 0.9;
 }
