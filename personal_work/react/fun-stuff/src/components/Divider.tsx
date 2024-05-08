@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { DisplayContext } from "@/contexts/DisplayContext"
+import { DisplayContext } from "@/contexts"
 import "./styles/Divider.scss"
 
 export function Divider() {

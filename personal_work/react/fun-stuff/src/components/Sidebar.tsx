@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { DisplayContext } from "@/contexts/DisplayContext"
+import { DisplayContext } from "@/contexts"
 import { Divider } from "./Divider"
 import "./styles/Sidebar.scss"
 

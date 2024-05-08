@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { Navbar } from '@/components/Navbar'
 import { Sidebar } from '@/components/Sidebar'
-import { DisplayContext } from "@/contexts/DisplayContext"
+import { DisplayContext } from "@/contexts"
 
 interface PageLayoutProps {
   bare?: boolean,
