@@ -3,12 +3,13 @@ import { PageLayout } from '@/layout/PageLayout'
 import { LoadingPage } from '@/pages'
 import { Card } from "@/features/spotify_cards/components"
 import { getAccessToken, getPlaylistItems, SpotifyTrack } from "@/features/spotify_cards/api"
-import { SpotifyAuthContext } from "@/contexts/SpotifyAuthContext"
+import { KeyContext, SpotifyAuthContext } from "@/contexts"
 import './styles/TodoList.scss'
 
 export function SpotifyCards() {
 
   const { accessToken, tokenExpiresIn } = useContext(SpotifyAuthContext)
+  const getKey = useContext(KeyContext)
   const [tracks, setTracks] = useState<SpotifyTrack[]>(null!)
   const [selectedTracks, setSelectedTracks] = useState<number[]>([])
 
@@ -75,8 +76,9 @@ export function SpotifyCards() {
     console.log(selectedTracks)
   }
 
+
   const trackShelf = selectedTracks
-    .map((trackNum: number) => ({ ...tracks[trackNum], key: trackNum }))
+    .map((trackNum: number) => ({ ...tracks[trackNum], key: getKey() }))
     .map((track: SpotifyTrack) => <Card {...track} />)
 
   if (!tracks)
