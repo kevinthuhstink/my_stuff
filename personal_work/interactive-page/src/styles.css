@@ -1,0 +1,687 @@
+/* fonts and general styling */
+@font-face {
+  font-family: "Roboto Slab";
+  src:
+    local( "Roboto Slab" ),
+    url( "../../fonts/Roboto_Slab/RobotoSlab-VariableFont_wght.ttf" );
+  font-style: normal;
+  /* contains
+   * font-family
+   * src -> url, format
+   * font-weight
+   * font-style
+   * font-size
+   * font-variant as well
+   */
+}
+@font-face {
+  font-family: "Red Hat Display";
+  src:
+    local( "Red Hat Display" ),
+    url( "../../fonts/Red_Hat_Display/RedHatDisplay-VariableFont_wght.ttf" );
+  font-style: normal;
+}
+@font-face {
+  font-family: "Ubuntu";
+  src:
+    local( "Ubuntu" ),
+    url( "../../fonts/Ubuntu/Ubuntu-Regular.ttf" );
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Ubuntu";
+  src:
+    local( "Ubuntu" ),
+    url( "../../fonts/Ubuntu/Ubuntu-Bold.ttf" );
+  font-weight: bold;
+}
+body {
+  margin: 0px;
+}
+.page {
+  font-family: "Roboto Slab";
+  min-width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  display: inline-block;
+}
+h1 {
+  font-size: 48px;
+  font-variation-setting: 'wght' 800;
+}
+p {
+  font-size: 18px;
+  font-variation-setting: 'wght' 400;
+}
+
+/* header-top bar */
+header {
+  z-index: 2;
+  position: fixed;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  padding: 0px 20px;
+  padding-right: 40px;
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
+  font-family: "Red Hat Display";
+  display: flex;
+  justify-content: space-between;
+  /* good to know how to use border
+   * but gradient is just too sexy
+  border-width: 10px;
+  border-bottom-style: solid;
+  border-color: MidnightBlue; */
+}
+header > div {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  height: inherit;
+}
+header > div > * {
+  color: white;
+  white-space: nowrap; /*prevent that from wrapping to bottom */
+}
+.header--left {
+  flex-shrink: 0;
+  height: inherit;
+}
+.header--title {
+  z-index: 2;
+  font-size: 60px;
+  margin-top: 0;
+  margin-bottom: 0px;
+  padding-right: 30px;
+}
+.header--img {
+  z-index: 2;
+  height: 80px;
+  cursor: pointer;
+}
+.header--right {
+}
+.header--right {
+  margin-bottom: 20px;
+}
+.header--desc {
+  font-size: 24px;
+  margin: 0;
+  padding-right: 10px;
+  position: relative;
+  bottom: 0;
+  overflow-x: visible;
+  overflow-y: hidden;
+  height: 32px;
+  /*
+  border-left-style: solid;
+  border-width: 8px;
+  border-color: MidnightBlue; */
+}
+
+/* main section */
+.main--background {
+  width: 60vw;
+  height: 60vw;
+  position: fixed;
+  bottom: 0;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  z-index: -1;
+}
+main {
+  padding: 0;
+  width: 70vw;
+  height: 100%;
+  left: 0;
+  bottom: 0;
+  position: fixed;
+  display: flex;
+  height: calc( 100vh - 100px );
+  flex-direction: column;
+  background: linear-gradient( 280deg, Lavender, LavenderBlush );
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+main > * {
+  color: #222222;
+  margin: 0px 40px;
+}
+.main--title {
+  font-size: 48px;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+.main--desc {
+  width: 40vw;
+  font-size: 18px;
+  margin-left: 10px;
+  margin-top: 0px;
+}
+
+/* sidebar section */
+.sidebar {
+  margin: 0px;
+  padding: 0px;
+  right: 0;
+  bottom: 0;
+  width: 30vw;
+  position: fixed;
+  height: calc( 100vh - 100px );
+  background: linear-gradient( 120deg, Plum, SlateBlue );
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  overflow-y: auto;
+  box-shadow: -10px 0px 8px 0px gray;
+}
+.sidebar * {
+  scrollbar-color: white;
+}
+.sidebar > * {
+  position: relative;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.todolist--title {
+  font-size: 48px;
+  margin: 0px;
+}
+.todolist {
+  margin-top: 0px;
+  align-self: flex-end;
+}
+.todolist > li {
+  margin-top: 15px;
+  margin-bottom: 0px;
+  font-size: 24px;
+}
+.todolist > li::marker {
+  font-size: 36px;
+}
+.proj {
+  padding-top: 50px;
+  font-size: 16px;
+  font-variation-settings: 'wght' 900;
+}
+
+/* PROJECT 2:
+ * card bar */
+.cardbar {
+  height: 240px;
+  display: flex;
+  flex: none;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+.card {
+  position: relative;
+  width: 180px;
+  margin: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 4px;
+  border-radius: 24px;
+  border-color: black;
+}
+.card > * {
+  margin: 10px 0px; /* top-bottom 10px, left-right 0px */
+}
+.card--img {
+  width: 180px;
+  height: auto;
+  margin: 0px;
+  opacity: 0.4;
+  position: absolute;
+  right: -50px;
+  bottom: -20px;
+}
+.card--title {
+  margin-top: 0px;
+  font-size: 24px;
+}
+.card--desc {
+  font-size: 14px;
+  margin: 0px;
+  overflow-y: auto;
+  z-index: 1;
+}
+.card--ep {
+  font-variant: bold;
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-top: auto;
+  z-index: 1;
+}
+.card--badge {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  padding: 8px;
+  font-size: 14px;
+  font-variation-settings: 'wght' 700;
+  background: linear-gradient( 280deg, Lavender, LavenderBlush );
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+  border-radius: 18px;
+}
+
+/* PROJECT 3:
+ * form */
+.form--body {
+  height: max( 50vh, 800px );
+}
+.form--body > form {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: 1fr 1fr 70px;
+  grid-template-rows: 70px;
+}
+.form--body > * {
+  font-family: "Ubuntu", "Roboto Slab";
+}
+.usr--in {
+  text-indent: 20px;
+  border-radius: 20px;
+}
+.usr--button {
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  color: white;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.usr--button:hover {
+  filter: brightness( 87% );
+}
+.usr--clicky {
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  border-radius: 35px;
+  border-style: solid;
+  border-width: 2px;
+  border-top-color: LightGray;
+  border-left-color: LightGray;
+  border-bottom-color: gray;
+  border-right-color: gray;
+  cursor: pointer;
+}
+.usr--clicky:hover {
+  filter: brightness( 87% );
+}
+.display--clicky {
+  color: white;
+  text-align: center;
+  position: relative;
+  margin: 0px;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+  font-size: 24px;
+  user-select: none;
+}
+.usr--out {
+  padding-bottom: 40px;
+  position: relative;
+  width: inherit;
+}
+.out--text {
+  width: inherit;
+  height: auto;
+}
+.donut--gif {
+  position: absolute;
+  width: 100%;
+  height: auto;
+}
+
+/* PROJECT 3.1:
+ * colorschemes */
+.setcolors {
+  margin-top: 50px;
+  height: 50px;
+  font-family: "Red Hat Display";
+  font-size: 28px;
+  font-size: 24px;
+  background: linear-gradient( 30deg, #b3baff 40%, #333399 100% );
+  border-width: 3px;
+  border-color: black;
+  border-radius: 25px;
+  cursor: pointer;
+}
+.setcolors:hover {
+  filter: brightness( 87% );
+}
+
+/* PROJECT 3.2:
+ * fake login */
+.fake--form {
+  position: relative;
+  top: 40px;
+  margin: auto;
+  width: 30vw;
+  min-height: 75vh;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 5px 5px 15px -1px rgba( 0, 0, 0, 0.75 );
+  /* x-offset y-offset fade center+range
+   * all 0s is a 0px #222222 border
+   * all 0s with a center+range is a border with center+range visual width but 0 width in program */
+}
+.fake--fields {
+  display: block;
+  margin-bottom: 15px;
+  border-radius: 16px;
+  padding: 20px 30px;
+}
+.fake--fields > legend {
+  padding: 5px;
+  font-size: 16px;
+}
+.fake--fields > input:first-of-type {
+  margin-top: 0px;
+}
+.fake--fields > input {
+  border-radius: 16px;
+  margin-top: 25px;
+}
+.fake--fields > .text--in {
+  height: 48px;
+  text-indent: 15px;
+  width: 100%;
+}
+.fake--form > button {
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient( 120deg, indigo 40%, navy 100% );
+  color: white;
+  font-family: "Red Hat Display";
+  font-size: 28px;
+  cursor: pointer;
+}
+.fake--form > button:hover {
+  filter: brightness( 87% );
+}
+.invalidPassword {
+  color: red;
+  margin-bottom: 40px;
+}
+
+/* PROJECT 3.3:
+ * dropdown & resizing */
+#resizer {
+  z-index: 1;
+  position: absolute;
+  height: 100vh;
+  width: 10px;
+  background: black;
+  cursor: col-resize;
+}
+.header--button {
+  font-family: inherit;
+  font-size: 24px;
+  color: #222222;
+  height: 32px;
+  cursor: pointer;
+}
+.dropdown {
+  position: absolute;
+  color: #222222;
+  background-color: white;
+  top: 75px;
+  right: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #222222;
+  border-radius: 8px;
+  transform: scale( 0, 0 );
+  transform-origin: right top;
+}
+.dropdown.active {
+  transform: scale( 1, 1 ); /* transforms as transitions */
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+.dropdown--title {
+  margin: 10px 0px;
+  padding-left: 30px;
+  font-size: 32px;
+  border-bottom-style: solid;
+  border-width: 2px;
+  border-color: #222222;
+}
+.dropdown--select {
+  margin-right: 30px;
+}
+.dropdown--select > li {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.dropdown--select > p {
+  margin: 0px;
+  font-size: 14px;
+}
+.dropdown--select > *:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+main .todolist li::marker {
+  color: indigo;
+}
+
+/* PROJECT 4:
+ * conway's game of life */
+.game {
+  margin-bottom: 20vw;
+}
+#game--grid {
+  display: grid;
+  height: 400px;
+  width: 600px;
+  padding: 10px;
+  border-style: dotted;
+  border-width: 6px;
+  border-color: gray;
+  resize: both;
+  overflow: hidden;
+  background: lightgray;
+}
+.cell {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid gray;
+  text-align: center;
+  color: #222222;
+  user-select: none;
+  overflow: hidden;
+}
+#game--control {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 50px 50px;
+  margin-bottom: 30px;
+}
+#game--control > button {
+  border-radius: 10px;
+  font-family: "Ubuntu";
+  font-size: 24px;
+}
+#game--control .slider {
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #333333;
+  opacity: .7;
+  transition: opacity .2s;
+  margin-bottom: 0;
+}
+#game--control .slider:hover {
+  opacity: 1;
+}
+#game--control .slider::-moz-range-thumb {
+  appearance: none;
+  width: 8px;
+  height: 16px;
+}
+.slider--builtin datalist {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 10px;
+}
+#main4 {
+  overflow-x: auto;
+}
+
+/* PROJECT 4.1:
+ * custom slider */
+.slider--container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+.slider--body {
+  display: flex;
+  height: 4px;
+  width: 100%;
+  opacity: .7;
+  transition: opacity .2s;
+  background: #333333;
+  align-self: center;
+}
+.slider--body:hover {
+  opacity: 1;
+}
+.slider--thumb {
+  width: 8px;
+  height: 16px;
+  position: relative;
+  border: solid gray 1px;
+  border-radius: 4px;
+  opacity: 1;
+  align-self: center;
+}
+.slider--container dataset {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.slider--container dataset > option {
+  font-size: 12px;
+}
+
+/* PROJECT 5:
+ * notes app */
+#notes {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  min-height: 400px;
+  height: 80vh;
+  border: #222222 4px solid;
+  border-radius: 6px;
+  margin-bottom: 100px;
+}
+#notes > * {
+  position: relative;
+  height: 100%;
+}
+#notes--menu {
+  width: 10vw;
+  background: lightgray;
+  overflow-y: auto;
+}
+details > summary {
+  margin-bottom: 6px;
+}
+.file--container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid silver;
+}
+.notes--file {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+#notes--resizer {
+  width: 4px;
+  background: #222222;
+  cursor: col-resize;
+  z-index: 1;
+}
+#notes--main {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  border-radius: 12px;
+}
+#notes--panel {
+  padding: 3px;
+  background: gray;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+}
+#notes--panel > div {
+  margin: auto;
+}
+#notes--textoptions * {
+  width: 22.5px;
+}
+#notes--input {
+  height: 100%;
+  resize: none;
+  background: white;
+  white-space: pre-wrap;
+}
+#notes--tabbar {
+  display: flex;
+  height: 29px;
+  background: lightgray;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+.notes--tab {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+  background: gray;
+  padding: 6px;
+  flex-shrink: 0;
+}
+.notes--tab button {
+  background: none;
+  border: none;
+  margin-left: 10px;
+  padding-left: 3px;
+  padding-right: 3px;
+  position: relative;
+  border-radius: 4px;
+}
+.notes--tab button:hover {
+  background: silver;
+}
+
+
+
+/* wow, this css is a mess. */
+.sidebar > p {
+  font-size: 1.2em;
+  font-weight: bold;
+}
