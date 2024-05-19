@@ -1,26 +1,23 @@
 {
-  "dependencies": {
-    "@typescript-eslint/typescript-estree": "^7.9.0",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "typescript": "^5.4.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.2.0",
-    "eslint": "^8.57.0",
-    "globals": "^15.2.0",
-    "nodemon": "^3.1.0",
-    "typescript-eslint": "^7.9.0"
-  },
   "name": "backend",
   "version": "1.0.0",
+  "description": "server for fun stuff ",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon app.ts",
-    "lint": "eslint . --ext ts --max-warnings 20"
+    "start": "node --loader ts-node/esm src/index.ts",
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts"
   },
   "author": "",
   "license": "ISC",
-  "description": "mini server :3",
-  "type": "module"
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.12",
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
 }
